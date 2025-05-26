@@ -1,8 +1,17 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicolawer.auth.AuthService;
+import com.fptu.hk7.basicolawer.config.JWT.JWTUtil;
+import com.fptu.hk7.basicolawer.dto.ApiResponse;
+import com.fptu.hk7.basicolawer.dto.LoginDTO;
+import com.fptu.hk7.basicolawer.dto.jwtResponse;
+import com.fptu.hk7.basicolawer.exception.AppException;
+import com.fptu.hk7.basicolawer.exception.ErrorCode;
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,15 +21,19 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserDetailsService userDetailsService;
+    private final AuthService authService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserDetailsService userDetailsService, AuthService authService) {
         this.userRepository = userRepository;
+        this.userDetailsService = userDetailsService;
+        this.authService = authService;
     }
 
     @Override
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public void createUser(User user) {
+        userRepository.save(user);
     }
 
     @Override
@@ -62,5 +75,30 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-}
 
+    @Override
+    public ApiResponse<jwtResponse> login(LoginDTO loginDTO) throws AppException {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
+        if (userDetails != null) {
+            return new ApiResponse<>(
+                    true,
+                    "Login successful",
+                    200,
+                    new jwtResponse(JWTUtil.generateToken(userDetails)));
+        }
+        throw new AppException(ErrorCode.LOGIN_FAIL);
+    }
+
+    @Override
+    public ApiResponse<Void> register(User user) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+        authService.activateUser(user);
+        return new ApiResponse<>(
+                true,
+                "User registered successfully",
+                200,
+                null);
+    }
+}

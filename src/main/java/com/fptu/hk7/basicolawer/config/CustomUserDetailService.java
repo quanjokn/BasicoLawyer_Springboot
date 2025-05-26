@@ -1,7 +1,7 @@
-package com.practice.studentfpt.config;
+package com.fptu.hk7.basicolawer.config;
 
-import com.fptu.hk7.basicolawer.config.CustomUserDetails;
 import com.fptu.hk7.basicolawer.pojo.User;
+import com.fptu.hk7.basicolawer.repository.UserRepository;
 import com.fptu.hk7.basicolawer.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
-    public final UserService userService;
+    public final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
         return new CustomUserDetails(user);
     }
 

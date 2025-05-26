@@ -13,7 +13,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Configuration
 public class JWTUtil {
     @Value("${jwt.secret_key}")
     private static String secret_key;

@@ -1,11 +1,14 @@
 package com.fptu.hk7.basicolawer.config;
 
 import com.fptu.hk7.basicolawer.config.JWT.JWTTokenFilter;
+import com.fptu.hk7.basicolawer.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,18 +20,16 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fptu.hk7.basicolawer.pojo.User;
-import com.fptu.hk7.basicolawer.service.UserService;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserService userService;
-    private final JWTTokenFilter jwtTokenFilter;
+    private final UserRepository userRepository;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JWTTokenFilter jwtTokenFilter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -66,10 +67,16 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
     public CommandLineRunner initData() {
         return args -> {
             // Initialize your data here if needed
-            if (!userService.existsByUsername("adminfsa")) {
+            if (!userRepository.existsByUsername("adminfsa")) {
                 // create user with role ADMIN
                 User user = User.builder()
                         .username("adminfsa")
@@ -79,7 +86,7 @@ public class SecurityConfig {
                         .phone("0773363666")
                         .role("ADMIN")
                         .build();
-                userService.createUser(user);
+                userRepository.save(user);
             }
         };
     }
