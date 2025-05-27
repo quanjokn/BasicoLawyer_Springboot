@@ -2,7 +2,6 @@ package com.fptu.hk7.basicolawer.auth;
 
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.repository.UserRepository;
-import com.fptu.hk7.basicolawer.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

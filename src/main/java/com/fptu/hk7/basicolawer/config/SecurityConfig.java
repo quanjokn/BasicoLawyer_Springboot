@@ -21,15 +21,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fptu.hk7.basicolawer.pojo.User;
 
-@Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Configuration
 public class SecurityConfig {
 
     private final UserRepository userRepository;
 
+    private final JWTTokenFilter jwtTokenFilter;
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JWTTokenFilter jwtTokenFilter) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -37,13 +39,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "login"
+                                "/auth/**"
                         ).permitAll()
                         .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll()
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -76,10 +74,10 @@ public class SecurityConfig {
     public CommandLineRunner initData() {
         return args -> {
             // Initialize your data here if needed
-            if (!userRepository.existsByUsername("adminfsa")) {
+            if (!userRepository.existsByUsername("admin")) {
                 // create user with role ADMIN
                 User user = User.builder()
-                        .username("adminfsa")
+                        .username("admin")
                         .password(passwordEncoder().encode("123456"))
                         .email("koifarmshopswp391@gmail.com")
                         .status("active")

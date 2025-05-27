@@ -4,27 +4,28 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Component
 public class JWTUtil {
-    @Value("${jwt.secret_key}")
-    private static String secret_key;
-    @Value("${jwt.expiration_time}")
-    private static long expiration_time;
+    @Value("${jwt.secret}")
+    private String secret_key;
+    @Value("${jwt.long_expiration}")
+    private long expiration_time;
 
-    private static Key getSigningKey() {
+    private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secret_key.getBytes()
         );
     }
 
-    public static String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -40,12 +41,12 @@ public class JWTUtil {
                 .compact();
     }
 
-    public static <T, Claims> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    public <T, Claims> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = (Claims) extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    public static Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -53,11 +54,11 @@ public class JWTUtil {
                 .getBody();
     }
 
-    public static String extractUsername(String token) {
+    public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public static List<String> extractRoles(String token) {
+    public List<String> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
         Object roles = claims.get("roles");
         if (roles instanceof List) {
@@ -66,7 +67,7 @@ public class JWTUtil {
         return Collections.emptyList();
     }
 
-    public static boolean validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
@@ -78,12 +79,12 @@ public class JWTUtil {
         }
     }
 
-    public static boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         Date expiration = extractClaim(token, Claims::getExpiration);
         return expiration.before(new Date());
     }
 
-    public static boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
