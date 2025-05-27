@@ -6,13 +6,11 @@ import com.fptu.hk7.basicolawer.dto.jwtResponse;
 import com.fptu.hk7.basicolawer.exception.AppException;
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -27,7 +25,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<Void>> register(@RequestBody User user) throws RuntimeException{
+    public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody User user) throws RuntimeException{
         return ResponseEntity.ok(userService.register(user));
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<User>> profile() {
+        User user = userService.getCurrentUser();
+        return ResponseEntity.ok(new ApiResponse<>(
+                true,
+                "User profile retrieved successfully",
+                200,
+                user));
     }
 }
