@@ -10,6 +10,10 @@ import com.fptu.hk7.basicolawer.exception.ErrorCode;
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -23,12 +27,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserDetailsService userDetailsService;
     private final AuthService authService;
+    private final AuthenticationManager authenticationManager;
+    private final JWTUtil jwtUtil;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserDetailsService userDetailsService, AuthService authService) {
+    public UserServiceImpl(UserRepository userRepository, UserDetailsService userDetailsService, AuthService authService, AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
         this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
         this.authService = authService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -78,13 +86,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse<jwtResponse> login(LoginDTO loginDTO) throws AppException {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
-        if (userDetails != null) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getUsername(),
+                        loginDTO.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (authentication.isAuthenticated()) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
+            String token = jwtUtil.generateToken(userDetails);
             return new ApiResponse<>(
                     true,
                     "Login successful",
                     200,
-                    new jwtResponse(JWTUtil.generateToken(userDetails)));
+                    new jwtResponse(token));
         }
         throw new AppException(ErrorCode.LOGIN_FAIL);
     }
