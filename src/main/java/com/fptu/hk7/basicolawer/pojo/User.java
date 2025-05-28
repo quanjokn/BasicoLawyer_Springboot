@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fptu.hk7.basicolawer.validation.ValidPhone;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -33,6 +34,7 @@ public class User {
     @Size(min = 5, max = 30, message = "Username must be 5-30 characters")
     private String username;
 
+    @JsonIgnore
     @NotBlank(message = "Password is required")
     @Size(min = 8, max = 100, message = "Password must be at least 8 characters")
     private String password;

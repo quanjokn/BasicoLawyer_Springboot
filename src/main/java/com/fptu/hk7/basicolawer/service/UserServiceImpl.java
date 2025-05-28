@@ -13,10 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -86,14 +89,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse<jwtResponse> login(LoginDTO loginDTO) throws AppException {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDTO.getUsername(),
-                        loginDTO.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        if (authentication.isAuthenticated()) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTO.getUsername(),
+                            loginDTO.getPassword()
+                    )
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
             String token = jwtUtil.generateToken(userDetails);
             return new ApiResponse<>(
@@ -101,8 +104,9 @@ public class UserServiceImpl implements UserService {
                     "Login successful",
                     200,
                     new jwtResponse(token));
+        } catch (AuthenticationException e) {
+            throw new AppException(ErrorCode.LOGIN_FAIL);
         }
-        throw new AppException(ErrorCode.LOGIN_FAIL);
     }
 
     @Override
@@ -116,5 +120,13 @@ public class UserServiceImpl implements UserService {
                 "User registered successfully",
                 200,
                 null);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        String username = context.getAuthentication().getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 }

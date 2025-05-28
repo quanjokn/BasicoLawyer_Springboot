@@ -22,4 +22,6 @@ public interface UserService {
 //     Authenticate user and return JWT response
     ApiResponse<jwtResponse> login(LoginDTO loginDTO) throws AppException;
     ApiResponse<Void> register(User user);
+
+    User getCurrentUser();
 }
