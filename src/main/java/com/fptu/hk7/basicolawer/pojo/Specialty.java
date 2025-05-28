@@ -25,4 +25,8 @@ public class Specialty {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     private Request request;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_profile_id")
+    private StaffProfile staffProfile;
 }

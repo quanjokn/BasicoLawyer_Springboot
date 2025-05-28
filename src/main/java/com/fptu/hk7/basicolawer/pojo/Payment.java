@@ -30,4 +30,8 @@ public class Payment {
 
     @OneToOne(mappedBy = "payment")
     private Request request;
+
+    @OneToOne(mappedBy = "payment")
+    @JoinColumn(name = "appointment_id", referencedColumnName = "id")
+    private Appointment appointment;
 }

@@ -50,4 +50,25 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Request> requests;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Booking> bookings;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Review> reviews;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Notification> notifications;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<AuditLog> auditLogs;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private StaffProfile staffProfile;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserForm> userForms;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Post post;
 }
