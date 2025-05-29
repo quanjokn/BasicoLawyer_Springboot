@@ -26,7 +26,7 @@ public class Payment {
     private PaymentMethodEnum method;
 
     private Float amount;
-    private PaymentStatusEnum status;
+    private PaymentStatusEnum status; 
 
     @OneToOne(mappedBy = "payment")
     private Request request;
