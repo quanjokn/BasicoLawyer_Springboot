@@ -40,9 +40,17 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/auth/login",
-                                "/auth/register"
+                                "/auth/register",
+                                "auth/forgot-password",
+                                "auth/reset-password"
                         ).permitAll()
                         .anyRequest().authenticated()
+                )
+                .logout(logout ->
+                        logout.logoutUrl("/logout")
+                                .logoutSuccessUrl("/")
+                                .invalidateHttpSession(true)
+                                .permitAll()
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -80,6 +88,7 @@ public class SecurityConfig {
                 User user = User.builder()
                         .username("admin")
                         .password(passwordEncoder().encode("123456"))
+                        .fullname("Admin Basico")
                         .email("koifarmshopswp391@gmail.com")
                         .status("active")
                         .phone("0773363666")

@@ -11,6 +11,9 @@ public enum ErrorCode {
     USERNAME_INVALID(1003, "Username must be at least 3 characters"),
     INVALID_PASSWORD(1004, "Password must be at least 8 characters"),
     LOGIN_FAIL(400, "Incorrect username or password"),
+    INVALID_EMAIL(1005, "Email is not existed or valid"),
+    ERROR_OTP(1006, "OTP is not similar or expired"),
+    UNABLE_TO_CHANGE_PASSWORD(1007, "Can not change password");
     ;
 
     private final int code;

@@ -24,4 +24,10 @@ public interface UserService {
     ApiResponse<Void> register(User user);
 
     User getCurrentUser();
+
+    void forgotPassword(String email);
+
+    Optional<User> findByEmail(String email);
+
+    void save(User user);
 }
