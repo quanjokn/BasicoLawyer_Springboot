@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,21 +12,32 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "form")
+@Table(name = "form_template")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Form {
+public class FormTemplate {
     @Id
     @GeneratedValue
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
+    private String name;
+
     private String category;
-    private Float price;
-    private String content;
-    @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
+
+    @Column(name = "json_structure", columnDefinition = "jsonb")
+    private String jsonStructure; // định nghĩa cấu trúc form
+
+    @Column(name = "html_template", columnDefinition = "TEXT")
+    private String htmlTemplate;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "template", cascade = CascadeType.ALL)
     private List<UserForm> userForms;
+
+
+
 }

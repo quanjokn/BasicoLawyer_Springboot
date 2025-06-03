@@ -7,7 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -23,14 +24,18 @@ public class UserForm {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    private LocalDate date;
+    @Column(name = "form_data", columnDefinition = "jsonb")
+    private String formData;
+
+    private boolean isPaid;
+
+    private Timestamp createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "form_id", nullable = false)
-    private Form form;
-
+    @JoinColumn(name = "template_id")
+    private FormTemplate template;
 }
