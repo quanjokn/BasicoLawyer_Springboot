@@ -92,10 +92,24 @@ public class SecurityConfig {
                 User user = User.builder()
                         .username("admin")
                         .password(passwordEncoder().encode("123456"))
+                        .fullname("Admin Basico")
                         .email("koifarmshopswp391@gmail.com")
                         .status("active")
                         .phone("0773363666")
                         .role("ADMIN")
+                        .build();
+                userRepository.save(user);
+            }
+
+            if (!userRepository.existsByUsername("customer")) {
+                User user = User.builder()
+                        .username("customer")
+                        .password(passwordEncoder().encode("123456"))
+                        .fullname("Customer Basico")
+                        .email("customer@gmail.com")
+                        .status("active")
+                        .phone("0773363666")
+                        .role("STUDENT")
                         .build();
                 userRepository.save(user);
             }
