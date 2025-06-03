@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,16 +28,18 @@ public class Request {
     @Enumerated(EnumType.STRING)
     private RequestStatusEnum status;
 
-    private String preferedLawerUUID;
+    private UUID preferedLawerUUID;
 
-    private LocalDate date;
+    private LocalDate dateBooking;
 
-    private LocalTime time;
+    private LocalDate dateRequest;
 
     private String note;
 
     private int slot;
-
+    @JsonIgnore
+    @Column(name = "txn_ref")
+    private String txnRef;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

@@ -1,8 +1,8 @@
 package com.fptu.hk7.basicolawer.service;
 
-import com.fptu.hk7.basicolawer.dto.ApiResponse;
-import com.fptu.hk7.basicolawer.dto.LoginDTO;
-import com.fptu.hk7.basicolawer.dto.jwtResponse;
+import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
+import com.fptu.hk7.basicolawer.dto.Request.LoginDTO;
+import com.fptu.hk7.basicolawer.dto.Response.jwtResponse;
 import com.fptu.hk7.basicolawer.exception.AppException;
 import com.fptu.hk7.basicolawer.pojo.User;
 
@@ -24,4 +24,10 @@ public interface UserService {
     ApiResponse<Void> register(User user);
 
     User getCurrentUser();
+
+    void forgotPassword(String email);
+
+    Optional<User> findByEmail(String email);
+
+    void save(User user);
 }

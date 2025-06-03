@@ -25,8 +25,8 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentMethodEnum method;
 
-    private Float amount;
-    private PaymentStatusEnum status;
+    private int amount;
+    private PaymentStatusEnum status; 
 
     @OneToOne(mappedBy = "payment")
     private Request request;

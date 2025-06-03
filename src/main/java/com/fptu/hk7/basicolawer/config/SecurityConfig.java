@@ -41,9 +41,20 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/auth/login",
                                 "/auth/register",
+                                "/api/payment/**",
+                                "/auth/register",
+                                "auth/forgot-password",
+                                "auth/reset-password",
+                                "/auth/register",
                                 "/api/forms/**"
                         ).permitAll()
                         .anyRequest().authenticated()
+                )
+                .logout(logout ->
+                        logout.logoutUrl("/logout")
+                                .logoutSuccessUrl("/")
+                                .invalidateHttpSession(true)
+                                .permitAll()
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

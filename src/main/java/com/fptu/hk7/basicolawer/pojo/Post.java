@@ -27,7 +27,7 @@ public class Post {
     private String content;
     private String stamp;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // Người đăng bài viết
 
