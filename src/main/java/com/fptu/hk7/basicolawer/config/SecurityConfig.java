@@ -44,7 +44,9 @@ public class SecurityConfig {
                                 "/api/payment/**",
                                 "/auth/register",
                                 "auth/forgot-password",
-                                "auth/reset-password"
+                                "auth/reset-password",
+                                "/auth/register",
+                                "/api/forms/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -103,6 +105,7 @@ public class SecurityConfig {
                 User user = User.builder()
                         .username("customer")
                         .password(passwordEncoder().encode("123456"))
+                        .fullname("Customer Basico")
                         .email("customer@gmail.com")
                         .status("active")
                         .phone("0773363666")
