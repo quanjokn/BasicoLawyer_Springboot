@@ -1,6 +1,6 @@
 package com.fptu.hk7.basicolawer.exception;
 
-import com.fptu.hk7.basicolawer.dto.ApiResponse;
+import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
