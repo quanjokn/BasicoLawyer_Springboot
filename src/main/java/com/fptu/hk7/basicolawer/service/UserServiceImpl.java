@@ -2,9 +2,9 @@ package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.auth.AuthService;
 import com.fptu.hk7.basicolawer.config.JWT.JWTUtil;
-import com.fptu.hk7.basicolawer.dto.ApiResponse;
-import com.fptu.hk7.basicolawer.dto.LoginDTO;
-import com.fptu.hk7.basicolawer.dto.jwtResponse;
+import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
+import com.fptu.hk7.basicolawer.dto.Request.LoginDTO;
+import com.fptu.hk7.basicolawer.dto.Response.jwtResponse;
 import com.fptu.hk7.basicolawer.exception.AppException;
 import com.fptu.hk7.basicolawer.exception.ErrorCode;
 import com.fptu.hk7.basicolawer.pojo.User;
@@ -19,7 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -128,5 +127,20 @@ public class UserServiceImpl implements UserService {
         String username = context.getAuthentication().getName();
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
+    public void forgotPassword(String email) {
+
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
     }
 }

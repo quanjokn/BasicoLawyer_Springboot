@@ -41,9 +41,18 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/auth/login",
                                 "/auth/register",
-                                "/api/payment/**"
+                                "/api/payment/**",
+                                "/auth/register",
+                                "auth/forgot-password",
+                                "auth/reset-password"
                         ).permitAll()
                         .anyRequest().authenticated()
+                )
+                .logout(logout ->
+                        logout.logoutUrl("/logout")
+                                .logoutSuccessUrl("/")
+                                .invalidateHttpSession(true)
+                                .permitAll()
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -57,7 +66,6 @@ public class SecurityConfig {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:5173")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
                         .allowCredentials(true);
             }
         };
@@ -78,15 +86,17 @@ public class SecurityConfig {
         return args -> {
             // Initialize your data here if needed
             if (!userRepository.existsByUsername("admin")) {
-                User admin = User.builder()
+                // create user with role ADMIN
+                User user = User.builder()
                         .username("admin")
                         .password(passwordEncoder().encode("123456"))
+                        .fullname("Admin Basico")
                         .email("koifarmshopswp391@gmail.com")
                         .status("active")
                         .phone("0773363666")
                         .role("ADMIN")
                         .build();
-                userRepository.save(admin);
+                userRepository.save(user);
             }
 
             if (!userRepository.existsByUsername("customer")) {

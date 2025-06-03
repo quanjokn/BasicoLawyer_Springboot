@@ -1,9 +1,8 @@
-package com.fptu.hk7.basicolawer.dto;
+package com.fptu.hk7.basicolawer.dto.Request;
 
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 

@@ -1,7 +1,7 @@
 package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.config.VNPayConfig;
-import com.fptu.hk7.basicolawer.dto.RequestDTO;
+import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
 import com.fptu.hk7.basicolawer.enums.PaymentMethodEnum;
 import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
@@ -17,8 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
