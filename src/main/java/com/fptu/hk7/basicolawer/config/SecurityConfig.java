@@ -40,7 +40,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/auth/login",
-                                "/auth/register"
+                                "/auth/register",
+                                "/api/payment/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -56,6 +57,7 @@ public class SecurityConfig {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:5173")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
                         .allowCredentials(true);
             }
         };
@@ -76,14 +78,25 @@ public class SecurityConfig {
         return args -> {
             // Initialize your data here if needed
             if (!userRepository.existsByUsername("admin")) {
-                // create user with role ADMIN
-                User user = User.builder()
+                User admin = User.builder()
                         .username("admin")
                         .password(passwordEncoder().encode("123456"))
                         .email("koifarmshopswp391@gmail.com")
                         .status("active")
                         .phone("0773363666")
                         .role("ADMIN")
+                        .build();
+                userRepository.save(admin);
+            }
+
+            if (!userRepository.existsByUsername("customer")) {
+                User user = User.builder()
+                        .username("customer")
+                        .password(passwordEncoder().encode("123456"))
+                        .email("customer@gmail.com")
+                        .status("active")
+                        .phone("0773363666")
+                        .role("STUDENT")
                         .build();
                 userRepository.save(user);
             }
