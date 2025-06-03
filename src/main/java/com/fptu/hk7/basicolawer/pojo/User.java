@@ -1,10 +1,12 @@
 package com.fptu.hk7.basicolawer.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fptu.hk7.basicolawer.pojo.Enum.Role;
 import com.fptu.hk7.basicolawer.validation.ValidPhone;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +36,7 @@ public class User {
     @Column(unique = true)
     private String username;
 
-//    @JsonIgnore
+    @JsonIgnore
     @NotBlank(message = "Password is required")
     @Size(min = 6, max = 100, message = "Password must be at least 8 characters")
     private String password;
@@ -52,7 +54,19 @@ public class User {
 
     private String status;
 
-    private String role;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    public User(String username, String password, String fullname, String phone, String email, String status, Role role) {
+        this.username = username;
+        this.password = password;
+        this.fullname = fullname;
+        this.phone = phone;
+        this.email = email;
+        this.status = status;
+        this.role = role;
+    }
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Request> requests;

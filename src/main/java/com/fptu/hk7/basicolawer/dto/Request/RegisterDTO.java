@@ -1,13 +1,16 @@
 package com.fptu.hk7.basicolawer.dto.Request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fptu.hk7.basicolawer.pojo.Enum.Role;
 import com.fptu.hk7.basicolawer.validation.ValidPhone;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
+@Data
 public class RegisterDTO {
+    @NotBlank(message = "Username is required")
     private String username;
 
     @NotBlank(message = "Password is required")
@@ -25,5 +28,7 @@ public class RegisterDTO {
     @Column(unique = true)
     private String email;
 
-    private String status;
+    private String status = "active";
+
+    private Role role = Role.CUSTOMER;
 }

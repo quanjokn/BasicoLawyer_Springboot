@@ -1,6 +1,7 @@
 package com.fptu.hk7.basicolawer.config;
 
 import com.fptu.hk7.basicolawer.config.JWT.JWTTokenFilter;
+import com.fptu.hk7.basicolawer.pojo.Enum.Role;
 import com.fptu.hk7.basicolawer.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -94,7 +95,7 @@ public class SecurityConfig {
                         .email("koifarmshopswp391@gmail.com")
                         .status("active")
                         .phone("0773363666")
-                        .role("ADMIN")
+                        .role(Role.ADMIN)
                         .build();
                 userRepository.save(user);
             }
@@ -103,10 +104,11 @@ public class SecurityConfig {
                 User user = User.builder()
                         .username("customer")
                         .password(passwordEncoder().encode("123456"))
+                        .fullname("Customer Basico")
                         .email("customer@gmail.com")
                         .status("active")
                         .phone("0773363666")
-                        .role("STUDENT")
+                        .role(Role.CUSTOMER)
                         .build();
                 userRepository.save(user);
             }

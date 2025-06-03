@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicolawer.dto.Request.RegisterDTO;
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
 import com.fptu.hk7.basicolawer.dto.Request.LoginDTO;
 import com.fptu.hk7.basicolawer.dto.Response.jwtResponse;
@@ -21,7 +22,7 @@ public interface UserService {
 
 //     Authenticate user and return JWT response
     ApiResponse<jwtResponse> login(LoginDTO loginDTO) throws AppException;
-    ApiResponse<Void> register(User user);
+    ApiResponse<Void> register(RegisterDTO registerDTO);
 
     User getCurrentUser();
 

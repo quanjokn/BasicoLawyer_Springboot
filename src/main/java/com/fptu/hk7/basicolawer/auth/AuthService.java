@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.auth;
 
+import com.fptu.hk7.basicolawer.pojo.Enum.Role;
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class AuthService {
 
     public void activateUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("STUDENT");
+        user.setRole(Role.CUSTOMER);
         user.setStatus("active");
         userService.save(user);
     }

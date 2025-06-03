@@ -2,6 +2,7 @@ package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.auth.AuthService;
 import com.fptu.hk7.basicolawer.config.JWT.JWTUtil;
+import com.fptu.hk7.basicolawer.dto.Request.RegisterDTO;
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
 import com.fptu.hk7.basicolawer.dto.Request.LoginDTO;
 import com.fptu.hk7.basicolawer.dto.Response.jwtResponse;
@@ -109,7 +110,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<Void> register(User user) {
+    public ApiResponse<Void> register(RegisterDTO registerDTO) {
+        User user = new User(
+                registerDTO.getUsername(),
+                registerDTO.getPassword(),
+                registerDTO.getFullname(),
+                registerDTO.getPhone(),
+                registerDTO.getEmail(),
+                registerDTO.getStatus(),
+                registerDTO.getRole());
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }

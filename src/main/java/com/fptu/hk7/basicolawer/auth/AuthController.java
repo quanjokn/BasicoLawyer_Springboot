@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.auth;
 
+import com.fptu.hk7.basicolawer.dto.Request.RegisterDTO;
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
 import com.fptu.hk7.basicolawer.dto.Request.LoginDTO;
 import com.fptu.hk7.basicolawer.dto.Response.jwtResponse;
@@ -34,8 +35,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody User user) throws RuntimeException{
-        return ResponseEntity.ok(userService.register(user));
+    public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody RegisterDTO registerDTO) throws RuntimeException{
+        return ResponseEntity.ok(userService.register(registerDTO));
     }
 
     @GetMapping("/profile")
