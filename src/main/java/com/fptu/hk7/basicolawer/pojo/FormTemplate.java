@@ -28,7 +28,7 @@ public class FormTemplate {
 
     private String category;
 
-    @Column(name = "json_structure", columnDefinition = "jsonb")
+    @Column(name = "json_structure", columnDefinition = "TEXT")
     private String jsonStructure; // định nghĩa cấu trúc form
 
     @Column(name = "html_template", columnDefinition = "TEXT")
