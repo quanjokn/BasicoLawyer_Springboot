@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
 import com.fptu.hk7.basicolawer.service.VNPayService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping("/api/payment")
+@SecurityRequirement(name = "bearerAuth")
 @Slf4j
 @CrossOrigin(origins = "http://localhost:5173")
 public class VNPayController {

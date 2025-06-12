@@ -2,6 +2,7 @@ package com.fptu.hk7.basicolawer.controller;
 
 
 import com.fptu.hk7.basicolawer.service.UserFormService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/forms")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class FormController {
 

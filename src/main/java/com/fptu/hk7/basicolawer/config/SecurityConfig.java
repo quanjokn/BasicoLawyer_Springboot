@@ -45,15 +45,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/auth/login",
-                                "/auth/register",
-                                "/api/payment/**",
-                                "/auth/register",
-                                "/auth/forgot-password",
-                                "/auth/reset-password",
-                                "/auth/register"
+                            "/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -66,19 +58,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-//    @Bean
-//    public WebMvcConfigurer webMvcConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(@NotNull CorsRegistry registry) {
-//                registry.addMapping("/**")
-//                        .allowedOrigins("http://localhost:5173")
-//                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-//                        .allowCredentials(true);
-//            }
-//        };
-//    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
