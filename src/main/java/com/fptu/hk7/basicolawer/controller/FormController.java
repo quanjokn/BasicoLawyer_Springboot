@@ -17,8 +17,14 @@ import java.util.UUID;
 public class FormController {
 
     private final UserFormService formService;
-    @GetMapping("/templates/{id}")
+    @GetMapping
+    public ResponseEntity<?> getAllTemplates() {
+        return ResponseEntity.ok(formService.getAllTemplates());
+    }
+
+    @GetMapping("/{id}")
     public ResponseEntity<?> getTemplate(@PathVariable UUID id) {
         return ResponseEntity.ok(formService.getTemplateById(id));
     }
+
 }

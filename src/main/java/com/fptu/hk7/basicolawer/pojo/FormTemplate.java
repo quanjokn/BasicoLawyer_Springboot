@@ -34,6 +34,10 @@ public class FormTemplate {
     @Column(name = "html_template", columnDefinition = "TEXT")
     private String htmlTemplate;
 
+    private String description;
+
+    private String imgUrl;
+
     @JsonIgnore
     @OneToMany(mappedBy = "template", cascade = CascadeType.ALL)
     private List<UserForm> userForms;
