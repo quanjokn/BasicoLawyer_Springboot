@@ -24,9 +24,6 @@ public class UserForm {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "form_data", columnDefinition = "jsonb")
-    private String formData;
-
     private boolean isPaid;
 
     private Timestamp createdAt;
