@@ -1,6 +1,7 @@
 package com.fptu.hk7.basicolawer.exception;
 
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
+import jakarta.security.auth.message.AuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -16,40 +17,48 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(AppException.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(AppException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        ApiResponse<Void> response = new ApiResponse<>(
-                false,
-                errorCode.getMessage(),
-                errorCode.getCode(),
-                null
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    @ExceptionHandler(value = RuntimeException.class)
+    ResponseEntity<?> handlingUncategorizedException(RuntimeException exception){
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
+        apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
+
+        return ResponseEntity.badRequest().body(apiResponse);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> unknownException(Exception e) {
-        ApiResponse<Void> response = new ApiResponse<>(
-                false,
-                "Internal server error",
-                500,
-                null
-        );
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    @ExceptionHandler(value = AuthException.class)
+    ResponseEntity<?> handlingAuthentication(AuthException exception){
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Map<String, List<String>>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, List<String>> errors = new HashMap<>();
-        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            errors.computeIfAbsent(error.getField(), key -> new ArrayList<>()).add(error.getDefaultMessage());
-        }
-        return ResponseEntity.badRequest().body(new ApiResponse<>(
-                false,
-                "Validation arguments failed",
-                400,
-                errors
-        ));
+    @ExceptionHandler(value = AppException.class)
+    ResponseEntity<?> handlingAppException(AppException exception){
+        ErrorCode errorCode = exception.getErrorCode();
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
+
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    ResponseEntity<?> handlingValidation(MethodArgumentNotValidException exception){
+        List<String> errors = exception.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage).toList();
+
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        apiResponse.setCode(ErrorCode.FAIL_VALIDATION_DATA.getCode());
+        apiResponse.setMessage(ErrorCode.FAIL_VALIDATION_DATA.getMessage());
+
+        return ResponseEntity.badRequest()
+                .body(ApiResponse.<List<String>>builder()
+                        .message(ErrorCode.FAIL_VALIDATION_DATA.getMessage())
+                        .code(ErrorCode.FAIL_VALIDATION_DATA.getCode())
+                        .result(errors)
+                        .build()
+                );
     }
 }

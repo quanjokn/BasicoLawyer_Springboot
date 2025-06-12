@@ -1,13 +1,17 @@
 package com.fptu.hk7.basicolawer.config.JWT;
 
+import com.fptu.hk7.basicolawer.dto.Response.UserResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
@@ -20,9 +24,9 @@ public class JWTUtil {
     @Value("${jwt.long_expiration}")
     private long expiration_time;
 
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secret_key.getBytes()
-        );
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret_key);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -41,11 +45,6 @@ public class JWTUtil {
                 .compact();
     }
 
-    public <T, Claims> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = (Claims) extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
     public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -54,38 +53,15 @@ public class JWTUtil {
                 .getBody();
     }
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public List<String> extractRoles(String token) {
-        Claims claims = extractAllClaims(token);
-        Object roles = claims.get("roles");
-        if (roles instanceof List) {
-            return ((List<?>) roles).stream().map(Object::toString).collect(Collectors.toList());
+    public String getToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if(authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
         }
-        return Collections.emptyList();
+        return null;
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean isTokenExpired(String token) {
-        Date expiration = extractClaim(token, Claims::getExpiration);
-        return expiration.before(new Date());
-    }
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public Claims getClaims(String token) {
+        return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
     }
 }

@@ -13,7 +13,8 @@ public enum ErrorCode {
     LOGIN_FAIL(400, "Incorrect username or password"),
     INVALID_EMAIL(1005, "Email is not existed or valid"),
     ERROR_OTP(1006, "OTP is not similar or expired"),
-    UNABLE_TO_CHANGE_PASSWORD(1007, "Can not change password");
+    UNABLE_TO_CHANGE_PASSWORD(1007, "Can not change password"),
+    FAIL_VALIDATION_DATA(1003, "Error format!")
     ;
 
     private final int code;
