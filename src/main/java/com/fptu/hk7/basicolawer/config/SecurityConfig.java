@@ -3,7 +3,9 @@ package com.fptu.hk7.basicolawer.config;
 import com.fptu.hk7.basicolawer.config.JWT.JWTTokenFilter;
 import com.fptu.hk7.basicolawer.pojo.Enum.Role;
 import com.fptu.hk7.basicolawer.pojo.FormTemplate;
+import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 import com.fptu.hk7.basicolawer.repository.FormTemplateRepository;
+import com.fptu.hk7.basicolawer.repository.StaffProfileRepository;
 import com.fptu.hk7.basicolawer.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -36,8 +38,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
-
-    private final UserRepository userRepository;
 
     private final JWTTokenFilter jwtTokenFilter;
 
@@ -87,7 +87,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CommandLineRunner initData(FormTemplateRepository formTemplateRepository) {
+    public CommandLineRunner initData(FormTemplateRepository formTemplateRepository , UserRepository userRepository, StaffProfileRepository staffProfileRepository) {
         return args -> {
             // Initialize your data here if needed
             if (!userRepository.existsByUsername("admin")) {
@@ -115,6 +115,154 @@ public class SecurityConfig {
                         .role(Role.CUSTOMER)
                         .build();
                 userRepository.save(user);
+            }
+
+            if(!userRepository.existsByRole(Role.CONSULTANT) && !userRepository.existsByRole(Role.LAWYER)) {
+                User hai = new User(
+                        "hailawyer",
+                        passwordEncoder().encode("123456"),
+                        "Trần Minh Hải",
+                        "0912345678",
+                        "hai@basico.com.vn",
+                        "ACTIVE",
+                        Role.LAWYER
+                );
+                userRepository.save(hai);
+
+                StaffProfile profileHai = new StaffProfile();
+                profileHai.setYearExperience("20");
+                profileHai.setLicenseNumber("LS001");
+                profileHai.setBio("Giám đốc điều hành BASICO, nhiều năm kinh nghiệm tư vấn luật doanh nghiệp, ngân hàng.");
+                profileHai.setVerified(true);
+                profileHai.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/05/LS_Hai-2.jpg");
+                profileHai.setUser(hai);
+                staffProfileRepository.save(profileHai);
+
+                // 2. Luật sư Nguyễn Thị Ngọc ...
+                User ngoc = new User(
+                        "ngoclawyer",
+                        passwordEncoder().encode("123456"),
+                        "Nguyễn Thị Ngọc",
+                        "0912345679",
+                        "ngoc@basico.com.vn",
+                        "ACTIVE",
+                        Role.LAWYER
+                );
+                userRepository.save(ngoc);
+
+                StaffProfile profileNgoc = new StaffProfile();
+                profileNgoc.setYearExperience("10");
+                profileNgoc.setLicenseNumber("LS002");
+                profileNgoc.setBio("Luật sư thành viên BASICO, chuyên tư vấn hợp đồng, pháp lý doanh nghiệp.");
+                profileNgoc.setVerified(true);
+                profileNgoc.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/03/Luat-su-NgocAnh-2.jpg");
+                profileNgoc.setUser(ngoc);
+                staffProfileRepository.save(profileNgoc);
+
+                // 3. Nguyễn Đỗ Thùy Dương
+                User duong = new User(
+                        "duonglawyer",
+                        passwordEncoder().encode("123456"),
+                        "Nguyễn Đỗ Thùy Dương",
+                        "0912345680",
+                        "duong@basico.com.vn",
+                        "ACTIVE",
+                        Role.LAWYER
+                );
+                userRepository.save(duong);
+
+                StaffProfile profileDuong = new StaffProfile();
+                profileDuong.setYearExperience("8");
+                profileDuong.setLicenseNumber("LS003");
+                profileDuong.setBio("Luật sư thành viên BASICO, chuyên về pháp lý doanh nghiệp, đầu tư.");
+                profileDuong.setVerified(true);
+                profileDuong.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/NguyenDoThuyDuong.jpg");
+                profileDuong.setUser(duong);
+                staffProfileRepository.save(profileDuong);
+
+                // 4. Tô Hồng Dung
+                User dung = new User(
+                        "dunglawyer",
+                        passwordEncoder().encode("123456"),
+                        "Tô Hồng Dung",
+                        "0912345681",
+                        "dung@basico.com.vn",
+                        "ACTIVE",
+                        Role.LAWYER
+                );
+                userRepository.save(dung);
+
+                StaffProfile profileDung = new StaffProfile();
+                profileDung.setYearExperience("7");
+                profileDung.setLicenseNumber("LS004");
+                profileDung.setBio("Luật sư BASICO, tư vấn pháp lý doanh nghiệp.");
+                profileDung.setVerified(true);
+                profileDung.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/ToHongDung.jpg");
+                profileDung.setUser(dung);
+                staffProfileRepository.save(profileDung);
+
+                // 5. Phạm Thúy Nga
+                User nga = new User(
+                        "ngaconsultant",
+                        passwordEncoder().encode("123456"),
+                        "Phạm Thúy Nga",
+                        "0912345682",
+                        "nga@basico.com.vn",
+                        "ACTIVE",
+                        Role.CONSULTANT
+                );
+                userRepository.save(nga);
+
+                StaffProfile profileNga = new StaffProfile();
+                profileNga.setYearExperience("5");
+                profileNga.setLicenseNumber("LS005");
+                profileNga.setBio("Cố vấn pháp lý BASICO.");
+                profileNga.setVerified(true);
+                profileNga.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/PhamThuyNga.jpg");
+                profileNga.setUser(nga);
+                staffProfileRepository.save(profileNga);
+
+                // 6. Nguyễn Đức Anh
+                User ducanh = new User(
+                        "anhconsultant",
+                        passwordEncoder().encode("123456"),
+                        "Nguyễn Đức Anh",
+                        "0912345683",
+                        "ducanh@basico.com.vn",
+                        "ACTIVE",
+                        Role.CONSULTANT
+                );
+                userRepository.save(ducanh);
+
+                StaffProfile profileDucAnh = new StaffProfile();
+                profileDucAnh.setYearExperience("4");
+                profileDucAnh.setLicenseNumber("LS006");
+                profileDucAnh.setBio("Cố vấn pháp lý BASICO.");
+                profileDucAnh.setVerified(true);
+                profileDucAnh.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/NguyenDucAnh.jpg");
+                profileDucAnh.setUser(ducanh);
+                staffProfileRepository.save(profileDucAnh);
+
+                // 7. Nguyễn Thanh Đăng Khoa
+                User khoa = new User(
+                        "khoaconsultant",
+                        passwordEncoder().encode("123456"),
+                        "Nguyễn Thanh Đăng Khoa",
+                        "0912345684",
+                        "khoa@basico.com.vn",
+                        "ACTIVE",
+                        Role.CONSULTANT
+                );
+                userRepository.save(khoa);
+
+                StaffProfile profileKhoa = new StaffProfile();
+                profileKhoa.setYearExperience("3");
+                profileKhoa.setLicenseNumber("LS007");
+                profileKhoa.setBio("Cố vấn pháp lý BASICO.");
+                profileKhoa.setVerified(true);
+                profileKhoa.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2020/12/NguyenThanhDangKhoa.jpg");
+                profileKhoa.setUser(khoa);
+                staffProfileRepository.save(profileKhoa);
             }
 
             // Form 1:
