@@ -51,7 +51,12 @@ public class Request {
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private Payment payment;
 
-    @OneToMany(mappedBy = "request", cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+            name = "request_service",
+            joinColumns = @JoinColumn(name = "request_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
     private List<Service> services;
 
 }

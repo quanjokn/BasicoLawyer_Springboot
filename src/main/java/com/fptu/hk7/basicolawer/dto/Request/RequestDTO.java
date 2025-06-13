@@ -17,5 +17,5 @@ public class RequestDTO {
     private int amount;
     private String selectedLawyerUUID; // UUID của luật sư được chọn
 
-    private List<String> specialties; // Danh sách chuyên môn của luật sư
+    private String specialties; // Danh sách chuyên môn của luật sư
 }

@@ -2,6 +2,7 @@ package com.fptu.hk7.basicolawer.controller;
 
 import com.fptu.hk7.basicolawer.pojo.Payment;
 import com.fptu.hk7.basicolawer.service.PaymentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/payments")
+@SecurityRequirement(name = "bearerAuth")
 public class PaymentController {
 
     private final PaymentService paymentService;

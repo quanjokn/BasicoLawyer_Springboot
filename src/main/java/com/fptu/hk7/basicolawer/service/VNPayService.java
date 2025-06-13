@@ -195,7 +195,7 @@ public class VNPayService {
         return dto;
     }
 
-    UUID pickRandomAvailableStaff(LocalDate dateBooking, int slot, List<String> specialties) {
+    UUID pickRandomAvailableStaff(LocalDate dateBooking, int slot, String specialties) {
         List<StaffProfile> availableStaff = staffProfileRepository.findAvailableStaff(dateBooking, slot, specialties);
         if (availableStaff.isEmpty()) {
             throw new RuntimeException("Không có luật sư nào phù hợp.");

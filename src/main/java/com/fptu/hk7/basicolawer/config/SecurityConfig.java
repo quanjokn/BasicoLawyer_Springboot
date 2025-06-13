@@ -22,10 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -80,7 +77,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CommandLineRunner initData(FormTemplateRepository formTemplateRepository, UserRepository userRepository, StaffProfileRepository staffProfileRepository, ServiceRepository serviceRepository, SpecialtyRepository specialtyRepository) {
+    public CommandLineRunner initData(FormTemplateRepository formTemplateRepository, UserRepository userRepository, StaffProfileRepository staffProfileRepository, ServiceRepository serviceRepository) {
         return args -> {
             // Initialize your data here if needed
             if (!userRepository.existsByUsername("admin")) {
@@ -110,14 +107,14 @@ public class SecurityConfig {
                 userRepository.save(user);
             }
 
-            if (serviceRepository.count() == 0) {
+            if (serviceRepository.count() == 0 && !userRepository.existsByRole(Role.CONSULTANT) && !userRepository.existsByRole(Role.LAWYER)) {
                 String[] services = {
                         "Dịch vụ luật sư nội bộ",
                         "Ngân hàng và tài chính",
                         "Thị trường vốn",
                         "Bảo hiểm",
                         "Doanh nghiệp",
-                        "Tư vấn chiến lược & tái cấu trúc DN",
+                        "Tư vấn chiến lược & tái cấu trúc doanh nghiệp",
                         "Đào tạo pháp lý cho doanh nghiệp",
                         "Tư vấn M&A",
                         "Tranh tụng & giải quyết tranh chấp",
@@ -128,42 +125,18 @@ public class SecurityConfig {
                         "CNTT & truyền thông"
                 };
 
+                // 1. Lưu services vào DB
+                Map<String, Service> serviceMap = new HashMap<>();
                 for (String sv : services) {
                     Service service = Service.builder()
                             .name(sv)
                             .price(2000000f)
                             .build();
                     serviceRepository.save(service);
-                }
-            }
-
-            if (!userRepository.existsByRole(Role.CONSULTANT) && !userRepository.existsByRole(Role.LAWYER)) {
-                String[] specialties = {
-                        "Doanh nghiệp",
-                        "Ngân hàng & Tài chính",
-                        "Tranh tụng & Giải quyết tranh chấp",
-                        "Tư vấn chiến lược & Tái cấu trúc DN",
-                        "Thuế",
-                        "Hợp đồng & Giao dịch doanh nghiệp",
-                        "Đào tạo pháp lý cho doanh nghiệp",
-                        "Tư vấn M&A",
-                        "Thị trường vốn",
-                        "Tư vấn bất động sản",
-                        "Bảo hiểm",
-                        "Hành chính",
-                        "Lao động",
-                        "Dân sự",
-                        "Hôn nhân & Gia đình",
-                        "Sở hữu trí tuệ",
-                        "CNTT & Truyền thông"
-                };
-
-                for (String name : specialties) {
-                    specialtyRepository.save(Specialty.builder()
-                            .name(name)
-                            .build());
+                    serviceMap.put(sv, service);
                 }
 
+                // 1. Trần Minh Hải
                 User hai = new User(
                         "hailawyer",
                         passwordEncoder().encode("123456"),
@@ -175,16 +148,28 @@ public class SecurityConfig {
                 );
                 userRepository.save(hai);
 
-                StaffProfile profileHai = new StaffProfile();
-                profileHai.setYearExperience("20");
-                profileHai.setLicenseNumber("LS001");
-                profileHai.setBio("Giám đốc điều hành BASICO, nhiều năm kinh nghiệm tư vấn luật doanh nghiệp, ngân hàng.");
-                profileHai.setVerified(true);
-                profileHai.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/05/LS_Hai-2.jpg");
-                profileHai.setUser(hai);
+                StaffProfile profileHai = StaffProfile.builder()
+                        .yearExperience("20")
+                        .licenseNumber("LS001")
+                        .bio("Giám đốc điều hành BASICO, nhiều năm kinh nghiệm tư vấn luật doanh nghiệp, ngân hàng.")
+                        .verified(true)
+                        .avatarUrl("https://basico.com.vn/wp-content/uploads/2016/05/LS_Hai-2.jpg")
+                        .specialties("M&A, Doanh nghiệp, Ngân hàng, Thuế – tài chính doanh nghiệp, Giao dịch vốn, chứng khoán, Bất động sản, Dịch vụ tranh tụng")
+                        .user(hai)
+                        .services(List.of(
+                                serviceMap.get("Dịch vụ luật sư nội bộ"),
+                                serviceMap.get("Ngân hàng và tài chính"),
+                                serviceMap.get("Thị trường vốn"),
+                                serviceMap.get("Doanh nghiệp"),
+                                serviceMap.get("Tư vấn M&A"),
+                                serviceMap.get("Thuế"),
+                                serviceMap.get("Tư vấn bất động sản"),
+                                serviceMap.get("Tranh tụng & giải quyết tranh chấp")
+                        ))
+                        .build();
                 staffProfileRepository.save(profileHai);
 
-                // 2. Luật sư Nguyễn Thị Ngọc ...
+                // 2. Nguyễn Thị Ngọc Anh
                 User ngoc = new User(
                         "ngoclawyer",
                         passwordEncoder().encode("123456"),
@@ -196,13 +181,22 @@ public class SecurityConfig {
                 );
                 userRepository.save(ngoc);
 
-                StaffProfile profileNgoc = new StaffProfile();
-                profileNgoc.setYearExperience("10");
-                profileNgoc.setLicenseNumber("LS002");
-                profileNgoc.setBio("Luật sư thành viên BASICO, chuyên tư vấn hợp đồng, pháp lý doanh nghiệp.");
-                profileNgoc.setVerified(true);
-                profileNgoc.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/03/Luat-su-NgocAnh-2.jpg");
-                profileNgoc.setUser(ngoc);
+                StaffProfile profileNgoc = StaffProfile.builder()
+                        .yearExperience("10")
+                        .licenseNumber("LS002")
+                        .bio("Luật sư thành viên BASICO, chuyên tư vấn hợp đồng, pháp lý doanh nghiệp.")
+                        .verified(true)
+                        .avatarUrl("https://basico.com.vn/wp-content/uploads/2016/03/Luat-su-NgocAnh-2.jpg")
+                        .specialties("Pháp lý doanh nghiệp, Ngân hàng, M&A, Giao dịch thị trường vốn, Giải quyết tranh chấp")
+                        .user(ngoc)
+                        .services(List.of(
+                                serviceMap.get("Doanh nghiệp"),
+                                serviceMap.get("Ngân hàng và tài chính"),
+                                serviceMap.get("Thị trường vốn"),
+                                serviceMap.get("Tư vấn M&A"),
+                                serviceMap.get("Tranh tụng & giải quyết tranh chấp")
+                        ))
+                        .build();
                 staffProfileRepository.save(profileNgoc);
 
                 // 3. Nguyễn Đỗ Thùy Dương
@@ -217,13 +211,23 @@ public class SecurityConfig {
                 );
                 userRepository.save(duong);
 
-                StaffProfile profileDuong = new StaffProfile();
-                profileDuong.setYearExperience("8");
-                profileDuong.setLicenseNumber("LS003");
-                profileDuong.setBio("Luật sư thành viên BASICO, chuyên về pháp lý doanh nghiệp, đầu tư.");
-                profileDuong.setVerified(true);
-                profileDuong.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/NguyenDoThuyDuong.jpg");
-                profileDuong.setUser(duong);
+                StaffProfile profileDuong = StaffProfile.builder()
+                        .yearExperience("8")
+                        .licenseNumber("LS003")
+                        .bio("Luật sư thành viên BASICO, chuyên về pháp lý doanh nghiệp, đầu tư.")
+                        .verified(true)
+                        .avatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/NguyenDoThuyDuong.jpg")
+                        .specialties("Dịch vụ Luật sư nội bộ, Pháp lý doanh nghiệp, Thị trường vốn, M&A, Thuế, Tài chính doanh nghiệp")
+                        .user(duong)
+                        .services(List.of(
+                                serviceMap.get("Dịch vụ luật sư nội bộ"),
+                                serviceMap.get("Doanh nghiệp"),
+                                serviceMap.get("Thị trường vốn"),
+                                serviceMap.get("Tư vấn M&A"),
+                                serviceMap.get("Thuế"),
+                                serviceMap.get("Ngân hàng và tài chính")
+                        ))
+                        .build();
                 staffProfileRepository.save(profileDuong);
 
                 // 4. Tô Hồng Dung
@@ -238,13 +242,24 @@ public class SecurityConfig {
                 );
                 userRepository.save(dung);
 
-                StaffProfile profileDung = new StaffProfile();
-                profileDung.setYearExperience("7");
-                profileDung.setLicenseNumber("LS004");
-                profileDung.setBio("Luật sư BASICO, tư vấn pháp lý doanh nghiệp.");
-                profileDung.setVerified(true);
-                profileDung.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/ToHongDung.jpg");
-                profileDung.setUser(dung);
+                StaffProfile profileDung = StaffProfile.builder()
+                        .yearExperience("7")
+                        .licenseNumber("LS004")
+                        .bio("Luật sư BASICO, tư vấn pháp lý doanh nghiệp.")
+                        .verified(true)
+                        .avatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/ToHongDung.jpg")
+                        .specialties("Bảo hiểm, Lao động, Tư vấn bất động sản, Đào tạo pháp lý cho doanh nghiệp, Tranh tụng và giải quyết tranh chấp")
+                        .user(dung)
+                        .services(List.of(
+                                serviceMap.get("Bảo hiểm"),
+                                serviceMap.get("Lao động"),
+                                serviceMap.get("Tư vấn bất động sản"),
+                                serviceMap.get("Đào tạo pháp lý cho doanh nghiệp"),
+                                serviceMap.get("Tranh tụng & giải quyết tranh chấp"),
+                                serviceMap.get("Doanh nghiệp"),
+                                serviceMap.get("Dịch vụ luật sư nội bộ")
+                        ))
+                        .build();
                 staffProfileRepository.save(profileDung);
 
                 // 5. Phạm Thúy Nga
@@ -259,13 +274,22 @@ public class SecurityConfig {
                 );
                 userRepository.save(nga);
 
-                StaffProfile profileNga = new StaffProfile();
-                profileNga.setYearExperience("5");
-                profileNga.setLicenseNumber("LS005");
-                profileNga.setBio("Cố vấn pháp lý BASICO.");
-                profileNga.setVerified(true);
-                profileNga.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/PhamThuyNga.jpg");
-                profileNga.setUser(nga);
+                StaffProfile profileNga = StaffProfile.builder()
+                        .yearExperience("5")
+                        .licenseNumber("LS005")
+                        .bio("Cố vấn pháp lý BASICO.")
+                        .verified(true)
+                        .avatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/PhamThuyNga.jpg")
+                        .specialties("Dịch vụ Luật sư nội bộ, Pháp lý doanh nghiệp, Thị trường vốn, Tư vấn bất động sản, Lao động")
+                        .user(nga)
+                        .services(List.of(
+                                serviceMap.get("Dịch vụ luật sư nội bộ"),
+                                serviceMap.get("Doanh nghiệp"),
+                                serviceMap.get("Thị trường vốn"),
+                                serviceMap.get("Tư vấn bất động sản"),
+                                serviceMap.get("Lao động")
+                        ))
+                        .build();
                 staffProfileRepository.save(profileNga);
 
                 // 6. Nguyễn Đức Anh
@@ -280,13 +304,22 @@ public class SecurityConfig {
                 );
                 userRepository.save(ducanh);
 
-                StaffProfile profileDucAnh = new StaffProfile();
-                profileDucAnh.setYearExperience("4");
-                profileDucAnh.setLicenseNumber("LS006");
-                profileDucAnh.setBio("Cố vấn pháp lý BASICO.");
-                profileDucAnh.setVerified(true);
-                profileDucAnh.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/NguyenDucAnh.jpg");
-                profileDucAnh.setUser(ducanh);
+                StaffProfile profileDucAnh = StaffProfile.builder()
+                        .yearExperience("4")
+                        .licenseNumber("LS006")
+                        .bio("Cố vấn pháp lý BASICO.")
+                        .verified(true)
+                        .avatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/NguyenDucAnh.jpg")
+                        .specialties("Dịch vụ Luật sư nội bộ, Pháp lý doanh nghiệp, Công nghệ thông tin và Truyền thông, Ngân hàng và tài chính, Tư vấn bất động sản")
+                        .user(ducanh)
+                        .services(List.of(
+                                serviceMap.get("Dịch vụ luật sư nội bộ"),
+                                serviceMap.get("Doanh nghiệp"),
+                                serviceMap.get("CNTT & truyền thông"),
+                                serviceMap.get("Ngân hàng và tài chính"),
+                                serviceMap.get("Tư vấn bất động sản")
+                        ))
+                        .build();
                 staffProfileRepository.save(profileDucAnh);
 
                 // 7. Nguyễn Thanh Đăng Khoa
@@ -301,67 +334,22 @@ public class SecurityConfig {
                 );
                 userRepository.save(khoa);
 
-                StaffProfile profileKhoa = new StaffProfile();
-                profileKhoa.setYearExperience("3");
-                profileKhoa.setLicenseNumber("LS007");
-                profileKhoa.setBio("Cố vấn pháp lý BASICO.");
-                profileKhoa.setVerified(true);
-                profileKhoa.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2020/12/NguyenThanhDangKhoa.jpg");
-                profileKhoa.setUser(khoa);
-                staffProfileRepository.save(profileKhoa);
-
-                Specialty doanhNghiep = specialtyRepository.findByName("Doanh nghiệp");
-                Specialty nganHang = specialtyRepository.findByName("Ngân hàng & Tài chính");
-                Specialty tranhTung = specialtyRepository.findByName("Tranh tụng & Giải quyết tranh chấp");
-                Specialty chienLuoc = specialtyRepository.findByName("Tư vấn chiến lược & Tái cấu trúc DN");
-                Specialty thue = specialtyRepository.findByName("Thuế");
-                Specialty hopDong = specialtyRepository.findByName("Hợp đồng & Giao dịch doanh nghiệp");
-                Specialty daoTaoPhapLy = specialtyRepository.findByName("Đào tạo pháp lý cho doanh nghiệp");
-                Specialty tuVanMA = specialtyRepository.findByName("Tư vấn M&A");
-                Specialty thiTruongVon = specialtyRepository.findByName("Thị trường vốn");
-                Specialty tuVanBatDongSan = specialtyRepository.findByName("Tư vấn bất động sản");
-                Specialty baoHiem = specialtyRepository.findByName("Bảo hiểm");
-                Specialty hanhChinh = specialtyRepository.findByName("Hành chính");
-                Specialty laoDong = specialtyRepository.findByName("Lao động");
-                Specialty danSu = specialtyRepository.findByName("Dân sự");
-                Specialty honNhan = specialtyRepository.findByName("Hôn nhân & Gia đình");
-                Specialty soHuuTriTue = specialtyRepository.findByName("Sở hữu trí tuệ");
-                Specialty cnttTruyenThong = specialtyRepository.findByName("CNTT & Truyền thông");
-
-                // Gán các Specialty cho từng staff
-                profileHai.setSpecialties(List.of(
-                        doanhNghiep, nganHang, tranhTung, chienLuoc, thue
-                ));
-                staffProfileRepository.save(profileHai);
-
-                profileNgoc.setSpecialties(List.of(
-                        hopDong, doanhNghiep, daoTaoPhapLy, tuVanMA
-                ));
-                staffProfileRepository.save(profileNgoc);
-
-                profileDuong.setSpecialties(List.of(
-                        doanhNghiep, thiTruongVon, tuVanBatDongSan, tuVanMA
-                ));
-                staffProfileRepository.save(profileDuong);
-
-                profileDung.setSpecialties(List.of(
-                        doanhNghiep, baoHiem, tranhTung, hanhChinh
-                ));
-                staffProfileRepository.save(profileDung);
-
-                profileNga.setSpecialties(List.of(
-                        laoDong, danSu, honNhan
-                ));
-                staffProfileRepository.save(profileNga);
-
-                profileDucAnh.setSpecialties(List.of(
-                        soHuuTriTue, cnttTruyenThong
-                ));
-                staffProfileRepository.save(profileDucAnh);
-
-                profileKhoa.setSpecialties(List.of(
-                        thue, doanhNghiep, laoDong
-                ));
+                StaffProfile profileKhoa = StaffProfile.builder()
+                        .yearExperience("3")
+                        .licenseNumber("LS007")
+                        .bio("Cố vấn pháp lý BASICO.")
+                        .verified(true)
+                        .avatarUrl("https://basico.com.vn/wp-content/uploads/2020/12/NguyenThanhDangKhoa.jpg")
+                        .specialties("Dịch vụ Luật sư nội bộ, M&A, Ngân hàng, Chứng khoán, Pháp lý doanh nghiệp")
+                        .user(khoa)
+                        .services(List.of(
+                                serviceMap.get("Dịch vụ luật sư nội bộ"),
+                                serviceMap.get("Tư vấn M&A"),
+                                serviceMap.get("Ngân hàng và tài chính"),
+                                serviceMap.get("Thị trường vốn"),
+                                serviceMap.get("Doanh nghiệp")
+                        ))
+                        .build();
                 staffProfileRepository.save(profileKhoa);
 
             }

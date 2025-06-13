@@ -41,7 +41,8 @@ public class JWTTokenFilter extends OncePerRequestFilter {
             "/swagger-resources/**",
             "/auth/login",
             "/auth/register",
-            "/auth/forgot-password"
+            "/auth/forgot-password",
+            "/api/staff-profiles/**"
     );
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
