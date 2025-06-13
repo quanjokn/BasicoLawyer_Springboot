@@ -1,14 +1,10 @@
 package com.fptu.hk7.basicolawer.config;
 
 import com.fptu.hk7.basicolawer.config.JWT.JWTTokenFilter;
+import com.fptu.hk7.basicolawer.pojo.*;
 import com.fptu.hk7.basicolawer.pojo.Enum.Role;
-import com.fptu.hk7.basicolawer.pojo.FormTemplate;
-import com.fptu.hk7.basicolawer.pojo.StaffProfile;
-import com.fptu.hk7.basicolawer.repository.FormTemplateRepository;
-import com.fptu.hk7.basicolawer.repository.StaffProfileRepository;
-import com.fptu.hk7.basicolawer.repository.UserRepository;
+import com.fptu.hk7.basicolawer.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,13 +21,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import com.fptu.hk7.basicolawer.pojo.User;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @EnableWebSecurity
@@ -87,7 +80,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CommandLineRunner initData(FormTemplateRepository formTemplateRepository , UserRepository userRepository, StaffProfileRepository staffProfileRepository) {
+    public CommandLineRunner initData(FormTemplateRepository formTemplateRepository, UserRepository userRepository, StaffProfileRepository staffProfileRepository, ServiceRepository serviceRepository, SpecialtyRepository specialtyRepository) {
         return args -> {
             // Initialize your data here if needed
             if (!userRepository.existsByUsername("admin")) {
@@ -117,7 +110,60 @@ public class SecurityConfig {
                 userRepository.save(user);
             }
 
-            if(!userRepository.existsByRole(Role.CONSULTANT) && !userRepository.existsByRole(Role.LAWYER)) {
+            if (serviceRepository.count() == 0) {
+                String[] services = {
+                        "Dịch vụ luật sư nội bộ",
+                        "Ngân hàng và tài chính",
+                        "Thị trường vốn",
+                        "Bảo hiểm",
+                        "Doanh nghiệp",
+                        "Tư vấn chiến lược & tái cấu trúc DN",
+                        "Đào tạo pháp lý cho doanh nghiệp",
+                        "Tư vấn M&A",
+                        "Tranh tụng & giải quyết tranh chấp",
+                        "Sở hữu trí tuệ",
+                        "Tư vấn bất động sản",
+                        "Lao động",
+                        "Thuế",
+                        "CNTT & truyền thông"
+                };
+
+                for (String sv : services) {
+                    Service service = Service.builder()
+                            .name(sv)
+                            .price(2000000f)
+                            .build();
+                    serviceRepository.save(service);
+                }
+            }
+
+            if (!userRepository.existsByRole(Role.CONSULTANT) && !userRepository.existsByRole(Role.LAWYER)) {
+                String[] specialties = {
+                        "Doanh nghiệp",
+                        "Ngân hàng & Tài chính",
+                        "Tranh tụng & Giải quyết tranh chấp",
+                        "Tư vấn chiến lược & Tái cấu trúc DN",
+                        "Thuế",
+                        "Hợp đồng & Giao dịch doanh nghiệp",
+                        "Đào tạo pháp lý cho doanh nghiệp",
+                        "Tư vấn M&A",
+                        "Thị trường vốn",
+                        "Tư vấn bất động sản",
+                        "Bảo hiểm",
+                        "Hành chính",
+                        "Lao động",
+                        "Dân sự",
+                        "Hôn nhân & Gia đình",
+                        "Sở hữu trí tuệ",
+                        "CNTT & Truyền thông"
+                };
+
+                for (String name : specialties) {
+                    specialtyRepository.save(Specialty.builder()
+                            .name(name)
+                            .build());
+                }
+
                 User hai = new User(
                         "hailawyer",
                         passwordEncoder().encode("123456"),
@@ -263,6 +309,61 @@ public class SecurityConfig {
                 profileKhoa.setAvatarUrl("https://basico.com.vn/wp-content/uploads/2020/12/NguyenThanhDangKhoa.jpg");
                 profileKhoa.setUser(khoa);
                 staffProfileRepository.save(profileKhoa);
+
+                Specialty doanhNghiep = specialtyRepository.findByName("Doanh nghiệp");
+                Specialty nganHang = specialtyRepository.findByName("Ngân hàng & Tài chính");
+                Specialty tranhTung = specialtyRepository.findByName("Tranh tụng & Giải quyết tranh chấp");
+                Specialty chienLuoc = specialtyRepository.findByName("Tư vấn chiến lược & Tái cấu trúc DN");
+                Specialty thue = specialtyRepository.findByName("Thuế");
+                Specialty hopDong = specialtyRepository.findByName("Hợp đồng & Giao dịch doanh nghiệp");
+                Specialty daoTaoPhapLy = specialtyRepository.findByName("Đào tạo pháp lý cho doanh nghiệp");
+                Specialty tuVanMA = specialtyRepository.findByName("Tư vấn M&A");
+                Specialty thiTruongVon = specialtyRepository.findByName("Thị trường vốn");
+                Specialty tuVanBatDongSan = specialtyRepository.findByName("Tư vấn bất động sản");
+                Specialty baoHiem = specialtyRepository.findByName("Bảo hiểm");
+                Specialty hanhChinh = specialtyRepository.findByName("Hành chính");
+                Specialty laoDong = specialtyRepository.findByName("Lao động");
+                Specialty danSu = specialtyRepository.findByName("Dân sự");
+                Specialty honNhan = specialtyRepository.findByName("Hôn nhân & Gia đình");
+                Specialty soHuuTriTue = specialtyRepository.findByName("Sở hữu trí tuệ");
+                Specialty cnttTruyenThong = specialtyRepository.findByName("CNTT & Truyền thông");
+
+                // Gán các Specialty cho từng staff
+                profileHai.setSpecialties(List.of(
+                        doanhNghiep, nganHang, tranhTung, chienLuoc, thue
+                ));
+                staffProfileRepository.save(profileHai);
+
+                profileNgoc.setSpecialties(List.of(
+                        hopDong, doanhNghiep, daoTaoPhapLy, tuVanMA
+                ));
+                staffProfileRepository.save(profileNgoc);
+
+                profileDuong.setSpecialties(List.of(
+                        doanhNghiep, thiTruongVon, tuVanBatDongSan, tuVanMA
+                ));
+                staffProfileRepository.save(profileDuong);
+
+                profileDung.setSpecialties(List.of(
+                        doanhNghiep, baoHiem, tranhTung, hanhChinh
+                ));
+                staffProfileRepository.save(profileDung);
+
+                profileNga.setSpecialties(List.of(
+                        laoDong, danSu, honNhan
+                ));
+                staffProfileRepository.save(profileNga);
+
+                profileDucAnh.setSpecialties(List.of(
+                        soHuuTriTue, cnttTruyenThong
+                ));
+                staffProfileRepository.save(profileDucAnh);
+
+                profileKhoa.setSpecialties(List.of(
+                        thue, doanhNghiep, laoDong
+                ));
+                staffProfileRepository.save(profileKhoa);
+
             }
 
             // Form 1:
@@ -520,6 +621,7 @@ public class SecurityConfig {
 
                 formTemplateRepository.save(template3);
             }
+
 
         };
     }

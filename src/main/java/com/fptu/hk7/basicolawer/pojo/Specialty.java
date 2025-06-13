@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -20,13 +21,7 @@ public class Specialty {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
     private String name;
-    private Float price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "request_id")
-    private Request request;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_profile_id")
-    private StaffProfile staffProfile;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<StaffProfile> specialties;
 }

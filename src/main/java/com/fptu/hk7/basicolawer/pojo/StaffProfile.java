@@ -33,6 +33,11 @@ public class StaffProfile {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "staffProfile", cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+            name = "staff_profile_specialty",
+            joinColumns = @JoinColumn(name = "staff_profile_id"),
+            inverseJoinColumns = @JoinColumn(name = "specialty_id")
+    )
     private List<Specialty> specialties;
 }

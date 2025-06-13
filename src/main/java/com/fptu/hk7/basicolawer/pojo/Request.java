@@ -7,7 +7,6 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,6 +52,6 @@ public class Request {
     private Payment payment;
 
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL)
-    private List<Specialty> specialties;
+    private List<Service> services;
 
 }
