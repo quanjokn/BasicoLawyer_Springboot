@@ -105,6 +105,8 @@ public class SecurityConfig {
                         .role(Role.CUSTOMER)
                         .build();
                 userRepository.save(user);
+
+
             }
 
             if (serviceRepository.count() == 0 && !userRepository.existsByRole(Role.CONSULTANT) && !userRepository.existsByRole(Role.LAWYER)) {
