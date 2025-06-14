@@ -24,7 +24,7 @@ public interface UserService {
     ApiResponse<jwtResponse> login(LoginDTO loginDTO) throws AppException;
     ApiResponse<Void> register(RegisterDTO registerDTO);
 
-    User getCurrentUser();
+    User   getCurrentUser();
 
     void forgotPassword(String email);
 
