@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.repository;
 
+import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,16 +23,17 @@ public interface StaffProfileRepository extends JpaRepository<StaffProfile, UUID
 //    List<StaffProfile> findAvailableStaff(@Param("dateBooking") LocalDate dateBooking,
 //                                          @Param("slot") int slot,
 //                                          @Param("specialties") List<String> specialties);
-    @Query("SELECT DISTINCT l FROM StaffProfile l " +
-            "WHERE l.specialties LIKE %:specialty% " +
+    @Query("SELECT DISTINCT s FROM StaffProfile s " +
+            "JOIN s.services svc " +
+            "WHERE svc.name IN :services " +
             "AND NOT EXISTS (" +
             "   SELECT r FROM Request r " +
-            "   WHERE r.preferedLawerUUID = l.id " +
+            "   WHERE r.preferedLawerUUID = s.id " +
             "   AND r.dateBooking = :dateBooking " +
             "   AND r.slot = :slot" +
             ")")
     List<StaffProfile> findAvailableStaff(@Param("dateBooking") LocalDate dateBooking,
                                           @Param("slot") int slot,
-                                          @Param("specialty") String specialty);
+                                          @Param("services") List<String> services);
 
 }

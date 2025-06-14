@@ -105,6 +105,8 @@ public class SecurityConfig {
                         .role(Role.CUSTOMER)
                         .build();
                 userRepository.save(user);
+
+
             }
 
             if (serviceRepository.count() == 0 && !userRepository.existsByRole(Role.CONSULTANT) && !userRepository.existsByRole(Role.LAWYER)) {
@@ -126,9 +128,9 @@ public class SecurityConfig {
                 };
 
                 // 1. Lưu services vào DB
-                Map<String, Service> serviceMap = new HashMap<>();
+                Map<String, Services> serviceMap = new HashMap<>();
                 for (String sv : services) {
-                    Service service = Service.builder()
+                    Services service = Services.builder()
                             .name(sv)
                             .price(2000000f)
                             .build();
@@ -136,7 +138,6 @@ public class SecurityConfig {
                     serviceMap.put(sv, service);
                 }
 
-                // 1. Trần Minh Hải
                 User hai = new User(
                         "hailawyer",
                         passwordEncoder().encode("123456"),

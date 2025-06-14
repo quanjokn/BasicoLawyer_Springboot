@@ -16,7 +16,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class VNPayService {
@@ -40,6 +42,10 @@ public class VNPayService {
     private FormTemplateRepository formTemplateRepository;
     @Autowired
     private UserFormRepository userFormRepository;
+    @Autowired
+    private ServiceRepository serviceRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
     public String createPaymentUrl(RequestDTO dto , HttpServletRequest request) {
         try {
             System.out.println(dto);
@@ -193,16 +199,24 @@ public class VNPayService {
 
         request.setNote(dto.getNote());
         request.setSlot(dto.getSlot());
-
+        request.setUser(userService.getCurrentUser());
         request.setTxnRef(txnRef);
-
+        List<String> serviceNames = dto.getServices(); // List of service names
+        if (serviceNames != null) {
+            List<Services> services = new ArrayList<>();
+            for (String name : serviceNames) {
+                Optional<Services> serviceOpt = serviceRepository.findByName(name);
+                serviceOpt.ifPresent(services::add);
+            }
+            request.setServices(services);
+        }
         if (dto.getPreferedLawerUUID() != null ) {
             request.setPreferedLawerUUID(dto.getPreferedLawerUUID());
         } else {
             UUID randomLawyerUUID = pickRandomAvailableStaff(
                     dto.getDateBooking(),
                     dto.getSlot(),
-                    dto.getSpecialties() // truyền chuyên môn xuống
+                    dto.getServices() // truyền chuyên môn xuống
             );
             request.setPreferedLawerUUID(randomLawyerUUID);
         }
@@ -232,8 +246,16 @@ public class VNPayService {
         payment.setRequest(request);
 
         request.setPayment(payment);
+
+        Booking booking = new Booking();
+        booking.setRequest(request);
+        booking.setUser(userService.getCurrentUser());
+        booking.setAssignedAt(LocalDateTime.now());
+
+        request.setBooking(booking);
         requestRepository.save(request);
         paymentRepository.save(payment);
+        bookingRepository.save(booking);
     }
 
     public RequestDTO handleVNPayReturn(String txnRef, String vnpResponseCode) {
@@ -244,6 +266,8 @@ public class VNPayService {
         Optional<Request> requestOpt = requestRepository.findByTxnRef(txnRef);
         System.out.println(requestOpt);
         Optional<Payment> paymentOpt = paymentRepository.findByRequest(requestOpt.get());
+        paymentOpt.get().setStatus(PaymentStatusEnum.PAID);
+        paymentRepository.save(paymentOpt.get());
         if (requestOpt.isPresent()) {
             return convertToDTO(requestOpt.get(),paymentOpt.get());
         }
@@ -283,14 +307,23 @@ public class VNPayService {
         dto.setNote(request.getNote());
         dto.setSlot(request.getSlot());
         dto.setPreferedLawerUUID(request.getPreferedLawerUUID());
+        Optional<StaffProfile> staffProfile = staffProfileRepository.findById(request.getPreferedLawerUUID());
+        dto.setStaffName(staffProfile.get().getUser().getFullname());
         dto.setUserId(request.getUser() != null ? request.getUser().getId() : null);
+        List<String> serviceNames = null;
+        if (request.getServices() != null) {
+            serviceNames = request.getServices().stream()
+                    .map(Services::getName)
+                    .collect(Collectors.toList());
+        }
+        dto.setServices(serviceNames);
         dto.setAmount(payment.getAmount());
         // Gán thêm các trường nếu có
         return dto;
     }
 
-    UUID pickRandomAvailableStaff(LocalDate dateBooking, int slot, String specialties) {
-        List<StaffProfile> availableStaff = staffProfileRepository.findAvailableStaff(dateBooking, slot, specialties);
+    UUID pickRandomAvailableStaff(LocalDate dateBooking, int slot, List<String> services) {
+        List<StaffProfile> availableStaff = staffProfileRepository.findAvailableStaff(dateBooking, slot, services);
         if (availableStaff.isEmpty()) {
             throw new RuntimeException("Không có luật sư nào phù hợp.");
         }

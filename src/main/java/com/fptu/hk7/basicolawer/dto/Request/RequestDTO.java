@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.dto.Request;
 
+import com.fptu.hk7.basicolawer.pojo.Services;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -14,8 +15,7 @@ public class RequestDTO {
     private int slot;
     private UUID userId; // Chỉ gửi userId từ frontend
     private UUID preferedLawerUUID;
+    private String staffName;
     private int amount;
-    private String selectedLawyerUUID; // UUID của luật sư được chọn
-
-    private String specialties; // Danh sách chuyên môn của luật sư
+    private List<String> services; // Danh sách chuyên môn của luật sư
 }

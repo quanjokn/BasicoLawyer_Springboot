@@ -1,11 +1,14 @@
 package com.fptu.hk7.basicolawer.controller;
 
+import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 import com.fptu.hk7.basicolawer.service.StaffProfileService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,5 +53,10 @@ public class StaffProfileController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         staffProfileService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/available-slots")
+    public List<StaffProfileWithSlot> getLawyersWithSlots(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return staffProfileService.getStaffProfilesWithUnavailableSlots(date);
     }
 }
