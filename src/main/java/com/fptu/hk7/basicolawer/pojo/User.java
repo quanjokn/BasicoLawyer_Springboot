@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.pojo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fptu.hk7.basicolawer.pojo.Enum.Role;
 import com.fptu.hk7.basicolawer.validation.ValidPhone;
@@ -68,27 +69,32 @@ public class User {
         this.role = role;
     }
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Request> requests;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Booking> bookings;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<AuditLog> auditLogs;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private StaffProfile staffProfile;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserForm> userForms;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts;
 }

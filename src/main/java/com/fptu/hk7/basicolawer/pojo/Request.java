@@ -7,7 +7,6 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,7 +51,12 @@ public class Request {
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private Payment payment;
 
-    @OneToMany(mappedBy = "request", cascade = CascadeType.ALL)
-    private List<Specialty> specialties;
+    @ManyToMany
+    @JoinTable(
+            name = "request_service",
+            joinColumns = @JoinColumn(name = "request_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private List<Service> services;
 
 }

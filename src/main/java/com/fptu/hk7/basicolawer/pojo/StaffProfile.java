@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.pojo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,11 +29,21 @@ public class StaffProfile {
     private String bio;
     private boolean verified;
     private String avatarUrl;
+    private String specialties;
+    private String description;
+    private Float rating;
+    private Integer cases;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "staffProfile", cascade = CascadeType.ALL)
-    private List<Specialty> specialties;
+    @JsonBackReference
+    @ManyToMany
+    @JoinTable(
+            name = "staff_profile_service",
+            joinColumns = @JoinColumn(name = "staff_profile_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private List<Service> services;
 }
