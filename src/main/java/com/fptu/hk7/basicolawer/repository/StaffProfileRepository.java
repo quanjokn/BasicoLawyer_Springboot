@@ -32,6 +32,5 @@ public interface StaffProfileRepository extends JpaRepository<StaffProfile, UUID
             ")")
     List<StaffProfile> findAvailableStaff(@Param("dateBooking") LocalDate dateBooking,
                                           @Param("slot") int slot,
-                                          @Param("specialty") String specialty);
-
+                                          @Param("specialties") List<String> specialties);
 }

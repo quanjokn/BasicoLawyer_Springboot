@@ -51,12 +51,13 @@ public class Request {
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private Payment payment;
 
+
     @ManyToMany
     @JoinTable(
             name = "request_service",
             joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private List<Service> services;
+    private List<Services> services;
 
 }

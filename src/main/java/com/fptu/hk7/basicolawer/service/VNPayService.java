@@ -113,16 +113,16 @@ public class VNPayService {
 
         request.setNote(dto.getNote());
         request.setSlot(dto.getSlot());
-
+        request.setUser(userService.getCurrentUser());
         request.setTxnRef(txnRef);
-
+        request.setServices(dto.getServices());
         if (dto.getPreferedLawerUUID() != null ) {
             request.setPreferedLawerUUID(dto.getPreferedLawerUUID());
         } else {
             UUID randomLawyerUUID = pickRandomAvailableStaff(
                     dto.getDateBooking(),
                     dto.getSlot(),
-                    dto.getSpecialties() // truyền chuyên môn xuống
+                    dto.getServices() // truyền chuyên môn xuống
             );
             request.setPreferedLawerUUID(randomLawyerUUID);
         }
@@ -189,13 +189,17 @@ public class VNPayService {
         dto.setNote(request.getNote());
         dto.setSlot(request.getSlot());
         dto.setPreferedLawerUUID(request.getPreferedLawerUUID());
+        Optional<StaffProfile> staffProfile = staffProfileRepository.findById(request.getPreferedLawerUUID());
+        System.out.println(staffProfile);
+        dto.setStaffName(staffProfile.get().getUser().getFullname());
         dto.setUserId(request.getUser() != null ? request.getUser().getId() : null);
+
         dto.setAmount(payment.getAmount());
         // Gán thêm các trường nếu có
         return dto;
     }
 
-    UUID pickRandomAvailableStaff(LocalDate dateBooking, int slot, String specialties) {
+    UUID pickRandomAvailableStaff(LocalDate dateBooking, int slot, List<String> specialties) {
         List<StaffProfile> availableStaff = staffProfileRepository.findAvailableStaff(dateBooking, slot, specialties);
         if (availableStaff.isEmpty()) {
             throw new RuntimeException("Không có luật sư nào phù hợp.");

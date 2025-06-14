@@ -42,6 +42,8 @@ public class JWTTokenFilter extends OncePerRequestFilter {
             "/auth/login",
             "/auth/register",
             "/auth/forgot-password",
+            "/api/payment/vnpay/return",
+            "/auth/forgot-password",
             "/api/staff-profiles/**"
     );
 
