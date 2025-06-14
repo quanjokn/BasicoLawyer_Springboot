@@ -43,5 +43,5 @@ public class StaffProfile {
             joinColumns = @JoinColumn(name = "staff_profile_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private List<Service> services;
+    private List<Services> services;
 }

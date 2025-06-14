@@ -1,18 +1,25 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
+import com.fptu.hk7.basicolawer.pojo.Request;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
+import com.fptu.hk7.basicolawer.repository.RequestRepository;
 import com.fptu.hk7.basicolawer.repository.StaffProfileRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 @Service
 public class StaffProfileServiceImp implements StaffProfileService {
 
     private final StaffProfileRepository staffProfileRepository;
 
+    @Autowired
+    private RequestRepository requestRepository;
     public StaffProfileServiceImp(StaffProfileRepository staffProfileRepository) {
         this.staffProfileRepository = staffProfileRepository;
     }
@@ -44,5 +51,34 @@ public class StaffProfileServiceImp implements StaffProfileService {
     @Override
     public void deleteById(UUID id) {
         staffProfileRepository.deleteById(id);
+    }
+
+    @Override
+    public List<StaffProfileWithSlot> getStaffProfilesWithUnavailableSlots(LocalDate dateBooking) {
+        List<StaffProfile> allStaff = staffProfileRepository.findAll();
+
+        // Lấy tất cả request trong ngày được chọn
+        List<Request> allRequests = requestRepository.findByDateBooking(dateBooking);
+
+        Map<UUID, List<Integer>> slotsByStaff = allRequests.stream()
+                .filter(r -> r.getPreferedLawerUUID() != null)
+                .collect(Collectors.groupingBy(
+                        Request::getPreferedLawerUUID,
+                        Collectors.mapping(Request::getSlot, Collectors.toList())
+                ));
+
+        return allStaff.stream().map(staff -> {
+            UUID id = staff.getId();
+            List<Integer> slots = slotsByStaff.getOrDefault(id, new ArrayList<>());
+            return new StaffProfileWithSlot(
+                    id,
+                    staff.getUser().getFullname(),
+                    staff.getYearExperience(),
+                    staff.getRating(),
+                    staff.getAvatarUrl(),
+                    staff.getSpecialties(),
+                    slots
+            );
+        }).collect(Collectors.toList());
     }
 }

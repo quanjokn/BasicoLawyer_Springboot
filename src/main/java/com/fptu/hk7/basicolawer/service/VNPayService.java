@@ -5,14 +5,8 @@ import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
 import com.fptu.hk7.basicolawer.enums.PaymentMethodEnum;
 import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
-import com.fptu.hk7.basicolawer.pojo.Payment;
-import com.fptu.hk7.basicolawer.pojo.Request;
-import com.fptu.hk7.basicolawer.pojo.StaffProfile;
-import com.fptu.hk7.basicolawer.pojo.User;
-import com.fptu.hk7.basicolawer.repository.PaymentRepository;
-import com.fptu.hk7.basicolawer.repository.RequestRepository;
-import com.fptu.hk7.basicolawer.repository.StaffProfileRepository;
-import com.fptu.hk7.basicolawer.repository.UserRepository;
+import com.fptu.hk7.basicolawer.pojo.*;
+import com.fptu.hk7.basicolawer.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +15,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class VNPayService {
@@ -39,6 +35,10 @@ public class VNPayService {
     private PaymentRepository paymentRepository;
     @Autowired
     private StaffProfileRepository staffProfileRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ServiceRepository serviceRepository;
     public String createPaymentUrl(RequestDTO dto , HttpServletRequest request) {
         try {
             System.out.println(dto);
@@ -115,7 +115,15 @@ public class VNPayService {
         request.setSlot(dto.getSlot());
         request.setUser(userService.getCurrentUser());
         request.setTxnRef(txnRef);
-        request.setServices(dto.getServices());
+        List<String> serviceNames = dto.getServices(); // List of service names
+        if (serviceNames != null) {
+            List<Services> services = new ArrayList<>();
+            for (String name : serviceNames) {
+                Optional<Services> serviceOpt = serviceRepository.findByName(name);
+                serviceOpt.ifPresent(services::add);
+            }
+            request.setServices(services);
+        }
         if (dto.getPreferedLawerUUID() != null ) {
             request.setPreferedLawerUUID(dto.getPreferedLawerUUID());
         } else {
@@ -146,12 +154,18 @@ public class VNPayService {
         // Lưu Request xuống D
 
         Payment payment = new Payment();
-        payment.setStatus(PaymentStatusEnum.PAID);
         payment.setAmount(dto.getAmount());
         payment.setMethod(PaymentMethodEnum.VNPAY);
         payment.setRequest(request);
 
         request.setPayment(payment);
+
+        Booking booking = new Booking();
+        booking.setRequest(request);
+        booking.setUser(userService.getCurrentUser());
+        booking.setAssignedAt(LocalDateTime.now());
+
+        request.setBooking(booking);
         requestRepository.save(request);
         paymentRepository.save(payment);
     }
@@ -164,6 +178,8 @@ public class VNPayService {
         Optional<Request> requestOpt = requestRepository.findByTxnRef(txnRef);
         System.out.println(requestOpt);
         Optional<Payment> paymentOpt = paymentRepository.findByRequest(requestOpt.get());
+        paymentOpt.get().setStatus(PaymentStatusEnum.PAID);
+        paymentRepository.save(paymentOpt.get());
         if (requestOpt.isPresent()) {
             return convertToDTO(requestOpt.get(),paymentOpt.get());
         }
@@ -193,14 +209,20 @@ public class VNPayService {
         System.out.println(staffProfile);
         dto.setStaffName(staffProfile.get().getUser().getFullname());
         dto.setUserId(request.getUser() != null ? request.getUser().getId() : null);
-
+        List<String> serviceNames = null;
+        if (request.getServices() != null) {
+            serviceNames = request.getServices().stream()
+                    .map(Services::getName)
+                    .collect(Collectors.toList());
+        }
+        dto.setServices(serviceNames);
         dto.setAmount(payment.getAmount());
         // Gán thêm các trường nếu có
         return dto;
     }
 
-    UUID pickRandomAvailableStaff(LocalDate dateBooking, int slot, List<String> specialties) {
-        List<StaffProfile> availableStaff = staffProfileRepository.findAvailableStaff(dateBooking, slot, specialties);
+    UUID pickRandomAvailableStaff(LocalDate dateBooking, int slot, List<String> services) {
+        List<StaffProfile> availableStaff = staffProfileRepository.findAvailableStaff(dateBooking, slot, services);
         if (availableStaff.isEmpty()) {
             throw new RuntimeException("Không có luật sư nào phù hợp.");
         }
