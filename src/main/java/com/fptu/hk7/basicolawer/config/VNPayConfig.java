@@ -18,6 +18,7 @@ public class VNPayConfig {
     private final String hashSecret = "40CIUJZOR4264ODJU76ZN3AHSVBAYDWM";
     private final String url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     private final String returnUrl = "http://localhost:8080/api/payment/vnpay/return";
+    private final String returnFormUrl = "http://localhost:8080/api/forms/vnpay/return";
 
     public String hmacSHA512(String key, String data) {
         try {

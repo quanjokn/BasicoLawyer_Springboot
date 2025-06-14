@@ -1,18 +1,13 @@
 package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.config.VNPayConfig;
+import com.fptu.hk7.basicolawer.dto.Request.FormPaymentDTO;
 import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
 import com.fptu.hk7.basicolawer.enums.PaymentMethodEnum;
 import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
-import com.fptu.hk7.basicolawer.pojo.Payment;
-import com.fptu.hk7.basicolawer.pojo.Request;
-import com.fptu.hk7.basicolawer.pojo.StaffProfile;
-import com.fptu.hk7.basicolawer.pojo.User;
-import com.fptu.hk7.basicolawer.repository.PaymentRepository;
-import com.fptu.hk7.basicolawer.repository.RequestRepository;
-import com.fptu.hk7.basicolawer.repository.StaffProfileRepository;
-import com.fptu.hk7.basicolawer.repository.UserRepository;
+import com.fptu.hk7.basicolawer.pojo.*;
+import com.fptu.hk7.basicolawer.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +34,12 @@ public class VNPayService {
     private PaymentRepository paymentRepository;
     @Autowired
     private StaffProfileRepository staffProfileRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private FormTemplateRepository formTemplateRepository;
+    @Autowired
+    private UserFormRepository userFormRepository;
     public String createPaymentUrl(RequestDTO dto , HttpServletRequest request) {
         try {
             System.out.println(dto);
@@ -98,6 +99,85 @@ public class VNPayService {
         } catch (Exception e) {
             throw new RuntimeException("Error creating VNPay URL", e);
         }
+    }
+
+    public String createPaymentFormUrl(FormPaymentDTO dto , HttpServletRequest request) {
+        try {
+            System.out.println(dto);
+            String formId = String.valueOf(System.currentTimeMillis());
+            String txnRef = formId;
+
+            Map<String, String> vnp_Params = new HashMap<>();
+            vnp_Params.put("vnp_Version", "2.1.0");
+            vnp_Params.put("vnp_Command", "pay");
+            vnp_Params.put("vnp_TmnCode", config.getTmnCode());
+            vnp_Params.put("vnp_Amount", String.valueOf(dto.getAmount() * 100)); // VNPay yêu cầu số tiền tính bằng đồng
+            vnp_Params.put("vnp_CurrCode", "VND");
+            vnp_Params.put("vnp_TxnRef", txnRef);
+            vnp_Params.put("vnp_OrderInfo", dto.getNote() != null ? dto.getNote() : "Thanh toan hoa don");
+            vnp_Params.put("vnp_OrderType", "other");
+            vnp_Params.put("vnp_Locale", "vn");
+            vnp_Params.put("vnp_ReturnUrl", config.getReturnFormUrl());
+            String ipAddr = request.getHeader("X-Forwarded-For");
+            if (ipAddr == null || ipAddr.isEmpty() || ipAddr.equals("0:0:0:0:0:0:0:1")) {
+                ipAddr = "127.0.0.1"; // hoặc IP thật nếu dùng ngrok
+            }
+            vnp_Params.put("vnp_IpAddr", ipAddr);
+            vnp_Params.put("vnp_CreateDate", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+            vnp_Params.put("vnp_BankCode", "NCB");
+
+            // Sort + encode
+            List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
+            Collections.sort(fieldNames);
+
+            StringBuilder hashData = new StringBuilder();
+            StringBuilder query = new StringBuilder();
+            for (int i = 0; i < fieldNames.size(); i++) {
+                String fieldName = fieldNames.get(i);
+                String fieldValue = vnp_Params.get(fieldName);
+                if (fieldValue != null && !fieldValue.isEmpty()) {
+                    hashData.append(fieldName).append("=").append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8));
+                    query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8))
+                            .append("=")
+                            .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8));
+                    if (i < fieldNames.size() - 1) {
+                        hashData.append("&");
+                        query.append("&");
+                    }
+                }
+            }
+
+            String secureHash = config.hmacSHA512(config.getHashSecret(), hashData.toString());
+            System.out.println("HashData: " + hashData);
+            System.out.println("SecureHash: " + secureHash);
+            String paymentUrl = config.getUrl() + "?" + query + "&vnp_SecureHash=" + secureHash;
+            System.out.println("VNPay Payment URL: " + paymentUrl);
+            saveFormTempalte(dto,txnRef);
+            return paymentUrl;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating VNPay URL", e);
+        }
+    }
+
+    public void saveFormTempalte(FormPaymentDTO formPaymentDTO , String txnRef) {
+        // Tạo entity UserForm mới
+        UserForm userForm = new UserForm();
+
+        // Gán các trường từ DTO
+
+        userForm.setTxnRef(txnRef);
+        userForm.setAmount(formPaymentDTO.getAmount());
+        userForm.setPaymentMethod(formPaymentDTO.getPaymentMethod());
+        User user = userService.getCurrentUser();
+        userForm.setUser(userService.getCurrentUser());
+
+        FormTemplate formTemplate = formTemplateRepository.findById(formPaymentDTO.getFormId()).get();
+        userForm.setTemplate(formTemplate);
+
+        userFormRepository.save(userForm);
+        // Lấy User từ DB nếu có
+
     }
 
     public void saveRequestAfterPayment(RequestDTO dto , String txnRef) {
@@ -166,6 +246,20 @@ public class VNPayService {
         Optional<Payment> paymentOpt = paymentRepository.findByRequest(requestOpt.get());
         if (requestOpt.isPresent()) {
             return convertToDTO(requestOpt.get(),paymentOpt.get());
+        }
+
+        return null; // Không tìm thấy Request
+    }
+
+    public UserForm handleVNPayFormReturn(String txnRef, String vnpResponseCode) {
+        if (!"00".equals(vnpResponseCode)) {
+            return null; // Thanh toán thất bại
+        }
+        Optional<UserForm> userForm = userFormRepository.findByTxnRef(txnRef);
+        userForm.get().setPaid(true);
+        userFormRepository.save(userForm.get());
+        if (userForm.isPresent()) {
+            return userForm.get();
         }
 
         return null; // Không tìm thấy Request
