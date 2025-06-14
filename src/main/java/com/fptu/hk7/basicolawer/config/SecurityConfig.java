@@ -149,7 +149,7 @@ public class SecurityConfig {
                 userRepository.save(hai);
 
                 StaffProfile profileHai = StaffProfile.builder()
-                        .yearExperience("20")
+                        .yearExperience("15+ năm")
                         .licenseNumber("LS001")
                         .bio("Giám đốc điều hành BASICO, nhiều năm kinh nghiệm tư vấn luật doanh nghiệp, ngân hàng.")
                         .verified(true)
@@ -166,6 +166,9 @@ public class SecurityConfig {
                                 serviceMap.get("Tư vấn bất động sản"),
                                 serviceMap.get("Tranh tụng & giải quyết tranh chấp")
                         ))
+                        .rating(0f)
+                        .cases(258)
+                        .description("Chuyên gia hàng đầu về luật tài chính và M&A với hơn 15 năm kinh nghiệm.")
                         .build();
                 staffProfileRepository.save(profileHai);
 
@@ -182,7 +185,7 @@ public class SecurityConfig {
                 userRepository.save(ngoc);
 
                 StaffProfile profileNgoc = StaffProfile.builder()
-                        .yearExperience("10")
+                        .yearExperience("10+ năm")
                         .licenseNumber("LS002")
                         .bio("Luật sư thành viên BASICO, chuyên tư vấn hợp đồng, pháp lý doanh nghiệp.")
                         .verified(true)
@@ -196,6 +199,9 @@ public class SecurityConfig {
                                 serviceMap.get("Tư vấn M&A"),
                                 serviceMap.get("Tranh tụng & giải quyết tranh chấp")
                         ))
+                        .rating(0f)
+                        .cases(167)
+                        .description("Chuyên gia tranh tụng với tỷ lệ thắng kiện cao trong các vụ án phức tạp.")
                         .build();
                 staffProfileRepository.save(profileNgoc);
 
@@ -212,7 +218,7 @@ public class SecurityConfig {
                 userRepository.save(duong);
 
                 StaffProfile profileDuong = StaffProfile.builder()
-                        .yearExperience("8")
+                        .yearExperience("8+ năm")
                         .licenseNumber("LS003")
                         .bio("Luật sư thành viên BASICO, chuyên về pháp lý doanh nghiệp, đầu tư.")
                         .verified(true)
@@ -227,6 +233,9 @@ public class SecurityConfig {
                                 serviceMap.get("Thuế"),
                                 serviceMap.get("Ngân hàng và tài chính")
                         ))
+                        .rating(0f)
+                        .cases(136)
+                        .description("Chuyên gia về sở hữu trí tuệ và pháp lý công nghệ cho các startup.")
                         .build();
                 staffProfileRepository.save(profileDuong);
 
@@ -243,7 +252,7 @@ public class SecurityConfig {
                 userRepository.save(dung);
 
                 StaffProfile profileDung = StaffProfile.builder()
-                        .yearExperience("7")
+                        .yearExperience("7+ năm")
                         .licenseNumber("LS004")
                         .bio("Luật sư BASICO, tư vấn pháp lý doanh nghiệp.")
                         .verified(true)
@@ -259,6 +268,9 @@ public class SecurityConfig {
                                 serviceMap.get("Doanh nghiệp"),
                                 serviceMap.get("Dịch vụ luật sư nội bộ")
                         ))
+                        .rating(0f)
+                        .cases(113)
+                        .description("Chuyên gia về thuế và tuân thủ pháp lý cho doanh nghiệp.")
                         .build();
                 staffProfileRepository.save(profileDung);
 
@@ -275,7 +287,7 @@ public class SecurityConfig {
                 userRepository.save(nga);
 
                 StaffProfile profileNga = StaffProfile.builder()
-                        .yearExperience("5")
+                        .yearExperience("5+ năm")
                         .licenseNumber("LS005")
                         .bio("Cố vấn pháp lý BASICO.")
                         .verified(true)
@@ -289,6 +301,9 @@ public class SecurityConfig {
                                 serviceMap.get("Tư vấn bất động sản"),
                                 serviceMap.get("Lao động")
                         ))
+                        .rating(0f)
+                        .cases(98)
+                        .description("Chuyên gia về luật lao động và quản lý nhân sự doanh nghiệp.")
                         .build();
                 staffProfileRepository.save(profileNga);
 
@@ -305,7 +320,7 @@ public class SecurityConfig {
                 userRepository.save(ducanh);
 
                 StaffProfile profileDucAnh = StaffProfile.builder()
-                        .yearExperience("4")
+                        .yearExperience("4+ năm")
                         .licenseNumber("LS006")
                         .bio("Cố vấn pháp lý BASICO.")
                         .verified(true)
@@ -319,6 +334,9 @@ public class SecurityConfig {
                                 serviceMap.get("Ngân hàng và tài chính"),
                                 serviceMap.get("Tư vấn bất động sản")
                         ))
+                        .rating(0f)
+                        .cases(87)
+                        .description("Chuyên gia về hợp đồng thương mại và xuất nhập khẩu quốc tế.")
                         .build();
                 staffProfileRepository.save(profileDucAnh);
 
@@ -335,7 +353,7 @@ public class SecurityConfig {
                 userRepository.save(khoa);
 
                 StaffProfile profileKhoa = StaffProfile.builder()
-                        .yearExperience("3")
+                        .yearExperience("3+ năm")
                         .licenseNumber("LS007")
                         .bio("Cố vấn pháp lý BASICO.")
                         .verified(true)
@@ -349,9 +367,11 @@ public class SecurityConfig {
                                 serviceMap.get("Thị trường vốn"),
                                 serviceMap.get("Doanh nghiệp")
                         ))
+                        .rating(0f)
+                        .cases(39)
+                        .description("Chuyên gia về thuế và tuân thủ pháp lý cho doanh nghiệp.")
                         .build();
                 staffProfileRepository.save(profileKhoa);
-
             }
 
             // Form 1:

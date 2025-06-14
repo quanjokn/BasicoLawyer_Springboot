@@ -30,11 +30,15 @@ public class StaffProfile {
     private boolean verified;
     private String avatarUrl;
     private String specialties;
+    private String description;
+    private Float rating;
+    private Integer cases;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @JsonBackReference
     @ManyToMany
     @JoinTable(
             name = "staff_profile_service",

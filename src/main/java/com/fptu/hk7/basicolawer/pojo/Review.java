@@ -22,7 +22,7 @@ public class Review {
     private UUID id;
 
     private LocalDateTime createdAt;
-    private Integer rating;
+    private Float rating;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
