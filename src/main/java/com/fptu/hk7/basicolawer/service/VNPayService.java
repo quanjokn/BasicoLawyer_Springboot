@@ -39,6 +39,8 @@ public class VNPayService {
     private UserService userService;
     @Autowired
     private ServiceRepository serviceRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
     public String createPaymentUrl(RequestDTO dto , HttpServletRequest request) {
         try {
             System.out.println(dto);
@@ -168,6 +170,7 @@ public class VNPayService {
         request.setBooking(booking);
         requestRepository.save(request);
         paymentRepository.save(payment);
+        bookingRepository.save(booking);
     }
 
     public RequestDTO handleVNPayReturn(String txnRef, String vnpResponseCode) {
@@ -206,7 +209,6 @@ public class VNPayService {
         dto.setSlot(request.getSlot());
         dto.setPreferedLawerUUID(request.getPreferedLawerUUID());
         Optional<StaffProfile> staffProfile = staffProfileRepository.findById(request.getPreferedLawerUUID());
-        System.out.println(staffProfile);
         dto.setStaffName(staffProfile.get().getUser().getFullname());
         dto.setUserId(request.getUser() != null ? request.getUser().getId() : null);
         List<String> serviceNames = null;
