@@ -1,5 +1,7 @@
 package com.fptu.hk7.basicolawer.controller;
 
+import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
+import com.fptu.hk7.basicolawer.dto.Response.BookingLawyerDto;
 import com.fptu.hk7.basicolawer.pojo.Booking;
 import com.fptu.hk7.basicolawer.service.BookingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -22,8 +24,16 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<Booking> getAll() {
-        return bookingService.findAll();
+    public ResponseEntity<ApiResponse> getAllBookingLawyer() {
+        List<BookingLawyerDto> bookingLawyerList = bookingService.findAllBookingLawyer();
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .status(true)
+                        .code(200)
+                        .message("Get all booking lawyer successfully")
+                        .result(bookingLawyerList)
+                        .build()
+        );
     }
 
     @GetMapping("/{id}")

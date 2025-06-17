@@ -210,10 +210,14 @@ public class VNPayService {
             }
             request.setServices(services);
         }
+        UUID randomLawyerUUID = null;
         if (dto.getPreferedLawerUUID() != null ) {
             request.setPreferedLawerUUID(dto.getPreferedLawerUUID());
+            randomLawyerUUID = dto.getPreferedLawerUUID() instanceof UUID
+                    ? (UUID) dto.getPreferedLawerUUID()
+                    : UUID.fromString(dto.getPreferedLawerUUID().toString());
         } else {
-            UUID randomLawyerUUID = pickRandomAvailableStaff(
+            randomLawyerUUID = pickRandomAvailableStaff(
                     dto.getDateBooking(),
                     dto.getSlot(),
                     dto.getServices() // truyền chuyên môn xuống
@@ -247,9 +251,14 @@ public class VNPayService {
 
         request.setPayment(payment);
 
+        Optional<StaffProfile> staffProfile = staffProfileRepository.findById(randomLawyerUUID);
+        if (!staffProfile.isPresent()) {
+            throw new RuntimeException("Staff not found with id: " + randomLawyerUUID);
+        }
+
         Booking booking = new Booking();
         booking.setRequest(request);
-        booking.setUser(userService.getCurrentUser());
+        booking.setUser(staffProfile.get().getUser());
         booking.setAssignedAt(LocalDateTime.now());
 
         request.setBooking(booking);

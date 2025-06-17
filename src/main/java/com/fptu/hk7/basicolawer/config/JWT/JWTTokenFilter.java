@@ -44,7 +44,8 @@ public class JWTTokenFilter extends OncePerRequestFilter {
             "/auth/forgot-password",
             "/api/staff-profiles/**",
             "/api/forms/vnpay/return",
-            "/api/forms"
+            "/api/forms",
+            "/api/payment/vnpay/return/**"
     );
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();

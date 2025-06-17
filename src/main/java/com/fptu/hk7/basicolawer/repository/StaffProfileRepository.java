@@ -1,6 +1,5 @@
 package com.fptu.hk7.basicolawer.repository;
 
-import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface StaffProfileRepository extends JpaRepository<StaffProfile, UUID> {
@@ -35,5 +35,5 @@ public interface StaffProfileRepository extends JpaRepository<StaffProfile, UUID
     List<StaffProfile> findAvailableStaff(@Param("dateBooking") LocalDate dateBooking,
                                           @Param("slot") int slot,
                                           @Param("services") List<String> services);
-
+     Optional<StaffProfile> findById(UUID id);
 }
