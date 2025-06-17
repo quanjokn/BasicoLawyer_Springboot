@@ -44,6 +44,19 @@ public class AppointmentController {
         );
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<ApiResponse> getAllAppointmentUser() {
+        List<AppointmentLawyerResponse> appointmentList = appointmentService.findAllAppointmentLawyer();
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .status(true)
+                        .code(200)
+                        .message("Get all appointment lawyer successfully")
+                        .result(appointmentList)
+                        .build()
+        );
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse> createAppointmentLawyer(@RequestBody AppointmentLawyerResponse appointmentLawyerResponse) {
         appointmentService.createAppointmentLawyer(appointmentLawyerResponse);

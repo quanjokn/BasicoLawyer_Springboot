@@ -69,6 +69,11 @@ public class StaffProfileServiceImp implements StaffProfileService {
 
         return allStaff.stream().map(staff -> {
             UUID id = staff.getId();
+            List<String> serviceNames = staff.getServices() != null
+                    ? staff.getServices().stream()
+                    .map(service -> service.getName())
+                    .collect(Collectors.toList())
+                    : Collections.emptyList();
             List<Integer> slots = slotsByStaff.getOrDefault(id, new ArrayList<>());
             return new StaffProfileWithSlot(
                     id,
@@ -76,7 +81,7 @@ public class StaffProfileServiceImp implements StaffProfileService {
                     staff.getYearExperience(),
                     staff.getRating(),
                     staff.getAvatarUrl(),
-                    staff.getSpecialties(),
+                    serviceNames,
                     slots
             );
         }).collect(Collectors.toList());

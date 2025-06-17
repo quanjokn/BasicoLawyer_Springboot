@@ -262,6 +262,9 @@ public class VNPayService {
         booking.setAssignedAt(LocalDateTime.now());
 
         request.setBooking(booking);
+
+
+        // Lưu các entity xuống DB
         requestRepository.save(request);
         paymentRepository.save(payment);
         bookingRepository.save(booking);
