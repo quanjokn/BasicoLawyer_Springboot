@@ -9,8 +9,14 @@ import java.util.UUID;
 
 public interface AppointmentService {
     List<AppointmentLawyerResponse> findAllAppointmentLawyer();
+
     Optional<Appointment> findById(UUID id);
+
     void createAppointmentLawyer(AppointmentLawyerResponse appointment);
+
     Appointment update(UUID id, Appointment appointment);
+
     void deleteById(UUID id);
+
+    List<AppointmentLawyerResponse> findAllAppointmentUser();
 }

@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.dto;
 
+import com.fptu.hk7.basicolawer.pojo.Services;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,6 @@ public class StaffProfileWithSlot {
     private String yearExperience;
     private Float rating;
     private String avatarUrl;
-    private String specialties;
+    private List<String> servicesName;
     private List<Integer> unavailableSlots;
 }

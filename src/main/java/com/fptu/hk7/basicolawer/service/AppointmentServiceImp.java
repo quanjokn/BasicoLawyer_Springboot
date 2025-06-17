@@ -110,4 +110,16 @@ public class AppointmentServiceImp implements AppointmentService {
     public void deleteById(UUID id) {
         appointmentRepository.deleteById(id);
     }
+
+    @Override
+    public List<AppointmentLawyerResponse> findAllAppointmentUser() {
+    User currentUser = userService.getCurrentUser();
+    List<Request> request = currentUser.getRequests();
+    for(Request req : request) {
+        Booking booking = req.getBooking();
+    }
+    List<AppointmentLawyerResponse> appointmentLawyerResponses = new ArrayList<>();
+
+        return List.of();
+    }
 }
