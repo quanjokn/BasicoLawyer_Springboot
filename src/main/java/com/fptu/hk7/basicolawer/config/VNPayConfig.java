@@ -18,11 +18,13 @@ public class VNPayConfig {
     private final String hashSecret = "40CIUJZOR4264ODJU76ZN3AHSVBAYDWM";
     private final String url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     private final String returnUrl = "http://localhost:8080/api/payment/vnpay/return";
+    private final String returnFormUrl = "http://localhost:8080/api/forms/vnpay/return";
 
     public String hmacSHA512(String key, String data) {
         try {
             Mac hmac512 = Mac.getInstance("HmacSHA512");
-            SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "HmacSHA512");
+            // Thay đổi từ key.getBytes() sang key.getBytes(StandardCharsets.UTF_8)
+            SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
             hmac512.init(secretKey);
             byte[] bytes = hmac512.doFinal(data.getBytes(StandardCharsets.UTF_8));
             StringBuilder hash = new StringBuilder();

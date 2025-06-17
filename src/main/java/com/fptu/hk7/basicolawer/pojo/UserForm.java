@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
@@ -26,7 +27,12 @@ public class UserForm {
 
     private boolean isPaid;
 
+    @CreationTimestamp
     private Timestamp createdAt;
+
+    private int amount;
+    private String txnRef;
+    private String paymentMethod;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

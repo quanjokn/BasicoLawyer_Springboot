@@ -1,5 +1,7 @@
 package com.fptu.hk7.basicolawer.controller;
 
+import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
+import com.fptu.hk7.basicolawer.dto.Response.AppointmentLawyerResponse;
 import com.fptu.hk7.basicolawer.pojo.Appointment;
 import com.fptu.hk7.basicolawer.service.AppointmentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -21,10 +23,7 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
-    @GetMapping
-    public List<Appointment> getAll() {
-        return appointmentService.findAll();
-    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Appointment> getById(@PathVariable UUID id) {
@@ -32,9 +31,43 @@ public class AppointmentController {
         return appointment.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping
+    public ResponseEntity<ApiResponse> getAllAppointmentLawyer() {
+        List<AppointmentLawyerResponse> appointmentList = appointmentService.findAllAppointmentLawyer();
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .status(true)
+                        .code(200)
+                        .message("Get all appointment lawyer successfully")
+                        .result(appointmentList)
+                        .build()
+        );
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<ApiResponse> getAllAppointmentUser() {
+        List<AppointmentLawyerResponse> appointmentList = appointmentService.findAllAppointmentLawyer();
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .status(true)
+                        .code(200)
+                        .message("Get all appointment lawyer successfully")
+                        .result(appointmentList)
+                        .build()
+        );
+    }
+
     @PostMapping
-    public Appointment create(@RequestBody Appointment appointment) {
-        return appointmentService.save(appointment);
+    public ResponseEntity<ApiResponse> createAppointmentLawyer(@RequestBody AppointmentLawyerResponse appointmentLawyerResponse) {
+        appointmentService.createAppointmentLawyer(appointmentLawyerResponse);
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .status(true)
+                        .code(201)
+                        .message("Create appointment lawyer successfully")
+                        .result(null)
+                        .build()
+        );
     }
 
     @PutMapping("/{id}")

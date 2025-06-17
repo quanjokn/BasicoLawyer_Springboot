@@ -2,11 +2,7 @@ package com.fptu.hk7.basicolawer.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -14,7 +10,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "staff_profile")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -54,5 +51,5 @@ public class StaffProfile {
             joinColumns = @JoinColumn(name = "staff_profile_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private List<Service> services;
+    private List<Services> services;
 }

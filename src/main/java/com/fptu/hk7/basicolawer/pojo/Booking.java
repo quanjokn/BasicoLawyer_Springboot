@@ -25,6 +25,7 @@ public class Booking {
     private LocalDateTime assignedAt;
 
     @OneToOne(mappedBy = "booking")
+    @JoinColumn(name = "request_id", referencedColumnName = "id")
     private Request request;
 
     @ManyToOne
