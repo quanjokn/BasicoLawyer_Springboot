@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error"),
     INVALID_KEY(1001, "Uncategorized error"),
+    INVALID_CATEGORY(1001, "Can not find category"),
     USER_EXISTED(1002, "User existed"),
     USER_NOT_FOUND(1000, "User not found"),
     USERNAME_INVALID(1003, "Username must be at least 3 characters"),
@@ -13,6 +14,7 @@ public enum ErrorCode {
     LOGIN_FAIL(400, "Incorrect username or password"),
     INVALID_EMAIL(1005, "Email is not existed or valid"),
     ERROR_OTP(1006, "OTP is not similar or expired"),
+    IO_EXCEPTION(1008, "Error input stream with unexpected data type"),
     UNABLE_TO_CHANGE_PASSWORD(1007, "Can not change password"),
     FAIL_VALIDATION_DATA(1003, "Error format!")
     ;

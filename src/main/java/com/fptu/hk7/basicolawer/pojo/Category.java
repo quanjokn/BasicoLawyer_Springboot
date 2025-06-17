@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.pojo;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +16,6 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Category {
     @Id
     @GeneratedValue
@@ -24,7 +25,11 @@ public class Category {
 
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post; // Bài viết liên quan đến danh mục này
+    public Category(String name) {
+        this.name = name;
+    }
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Post> posts;
 }

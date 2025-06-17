@@ -2,6 +2,7 @@ package com.fptu.hk7.basicolawer.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +34,14 @@ public class StaffProfile {
     private String description;
     private Float rating;
     private Integer cases;
+
+    // Profile information
+    @Column(name = "html_content", columnDefinition = "TEXT")
+    private String htmlContent;
+
+    @Column(name = "delta_content", columnDefinition = "TEXT")
+    private String deltaContent;
+    //
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
