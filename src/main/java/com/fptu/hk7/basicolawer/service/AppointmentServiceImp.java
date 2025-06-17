@@ -83,8 +83,6 @@ public class AppointmentServiceImp implements AppointmentService {
         appointment.setSlot(request.getSlot());
         appointment.setStatus("ASSIGNED");
         appointment.setBooking(booking);
-        appointment.setPayment(request.getPayment());
-        appointment.setPaymentStatus(PaymentStatusEnum.PAID);
 
         request.setStatus(RequestStatusEnum.ASSIGNED);
 
