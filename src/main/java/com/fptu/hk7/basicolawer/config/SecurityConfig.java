@@ -77,7 +77,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CommandLineRunner initData(FormTemplateRepository formTemplateRepository, UserRepository userRepository, StaffProfileRepository staffProfileRepository, ServiceRepository serviceRepository) {
+    public CommandLineRunner initData(FormTemplateRepository formTemplateRepository, UserRepository userRepository,
+                                      StaffProfileRepository staffProfileRepository, ServiceRepository serviceRepository,
+                                      CategoryRepository categoryRepository) {
         return args -> {
             // Initialize your data here if needed
             if (!userRepository.existsByUsername("admin")) {
@@ -383,6 +385,21 @@ public class SecurityConfig {
                         .description("Chuyên gia về thuế và tuân thủ pháp lý cho doanh nghiệp.")
                         .build();
                 staffProfileRepository.save(profileKhoa);
+            }
+
+            // Category of Post
+            if(categoryRepository.count()==0){
+                List<Category> categories = Arrays.asList(
+                        new Category("Luật Doanh Nghiệp"),
+                        new Category("Luật Hình Sự"),
+                        new Category("Luật Dân Sự"),
+                        new Category("Luật Lao Động"),
+                        new Category("Luật Hành Chính"),
+                        new Category("Luật Đất Đai"),
+                        new Category("Luật Bảo Hiểm Xã Hội"),
+                        new Category("Luật Sở Hữu Trí Tuệ")
+                );
+                categoryRepository.saveAll(categories);
             }
 
             // Form 1:

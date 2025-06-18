@@ -1,6 +1,7 @@
 package com.fptu.hk7.basicolawer.exception;
 
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
+import io.jsonwebtoken.io.IOException;
 import jakarta.security.auth.message.AuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,15 @@ public class GlobalExceptionHandler {
         apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
         apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
 
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(value = IOException.class)
+    public ResponseEntity<?> handlingIOException(IOException exception){
+        ApiResponse<Void> apiResponse = new ApiResponse<>();
+
+        apiResponse.setCode(ErrorCode.IO_EXCEPTION.getCode());
+        apiResponse.setMessage(ErrorCode.IO_EXCEPTION.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
 

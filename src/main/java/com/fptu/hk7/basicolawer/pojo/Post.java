@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.pojo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,13 +25,21 @@ public class Post {
     private UUID id;
 
     private String topic;
-    private String content;
+    @Column(name = "html_content", columnDefinition = "TEXT")
+    private String htmlContent;
+
+    @Column(name = "delta_content", columnDefinition = "TEXT")
+    private String deltaContent;
     private String stamp;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Người đăng bài viết
+    private int liked;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Category> categories;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User user; // Người đăng bài viết
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    private Category category;
 }
+
