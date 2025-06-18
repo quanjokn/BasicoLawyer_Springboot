@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.controller;
 
+import com.fptu.hk7.basicolawer.dto.Request.StatusDTO;
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
 import com.fptu.hk7.basicolawer.dto.Response.BookingLawyerDto;
 import com.fptu.hk7.basicolawer.pojo.Booking;
@@ -48,12 +49,16 @@ public class BookingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> update(@PathVariable UUID id, @RequestBody Booking booking) {
-        try {
-            return ResponseEntity.ok(bookingService.update(id, booking));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ApiResponse> update(@PathVariable UUID id, @RequestBody StatusDTO status) {
+        bookingService.updateStatusBooking(id, status);
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .status(true)
+                        .code(200)
+                        .message("Update booking status successfully")
+                        .result(null)
+                        .build()
+        );
     }
 
     @DeleteMapping("/{id}")

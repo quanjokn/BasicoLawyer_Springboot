@@ -1,8 +1,10 @@
 package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
+import com.fptu.hk7.basicolawer.pojo.Appointment;
 import com.fptu.hk7.basicolawer.pojo.Request;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
+import com.fptu.hk7.basicolawer.repository.AppointmentRepository;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
 import com.fptu.hk7.basicolawer.repository.StaffProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import java.util.stream.Collectors;
 public class StaffProfileServiceImp implements StaffProfileService {
 
     private final StaffProfileRepository staffProfileRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     @Autowired
     private RequestRepository requestRepository;
@@ -57,14 +61,14 @@ public class StaffProfileServiceImp implements StaffProfileService {
     public List<StaffProfileWithSlot> getStaffProfilesWithUnavailableSlots(LocalDate dateBooking) {
         List<StaffProfile> allStaff = staffProfileRepository.findAll();
 
-        // Lấy tất cả request trong ngày được chọn
-        List<Request> allRequests = requestRepository.findByDateBooking(dateBooking);
+        // Lấy tất cả appointment trong ngày được chọn
+        List<Appointment> allRequests = appointmentRepository.findByAssignedAt(dateBooking);
 
         Map<UUID, List<Integer>> slotsByStaff = allRequests.stream()
-                .filter(r -> r.getPreferedLawerUUID() != null)
+                .filter(r -> r.getLawerUUID() != null)
                 .collect(Collectors.groupingBy(
-                        Request::getPreferedLawerUUID,
-                        Collectors.mapping(Request::getSlot, Collectors.toList())
+                        Appointment::getLawerUUID,
+                        Collectors.mapping(Appointment::getSlot, Collectors.toList())
                 ));
 
         return allStaff.stream().map(staff -> {
@@ -87,3 +91,37 @@ public class StaffProfileServiceImp implements StaffProfileService {
         }).collect(Collectors.toList());
     }
 }
+
+//@Override
+//public List<StaffProfileWithSlot> getStaffProfilesWithUnavailableSlots(LocalDate dateBooking) {
+//    List<StaffProfile> allStaff = staffProfileRepository.findAll();
+//
+//    // Lấy tất cả request trong ngày được chọn
+//    List<Request> allRequests = requestRepository.findByDateBooking(dateBooking);
+//
+//    Map<UUID, List<Integer>> slotsByStaff = allRequests.stream()
+//            .filter(r -> r.getPreferedLawerUUID() != null)
+//            .collect(Collectors.groupingBy(
+//                    Request::getPreferedLawerUUID,
+//                    Collectors.mapping(Request::getSlot, Collectors.toList())
+//            ));
+//
+//    return allStaff.stream().map(staff -> {
+//        UUID id = staff.getId();
+//        List<String> serviceNames = staff.getServices() != null
+//                ? staff.getServices().stream()
+//                .map(service -> service.getName())
+//                .collect(Collectors.toList())
+//                : Collections.emptyList();
+//        List<Integer> slots = slotsByStaff.getOrDefault(id, new ArrayList<>());
+//        return new StaffProfileWithSlot(
+//                id,
+//                staff.getUser().getFullname(),
+//                staff.getYearExperience(),
+//                staff.getRating(),
+//                staff.getAvatarUrl(),
+//                serviceNames,
+//                slots
+//        );
+//    }).collect(Collectors.toList());
+//}

@@ -107,10 +107,20 @@ public class SecurityConfig {
                         .role(Role.CUSTOMER)
                         .build();
                 userRepository.save(user);
-
-
             }
 
+            if (!userRepository.existsByUsername("nghia")) {
+                User user = User.builder()
+                        .username("nghia")
+                        .password(passwordEncoder().encode("123456"))
+                        .fullname("Le Huu Nghia")
+                        .email("nghia@gmail.com")
+                        .status("active")
+                        .phone("0123456789")
+                        .role(Role.CUSTOMER)
+                        .build();
+                userRepository.save(user);
+            }
             if (serviceRepository.count() == 0 && !userRepository.existsByRole(Role.CONSULTANT) && !userRepository.existsByRole(Role.LAWYER)) {
                 String[] services = {
                         "Dịch vụ luật sư nội bộ",
