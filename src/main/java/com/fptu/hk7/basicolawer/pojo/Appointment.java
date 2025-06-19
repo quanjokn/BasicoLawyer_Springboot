@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -22,7 +23,7 @@ public class Appointment {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    private LocalDateTime assignedAt;
+    private LocalDate assignedAt;
 
     private String linkCall;
 
@@ -31,6 +32,10 @@ public class Appointment {
     private String channel;
 
     private String note;
+
+    private String lawyerFullName;
+
+    private UUID lawerUUID;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatusEnum paymentStatus;
@@ -41,7 +46,5 @@ public class Appointment {
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
-    @OneToOne
-    @JoinColumn(name = "payment_id", referencedColumnName = "id")
-    private Payment payment;
+
 }

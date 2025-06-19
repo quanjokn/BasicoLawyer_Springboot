@@ -1,6 +1,9 @@
 package com.fptu.hk7.basicolawer.controller;
 
+import com.fptu.hk7.basicolawer.dto.Request.StatusDTO;
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
+import com.fptu.hk7.basicolawer.dto.Response.AppointmentScheduleReponse;
+import com.fptu.hk7.basicolawer.dto.Response.AppointmentLawyerListResponse;
 import com.fptu.hk7.basicolawer.dto.Response.AppointmentLawyerResponse;
 import com.fptu.hk7.basicolawer.pojo.Appointment;
 import com.fptu.hk7.basicolawer.service.AppointmentService;
@@ -33,7 +36,7 @@ public class AppointmentController {
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAllAppointmentLawyer() {
-        List<AppointmentLawyerResponse> appointmentList = appointmentService.findAllAppointmentLawyer();
+        List<AppointmentLawyerListResponse> appointmentList = appointmentService.findAllAppointmentLawyer();
         return ResponseEntity.ok(
                 ApiResponse.builder()
                         .status(true)
@@ -44,9 +47,35 @@ public class AppointmentController {
         );
     }
 
+    @GetMapping("/admin")
+    public ResponseEntity<ApiResponse> getAllAppointmentLawyerForAdmin() {
+        List<AppointmentScheduleReponse> appointmentList = appointmentService.findAllAppointmentAdmin();
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .status(true)
+                        .code(200)
+                        .message("Get all appointment on admin dashboard successfully")
+                        .result(appointmentList)
+                        .build()
+        );
+    }
+
+    @GetMapping("/lawyer")
+    public ResponseEntity<ApiResponse> getScheduleLawyer() {
+        List<AppointmentScheduleReponse> appointmentList = appointmentService.findScheduleLawyer();
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .status(true)
+                        .code(200)
+                        .message("Get all appointment on lawyer dashboard successfully")
+                        .result(appointmentList)
+                        .build()
+        );
+    }
+
     @GetMapping("/user")
     public ResponseEntity<ApiResponse> getAllAppointmentUser() {
-        List<AppointmentLawyerResponse> appointmentList = appointmentService.findAllAppointmentLawyer();
+        List<AppointmentLawyerListResponse> appointmentList = appointmentService.findAllAppointmentLawyer();
         return ResponseEntity.ok(
                 ApiResponse.builder()
                         .status(true)
@@ -71,12 +100,16 @@ public class AppointmentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Appointment> update(@PathVariable UUID id, @RequestBody Appointment appointment) {
-        try {
-            return ResponseEntity.ok(appointmentService.update(id, appointment));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ApiResponse> update(@PathVariable UUID id,@RequestBody StatusDTO status) {
+        AppointmentLawyerResponse appointment = appointmentService.updateStatusAppointment(id, status);
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .status(true)
+                        .code(200)
+                        .message("Update appointment status successfully")
+                        .result(appointment)
+                        .build()
+        );
     }
 
     @DeleteMapping("/{id}")

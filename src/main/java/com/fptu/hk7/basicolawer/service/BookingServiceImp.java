@@ -1,11 +1,10 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicolawer.dto.Request.StatusDTO;
 import com.fptu.hk7.basicolawer.dto.Response.BookingLawyerDto;
 import com.fptu.hk7.basicolawer.dto.Response.ServicesDto;
-import com.fptu.hk7.basicolawer.pojo.Booking;
-import com.fptu.hk7.basicolawer.pojo.Request;
-import com.fptu.hk7.basicolawer.pojo.Services;
-import com.fptu.hk7.basicolawer.pojo.User;
+import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
+import com.fptu.hk7.basicolawer.pojo.*;
 import com.fptu.hk7.basicolawer.repository.BookingRepository;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
 import com.fptu.hk7.basicolawer.repository.ServiceRepository;
@@ -41,19 +40,9 @@ public class BookingServiceImp implements BookingService {
         List<Booking> listBooking = bookingRepository.findAllByUser(currentLawyer);
         List<BookingLawyerDto> listBookingLawyerDto = new ArrayList<>();
         for (Booking booking : listBooking) {
-            BookingLawyerDto bookingLawyerDto = new BookingLawyerDto();
-
-            bookingLawyerDto.setId(booking.getId());
 
             Request request = booking.getRequest();
-
             User customer = request.getUser();
-            bookingLawyerDto.setCustomerFullName(customer.getFullname());
-            bookingLawyerDto.setCustomerPhone(customer.getPhone());
-            bookingLawyerDto.setCustomerEmail(customer.getEmail());
-            bookingLawyerDto.setDateBooking(request.getDateBooking());
-            bookingLawyerDto.setStatus(request.getStatus());
-
             List<Services> listServices = request.getServices();
             List<ServicesDto> servicesDtos = new ArrayList<>();
             for (Services service : listServices) {
@@ -62,8 +51,17 @@ public class BookingServiceImp implements BookingService {
                 servicesDto.setServiceName(service.getName());
                 servicesDtos.add(servicesDto);
             }
-            bookingLawyerDto.setServices(servicesDtos);
-            bookingLawyerDto.setSlot(request.getSlot());
+
+            BookingLawyerDto bookingLawyerDto = BookingLawyerDto.builder()
+                    .id(booking.getId())
+                    .customerFullName(customer.getFullname())
+                    .customerPhone(customer.getPhone())
+                    .customerEmail(customer.getEmail())
+                    .dateBooking(request.getDateBooking())
+                    .status(request.getStatus())
+                    .services(servicesDtos)
+                    .slot(request.getSlot())
+                    .build();
 
             listBookingLawyerDto.add(bookingLawyerDto);
         }
@@ -81,12 +79,22 @@ public class BookingServiceImp implements BookingService {
     }
 
     @Override
-    public Booking update(UUID id, Booking booking) {
-        if (!bookingRepository.existsById(id)) {
-            throw new RuntimeException("Booking not found");
+    public void updateStatusBooking(UUID id, StatusDTO status) {
+        Optional<Booking> optionalBooking = bookingRepository.findById(id);
+        if (optionalBooking.isPresent()) {
+            Booking booking = optionalBooking.get();
+            Request request = booking.getRequest();
+            List<Appointment> appointments = booking.getAppointments();
+            for (Appointment appointment : appointments) {
+
+                if ((!appointment.getStatus().equals(status.getStatus()) && !appointment.getStatus().equals("CANCELLED"))) {
+                    throw new IllegalArgumentException("Cannot update status during an appointment");
+                }
+            }
+            request.setStatus(RequestStatusEnum.CLOSED);
+            booking.setRequest(request);
+            bookingRepository.save(booking);
         }
-        booking.setId(id);
-        return bookingRepository.save(booking);
     }
 
     @Override
