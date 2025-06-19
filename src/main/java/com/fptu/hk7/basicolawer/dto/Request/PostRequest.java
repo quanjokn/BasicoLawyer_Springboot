@@ -18,4 +18,7 @@ public class PostRequest {
 
     @NotBlank(message = "Category cannot be blank")
     private String categoryId;
+
+    @NotBlank(message = "Thumbnail image cannot be blank")
+    private String thumbnail;
 }

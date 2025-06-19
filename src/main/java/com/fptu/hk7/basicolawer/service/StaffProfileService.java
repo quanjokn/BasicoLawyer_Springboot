@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicolawer.dto.Request.ProfileRequest;
 import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 
@@ -15,4 +16,5 @@ public interface StaffProfileService {
     StaffProfile update(UUID id, StaffProfile staffProfile);
     void deleteById(UUID id);
     List<StaffProfileWithSlot> getStaffProfilesWithUnavailableSlots(LocalDate dateBooking);
+    StaffProfile updateProfile(UUID id, ProfileRequest profileRequest);
 }
