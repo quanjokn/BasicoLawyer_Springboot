@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.pojo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
 import jakarta.persistence.*;
@@ -41,10 +42,12 @@ public class Request {
     private String txnRef;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "booking_id", referencedColumnName = "id")
+    @JsonIgnore
     private Booking booking;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -58,6 +61,7 @@ public class Request {
             joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
+    @JsonIgnore
     private List<Services> services;
 
 }

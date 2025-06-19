@@ -13,4 +13,6 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
     Optional<Request> findByTxnRef(String txnRef);
 
     List<Request> findByDateBooking( LocalDate dateBooking);
+
+    List<Request> findByUserId(UUID userId);
 }

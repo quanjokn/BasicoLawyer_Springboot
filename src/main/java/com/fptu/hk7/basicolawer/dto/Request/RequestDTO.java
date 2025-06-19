@@ -1,6 +1,8 @@
 package com.fptu.hk7.basicolawer.dto.Request;
 
 import com.fptu.hk7.basicolawer.pojo.Services;
+import com.fptu.hk7.basicolawer.pojo.StaffProfile;
+import com.fptu.hk7.basicolawer.pojo.User;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -9,6 +11,7 @@ import java.util.UUID;
 
 @Data
 public class RequestDTO {
+    private UUID id;
     private LocalDate dateBooking;
     private LocalDate dateRequest;
     private String note;
@@ -17,5 +20,10 @@ public class RequestDTO {
     private UUID preferedLawerUUID;
     private String staffName;
     private int amount;
-    private List<String> services; // Danh sách chuyên môn của luật sư
+    private List<String> services;
+    private UserDTO user; // Thông tin người dùng
+    private StaffProfile staffProfile;// Danh sách chuyên môn của luật sư
+    private String channel;
+    private String status;
+    private String linkCall;
 }
