@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicolawer.dto.Request.StatusDTO;
 import com.fptu.hk7.basicolawer.dto.Response.BookingLawyerDto;
 import com.fptu.hk7.basicolawer.pojo.Booking;
 
@@ -11,6 +12,6 @@ public interface BookingService {
     List<BookingLawyerDto> findAllBookingLawyer();
     Optional<Booking> findById(UUID id);
     Booking save(Booking booking);
-    Booking update(UUID id, Booking booking);
+    void updateStatusBooking(UUID id, StatusDTO status);
     void deleteById(UUID id);
 }

@@ -77,7 +77,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CommandLineRunner initData(FormTemplateRepository formTemplateRepository, UserRepository userRepository, StaffProfileRepository staffProfileRepository, ServiceRepository serviceRepository) {
+    public CommandLineRunner initData(FormTemplateRepository formTemplateRepository, UserRepository userRepository,
+                                      StaffProfileRepository staffProfileRepository, ServiceRepository serviceRepository,
+                                      CategoryRepository categoryRepository) {
         return args -> {
             // Initialize your data here if needed
             if (!userRepository.existsByUsername("admin")) {
@@ -105,10 +107,20 @@ public class SecurityConfig {
                         .role(Role.CUSTOMER)
                         .build();
                 userRepository.save(user);
-
-
             }
 
+            if (!userRepository.existsByUsername("nghia")) {
+                User user = User.builder()
+                        .username("nghia")
+                        .password(passwordEncoder().encode("123456"))
+                        .fullname("Le Huu Nghia")
+                        .email("nghia@gmail.com")
+                        .status("active")
+                        .phone("0123456789")
+                        .role(Role.CUSTOMER)
+                        .build();
+                userRepository.save(user);
+            }
             if (serviceRepository.count() == 0 && !userRepository.existsByRole(Role.CONSULTANT) && !userRepository.existsByRole(Role.LAWYER)) {
                 String[] services = {
                         "Dịch vụ luật sư nội bộ",
@@ -373,6 +385,21 @@ public class SecurityConfig {
                         .description("Chuyên gia về thuế và tuân thủ pháp lý cho doanh nghiệp.")
                         .build();
                 staffProfileRepository.save(profileKhoa);
+            }
+
+            // Category of Post
+            if(categoryRepository.count()==0){
+                List<Category> categories = Arrays.asList(
+                        new Category("Luật Doanh Nghiệp"),
+                        new Category("Luật Hình Sự"),
+                        new Category("Luật Dân Sự"),
+                        new Category("Luật Lao Động"),
+                        new Category("Luật Hành Chính"),
+                        new Category("Luật Đất Đai"),
+                        new Category("Luật Bảo Hiểm Xã Hội"),
+                        new Category("Luật Sở Hữu Trí Tuệ")
+                );
+                categoryRepository.saveAll(categories);
             }
 
             // Form 1:
