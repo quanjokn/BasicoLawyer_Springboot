@@ -1,6 +1,9 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicolawer.dto.Request.ProfileRequest;
 import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
+import com.fptu.hk7.basicolawer.exception.AppException;
+import com.fptu.hk7.basicolawer.exception.ErrorCode;
 import com.fptu.hk7.basicolawer.pojo.Appointment;
 import com.fptu.hk7.basicolawer.pojo.Request;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
@@ -89,6 +92,13 @@ public class StaffProfileServiceImp implements StaffProfileService {
                     slots
             );
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public StaffProfile updateProfile(UUID id, ProfileRequest profileRequest) {
+        StaffProfile staffProfile = staffProfileRepository.findById(id).orElseThrow(()-> new AppException(ErrorCode.INVALID_STAFF_PROFILE));
+        staffProfile.setHtmlContent(profileRequest.getHtmlContent());
+        return staffProfileRepository.save(staffProfile);
     }
 }
 

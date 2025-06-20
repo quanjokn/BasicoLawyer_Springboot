@@ -1,11 +1,13 @@
 package com.fptu.hk7.basicolawer.controller;
 
+import com.fptu.hk7.basicolawer.dto.Request.ProfileRequest;
 import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 import com.fptu.hk7.basicolawer.service.StaffProfileService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -41,9 +43,18 @@ public class StaffProfileController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StaffProfile> update(@PathVariable UUID id, @RequestBody StaffProfile staffProfile) {
+    public ResponseEntity<StaffProfile> update(@PathVariable("id") String id, @RequestBody StaffProfile staffProfile) {
         try {
-            return ResponseEntity.ok(staffProfileService.update(id, staffProfile));
+            return ResponseEntity.ok(staffProfileService.update(UUID.fromString(id), staffProfile));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/profile/{id}")
+    public ResponseEntity<StaffProfile> updateProfile(@PathVariable("id") String id, @Validated @RequestBody ProfileRequest profileRequest) {
+        try {
+            return ResponseEntity.ok(staffProfileService.updateProfile(UUID.fromString(id), profileRequest));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -25,22 +26,27 @@ public class Post {
     private UUID id;
 
     private String topic;
+
     @Column(name = "html_content", columnDefinition = "TEXT")
     private String htmlContent;
 
     @Column(name = "delta_content", columnDefinition = "TEXT")
     private String deltaContent;
+
+    @CreationTimestamp
     private String stamp;
 
-    private int liked;
+    private int view;
+
+    private String thumbnail;
 
 //    @ManyToOne
 //    @JoinColumn(name = "user_id", nullable = false)
 //    private User user; // Người đăng bài viết
 
-    @ManyToOne(fetch = FetchType.LAZY)
-
     @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
     private Category category;
 }
 

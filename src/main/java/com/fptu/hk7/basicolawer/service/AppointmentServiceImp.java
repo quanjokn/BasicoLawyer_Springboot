@@ -7,13 +7,14 @@ import com.fptu.hk7.basicolawer.dto.Response.AppointmentLawyerResponse;
 import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
 import com.fptu.hk7.basicolawer.pojo.*;
-import com.fptu.hk7.basicolawer.pojo.Enum.Role;
 import com.fptu.hk7.basicolawer.repository.AppointmentRepository;
 import com.fptu.hk7.basicolawer.repository.BookingRepository;
+import com.fptu.hk7.basicolawer.repository.NotificationRepository;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,8 @@ public class AppointmentServiceImp implements AppointmentService {
     @Autowired
     private UserService userService;
     @Autowired
+    private NotificationRepository notificationRepository;
+    @Autowired
     private StaffProfileService staffProfileService;
 
     public AppointmentServiceImp(AppointmentRepository appointmentRepository) {
@@ -44,9 +47,8 @@ public class AppointmentServiceImp implements AppointmentService {
 
     @Override
     public List<AppointmentLawyerListResponse> findAllAppointmentLawyer() {
-        User user = userService.getCurrentUser();
-        Optional<StaffProfile> lawyerProfile = null;
-        List<Booking> listBooking =bookingRepository.findAllByUserAndRequest_Status(user, RequestStatusEnum.ASSIGNED);
+        User currentLawyer = userService.getCurrentUser();
+        List<Booking> listBooking = bookingRepository.findAllByUserAndRequest_Status(currentLawyer, RequestStatusEnum.ASSIGNED);
         List<AppointmentLawyerListResponse> appointmentLawyerList = new ArrayList<>();
         for (Booking booking : listBooking) {
             Request request = booking.getRequest();
@@ -65,7 +67,6 @@ public class AppointmentServiceImp implements AppointmentService {
                         .bookingId(booking.getId())
                         .build();
                 appointmentLawyerResponses.add(appointmentLawyerResponse);
-                lawyerProfile = staffProfileService.findById(appointment.getLawerUUID());
             }
 
             AppointmentLawyerListResponse appointmentLawyerListResponse = AppointmentLawyerListResponse.builder()
@@ -107,6 +108,15 @@ public class AppointmentServiceImp implements AppointmentService {
 
         request.setStatus(RequestStatusEnum.ASSIGNED);
 
+        Notification notification = Notification.builder()
+                .message("Cuộc hẹn của bạn đã được tạo thành công vào ngày: "+appointment.getAssignedAt() + " với luật sư: " + lawyer.getFullname())
+                .type("Cập nhật trạng thái dịch vụ")
+                .isRead(false)
+                .created(LocalDateTime.now())
+                .user(request.getUser())
+                .build();
+
+        notificationRepository.save(notification);
         appointmentRepository.save(appointment);
     }
 
@@ -133,7 +143,17 @@ public class AppointmentServiceImp implements AppointmentService {
                 .status(appointment.getStatus())
                 .slot(appointment.getSlot())
                 .build();
-       return appointmentLawyerResponse;
+
+        Notification notification = Notification.builder()
+                .message("Cuộc hẹn của bạn đã được thay đổi trạng thái: "+status.getStatus())
+                .type("Cập nhật trạng thái dịch vụ")
+                .isRead(false)
+                .created(LocalDateTime.now())
+                .user(appointment.getBooking().getRequest().getUser())
+                .build();
+
+        notificationRepository.save(notification);
+        return appointmentLawyerResponse;
     }
 
     @Override

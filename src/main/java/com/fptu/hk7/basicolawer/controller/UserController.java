@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/users")
 @SecurityRequirement(name = "bearerAuth")
@@ -22,7 +25,17 @@ public class UserController {
         return ResponseEntity.ok(userService.getCurrentUser());
     }
 
+    @GetMapping("getAll")
+    public ResponseEntity <List<User>> getAllUser() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
     @PostMapping
+    public ResponseEntity<User> createUser(User user) {
+        User createdUser = userService.save(user);
+        return ResponseEntity.ok(createdUser);
+    }
+    @PostMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody UpdateUserDTO userUpdateDTO) {
         User updateUser = userService.updateUser(userUpdateDTO);
         return ResponseEntity.ok(updateUser);
@@ -34,4 +47,10 @@ public class UserController {
             return ResponseEntity.ok("Password changed successfully");
         }
 
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") String id) {
+        userService.deleteUser(UUID.fromString(id));
+        return ResponseEntity.noContent().build();
+    }
 }

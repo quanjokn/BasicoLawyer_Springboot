@@ -47,6 +47,9 @@ public class User {
     @ValidPhone
     private String phone;
 
+    @Size(max = 255, message = "Address must be less than 255 characters")
+    private String address;
+
     @NotBlank(message = "Email is required")
     @Email(message = "Email must be valid")
     @Column(unique = true)
