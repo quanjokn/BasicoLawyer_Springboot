@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.dto.Response;
 
+import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

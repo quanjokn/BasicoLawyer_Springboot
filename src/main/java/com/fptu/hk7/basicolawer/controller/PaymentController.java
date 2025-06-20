@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.controller;
 
+import com.fptu.hk7.basicolawer.dto.Request.PaymentDTO;
 import com.fptu.hk7.basicolawer.pojo.Payment;
 import com.fptu.hk7.basicolawer.service.PaymentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -50,5 +51,11 @@ public class PaymentController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         paymentService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<PaymentDTO>> getPaymentsByUser() {
+        List<PaymentDTO> payments = paymentService.getPaymentsByCurrentUser();
+        return ResponseEntity.ok(payments);
     }
 }

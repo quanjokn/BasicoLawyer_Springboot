@@ -2,6 +2,7 @@ package com.fptu.hk7.basicolawer.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fptu.hk7.basicolawer.pojo.Enum.Role;
 import com.fptu.hk7.basicolawer.validation.ValidPhone;
 import jakarta.persistence.*;
@@ -9,10 +10,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -20,7 +18,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "app_user")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -47,6 +46,9 @@ public class User {
 
     @ValidPhone
     private String phone;
+
+    @Size(max = 255, message = "Address must be less than 255 characters")
+    private String address;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email must be valid")

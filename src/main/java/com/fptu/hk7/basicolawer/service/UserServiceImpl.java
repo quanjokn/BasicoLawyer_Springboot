@@ -2,7 +2,9 @@ package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.auth.AuthService;
 import com.fptu.hk7.basicolawer.config.JWT.JWTUtil;
+import com.fptu.hk7.basicolawer.dto.Request.ChangePasswordDTO;
 import com.fptu.hk7.basicolawer.dto.Request.RegisterDTO;
+import com.fptu.hk7.basicolawer.dto.Request.UpdateUserDTO;
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
 import com.fptu.hk7.basicolawer.dto.Request.LoginDTO;
 import com.fptu.hk7.basicolawer.dto.Response.jwtResponse;
@@ -19,6 +21,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,14 +35,16 @@ public class UserServiceImpl implements UserService {
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserDetailsService userDetailsService, AuthService authService, AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+    public UserServiceImpl(UserRepository userRepository, UserDetailsService userDetailsService, AuthService authService, AuthenticationManager authenticationManager, JWTUtil jwtUtil, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
         this.authService = authService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -58,18 +63,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(UUID id, User user) {
-        return userRepository.findById(id)
-                .map(existingUser -> {
-                    existingUser.setUsername(user.getUsername());
-                    existingUser.setPassword(user.getPassword());
-                    existingUser.setPhone(user.getPhone());
-                    existingUser.setEmail(user.getEmail());
-                    existingUser.setStatus(user.getStatus());
-                    existingUser.setRole(user.getRole());
-                    return userRepository.save(existingUser);
-                })
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public User updateUser(UpdateUserDTO updateUserDTO) {
+        User user = getCurrentUser();
+        user.setFullname(updateUserDTO.getFullname());
+        user.setUsername(updateUserDTO.getUsername());
+        user.setPhone(updateUserDTO.getPhone());
+        user.setEmail(updateUserDTO.getEmail());
+
+        return userRepository.save(user);
     }
 
     @Override
@@ -149,12 +150,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
         userRepository.save(user);
+        return user;
     }
 
     @Override
     public List<User> getAllLawyers() {
         return List.of();
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDTO changePasswordDTO) {
+        {
+            User user = getCurrentUser();
+
+            if (!passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())) {
+                throw new AppException(ErrorCode.INCORRECT_PASSWORD);
+            }
+            user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+            userRepository.save(user);
+        }
     }
 }

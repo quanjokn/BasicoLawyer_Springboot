@@ -17,6 +17,7 @@ public enum ErrorCode {
     IO_EXCEPTION(1008, "Error input stream with unexpected data type"),
     UNABLE_TO_CHANGE_PASSWORD(1007, "Can not change password"),
     FAIL_VALIDATION_DATA(1003, "Error format!"),
+    INCORRECT_PASSWORD(1009, "Incorrect password"),
     INVALID_POST(1001, "Can not find post"),
     INVALID_STAFF_PROFILE(1001, "Staff profile not find"),
     ;

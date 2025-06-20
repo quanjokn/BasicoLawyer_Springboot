@@ -6,31 +6,35 @@ import com.fptu.hk7.basicolawer.dto.Response.AppointmentLawyerListResponse;
 import com.fptu.hk7.basicolawer.dto.Response.AppointmentLawyerResponse;
 import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
-import com.fptu.hk7.basicolawer.pojo.Appointment;
-import com.fptu.hk7.basicolawer.pojo.Booking;
-import com.fptu.hk7.basicolawer.pojo.Request;
-import com.fptu.hk7.basicolawer.pojo.User;
+import com.fptu.hk7.basicolawer.pojo.*;
 import com.fptu.hk7.basicolawer.repository.AppointmentRepository;
 import com.fptu.hk7.basicolawer.repository.BookingRepository;
+import com.fptu.hk7.basicolawer.repository.NotificationRepository;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentServiceImp implements AppointmentService {
-
-    private final AppointmentRepository appointmentRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
     @Autowired
     private BookingRepository bookingRepository;
     @Autowired
     private RequestRepository requestRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private NotificationRepository notificationRepository;
+    @Autowired
+    private StaffProfileService staffProfileService;
 
     public AppointmentServiceImp(AppointmentRepository appointmentRepository) {
         this.appointmentRepository = appointmentRepository;
@@ -104,6 +108,15 @@ public class AppointmentServiceImp implements AppointmentService {
 
         request.setStatus(RequestStatusEnum.ASSIGNED);
 
+        Notification notification = Notification.builder()
+                .message("Cuộc hẹn của bạn đã được tạo thành công vào ngày: "+appointment.getAssignedAt() + " với luật sư: " + lawyer.getFullname())
+                .type("Cập nhật trạng thái dịch vụ")
+                .isRead(false)
+                .created(LocalDateTime.now())
+                .user(request.getUser())
+                .build();
+
+        notificationRepository.save(notification);
         appointmentRepository.save(appointment);
     }
 
@@ -130,7 +143,17 @@ public class AppointmentServiceImp implements AppointmentService {
                 .status(appointment.getStatus())
                 .slot(appointment.getSlot())
                 .build();
-       return appointmentLawyerResponse;
+
+        Notification notification = Notification.builder()
+                .message("Cuộc hẹn của bạn đã được thay đổi trạng thái: "+status.getStatus())
+                .type("Cập nhật trạng thái dịch vụ")
+                .isRead(false)
+                .created(LocalDateTime.now())
+                .user(appointment.getBooking().getRequest().getUser())
+                .build();
+
+        notificationRepository.save(notification);
+        return appointmentLawyerResponse;
     }
 
     @Override
@@ -139,15 +162,61 @@ public class AppointmentServiceImp implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentLawyerResponse> findAllAppointmentUser() {
+    public List<AppointmentLawyerListResponse> findAllAppointmentUser() {
     User currentUser = userService.getCurrentUser();
-    List<Request> request = currentUser.getRequests();
-    for(Request req : request) {
-        Booking booking = req.getBooking();
-    }
-    List<AppointmentLawyerResponse> appointmentLawyerResponses = new ArrayList<>();
+    List<Request> requests = requestRepository.findByUserId(currentUser.getId());
+    List<AppointmentLawyerResponse> result = new ArrayList<>();
+        for (Request request : requests) {
+            Booking booking = request.getBooking();
+            if (booking == null) continue;
 
-        return List.of();
+            // Tìm Appointment theo booking
+            List<Appointment> appointments = appointmentRepository.findAllByBooking(booking);
+            if (appointments.isEmpty()) continue;
+
+            for (Appointment appointment : appointments) {
+                AppointmentLawyerResponse dto = new AppointmentLawyerResponse();
+                dto.setBookingId(booking.getId());
+                dto.setId(appointment.getId());
+                dto.setDateBooking(request.getDateBooking()); // từ Request
+                dto.setSlot(request.getSlot());               // từ Request
+                dto.setChannel(appointment.getChannel());
+                dto.setStatus(appointment.getStatus().toString());
+                dto.setLinkCall(appointment.getLinkCall());
+                dto.setNote(appointment.getNote());
+
+                // Lấy thông tin số tiền từ Payment nếu có
+                if (request.getPayment() != null) {
+                    dto.setAmount(request.getPayment().getAmount());
+                }
+
+                // Lấy thông tin luật sư
+                dto.setLawyerProfile(
+                        staffProfileService.findById(appointment.getLawerUUID()).orElse(null)
+                );
+                dto.setStaffName(appointment.getLawyerFullName());
+
+                // Gán dịch vụ
+                if (request.getServices() != null) {
+                    List<String> serviceNames = request.getServices().stream()
+                            .map(Services::getName)
+                            .collect(Collectors.toList());
+                    dto.setServices(serviceNames);
+                }
+
+                result.add(dto);
+            }
+        }
+
+        // Gom tất cả kết quả vào 1 list duy nhất, chứa thông tin khách hàng
+        AppointmentLawyerListResponse appointmentLawyerListResponse = AppointmentLawyerListResponse.builder()
+                .customerFullName(currentUser.getFullname())
+                .customerEmail(currentUser.getEmail())
+                .customerPhone(currentUser.getPhone())
+                .appointmentLawyers(result)
+                .build();
+
+        return List.of(appointmentLawyerListResponse);
     }
 
     @Override

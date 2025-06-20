@@ -5,6 +5,7 @@ import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
 import com.fptu.hk7.basicolawer.exception.AppException;
 import com.fptu.hk7.basicolawer.exception.ErrorCode;
 import com.fptu.hk7.basicolawer.pojo.Appointment;
+import com.fptu.hk7.basicolawer.pojo.Request;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 import com.fptu.hk7.basicolawer.repository.AppointmentRepository;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;

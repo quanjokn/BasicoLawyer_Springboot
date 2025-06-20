@@ -1,5 +1,7 @@
 package com.fptu.hk7.basicolawer.controller;
 
+import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
+import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
 import com.fptu.hk7.basicolawer.pojo.Request;
 import com.fptu.hk7.basicolawer.service.RequestService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -51,4 +53,18 @@ public class RequestController {
         requestService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<ApiResponse<List<RequestDTO>>> getRequestsByUserId() {
+        List<RequestDTO> requestDTO = requestService.findByUserId();
+        return ResponseEntity.ok(
+                ApiResponse.<List<RequestDTO>>builder() // 👈 ép rõ kiểu generic
+                        .status(true)
+                        .code(200)
+                        .message("Get all request lawyer successfully")
+                        .result(requestDTO)
+                        .build()
+        );
+    }
+
 }
