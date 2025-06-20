@@ -71,7 +71,7 @@ public class RequestServiceImp implements RequestService {
             dto.setDateRequest(request.getDateRequest());
             dto.setNote(request.getNote());
             dto.setSlot(request.getSlot());
-
+            dto.setStatus(request.getStatus().name());
 
             Optional<StaffProfile> profileOpt = staffProfileService.findById(request.getPreferedLawerUUID());
             if (profileOpt.isPresent()) {

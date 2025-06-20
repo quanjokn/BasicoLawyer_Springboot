@@ -68,7 +68,7 @@ public class User {
         this.role = role;
     }
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Request> requests;
 

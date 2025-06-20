@@ -75,7 +75,7 @@ public class AppointmentController {
 
     @GetMapping("/user")
     public ResponseEntity<ApiResponse> getAllAppointmentUser() {
-        List<AppointmentLawyerListResponse> appointmentList = appointmentService.findAllAppointmentLawyer();
+        List<AppointmentLawyerListResponse> appointmentList = appointmentService.findAllAppointmentUser();
         return ResponseEntity.ok(
                 ApiResponse.builder()
                         .status(true)

@@ -39,6 +39,7 @@ public class Post {
 //    private User user; // Người đăng bài viết
 
     @ManyToOne(fetch = FetchType.LAZY)
+
     @JsonBackReference
     private Category category;
 }

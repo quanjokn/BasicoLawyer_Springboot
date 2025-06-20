@@ -1,13 +1,13 @@
 package com.fptu.hk7.basicolawer.controller;
 
+import com.fptu.hk7.basicolawer.dto.Request.ChangePasswordDTO;
+import com.fptu.hk7.basicolawer.dto.Request.UpdateUserDTO;
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,5 +22,16 @@ public class UserController {
         return ResponseEntity.ok(userService.getCurrentUser());
     }
 
+    @PostMapping
+    public ResponseEntity<User> updateUser(@RequestBody UpdateUserDTO userUpdateDTO) {
+        User updateUser = userService.updateUser(userUpdateDTO);
+        return ResponseEntity.ok(updateUser);
+    }
+
+        @PostMapping("/change-password")
+        public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+            userService.changePassword(changePasswordDTO);
+            return ResponseEntity.ok("Password changed successfully");
+        }
 
 }

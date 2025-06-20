@@ -21,7 +21,7 @@ public interface AppointmentService {
 
     void deleteById(UUID id);
 
-    List<AppointmentLawyerResponse> findAllAppointmentUser();
+    List<AppointmentLawyerListResponse> findAllAppointmentUser();
     List<AppointmentScheduleReponse> findAllAppointmentAdmin();
     List<AppointmentScheduleReponse> findScheduleLawyer();
 }
