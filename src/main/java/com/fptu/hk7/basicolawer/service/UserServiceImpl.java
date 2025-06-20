@@ -3,6 +3,7 @@ package com.fptu.hk7.basicolawer.service;
 import com.fptu.hk7.basicolawer.auth.AuthService;
 import com.fptu.hk7.basicolawer.config.JWT.JWTUtil;
 import com.fptu.hk7.basicolawer.dto.Request.RegisterDTO;
+import com.fptu.hk7.basicolawer.dto.Request.UpdateUserDTO;
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
 import com.fptu.hk7.basicolawer.dto.Request.LoginDTO;
 import com.fptu.hk7.basicolawer.dto.Response.jwtResponse;
@@ -58,15 +59,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(UUID id, User user) {
+    public User updateUser(UUID id, UpdateUserDTO updateUserDTO) {
         return userRepository.findById(id)
                 .map(existingUser -> {
-                    existingUser.setUsername(user.getUsername());
-                    existingUser.setPassword(user.getPassword());
-                    existingUser.setPhone(user.getPhone());
-                    existingUser.setEmail(user.getEmail());
-                    existingUser.setStatus(user.getStatus());
-                    existingUser.setRole(user.getRole());
+                    existingUser.setFullname(updateUserDTO.getFullname());
+                    existingUser.setPhone(updateUserDTO.getPhone());
+                    existingUser.setEmail(updateUserDTO.getEmail());
+                    existingUser.setStatus(updateUserDTO.getStatus());
+                    existingUser.setAddress(updateUserDTO.getAddress());
                     return userRepository.save(existingUser);
                 })
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -149,8 +149,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
         userRepository.save(user);
+        return user;
     }
 
     @Override
