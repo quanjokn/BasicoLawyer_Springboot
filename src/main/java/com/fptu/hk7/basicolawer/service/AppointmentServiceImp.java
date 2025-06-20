@@ -19,11 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentServiceImp implements AppointmentService {
-
-    private final AppointmentRepository appointmentRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
     @Autowired
     private BookingRepository bookingRepository;
     @Autowired
@@ -32,6 +33,8 @@ public class AppointmentServiceImp implements AppointmentService {
     private UserService userService;
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    private StaffProfileService staffProfileService;
 
     public AppointmentServiceImp(AppointmentRepository appointmentRepository) {
         this.appointmentRepository = appointmentRepository;
@@ -159,15 +162,61 @@ public class AppointmentServiceImp implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentLawyerResponse> findAllAppointmentUser() {
+    public List<AppointmentLawyerListResponse> findAllAppointmentUser() {
     User currentUser = userService.getCurrentUser();
-    List<Request> request = currentUser.getRequests();
-    for(Request req : request) {
-        Booking booking = req.getBooking();
-    }
-    List<AppointmentLawyerResponse> appointmentLawyerResponses = new ArrayList<>();
+    List<Request> requests = requestRepository.findByUserId(currentUser.getId());
+    List<AppointmentLawyerResponse> result = new ArrayList<>();
+        for (Request request : requests) {
+            Booking booking = request.getBooking();
+            if (booking == null) continue;
 
-        return List.of();
+            // Tìm Appointment theo booking
+            List<Appointment> appointments = appointmentRepository.findAllByBooking(booking);
+            if (appointments.isEmpty()) continue;
+
+            for (Appointment appointment : appointments) {
+                AppointmentLawyerResponse dto = new AppointmentLawyerResponse();
+                dto.setBookingId(booking.getId());
+                dto.setId(appointment.getId());
+                dto.setDateBooking(request.getDateBooking()); // từ Request
+                dto.setSlot(request.getSlot());               // từ Request
+                dto.setChannel(appointment.getChannel());
+                dto.setStatus(appointment.getStatus().toString());
+                dto.setLinkCall(appointment.getLinkCall());
+                dto.setNote(appointment.getNote());
+
+                // Lấy thông tin số tiền từ Payment nếu có
+                if (request.getPayment() != null) {
+                    dto.setAmount(request.getPayment().getAmount());
+                }
+
+                // Lấy thông tin luật sư
+                dto.setLawyerProfile(
+                        staffProfileService.findById(appointment.getLawerUUID()).orElse(null)
+                );
+                dto.setStaffName(appointment.getLawyerFullName());
+
+                // Gán dịch vụ
+                if (request.getServices() != null) {
+                    List<String> serviceNames = request.getServices().stream()
+                            .map(Services::getName)
+                            .collect(Collectors.toList());
+                    dto.setServices(serviceNames);
+                }
+
+                result.add(dto);
+            }
+        }
+
+        // Gom tất cả kết quả vào 1 list duy nhất, chứa thông tin khách hàng
+        AppointmentLawyerListResponse appointmentLawyerListResponse = AppointmentLawyerListResponse.builder()
+                .customerFullName(currentUser.getFullname())
+                .customerEmail(currentUser.getEmail())
+                .customerPhone(currentUser.getPhone())
+                .appointmentLawyers(result)
+                .build();
+
+        return List.of(appointmentLawyerListResponse);
     }
 
     @Override

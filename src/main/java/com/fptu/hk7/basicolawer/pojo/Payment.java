@@ -1,5 +1,7 @@
 package com.fptu.hk7.basicolawer.pojo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fptu.hk7.basicolawer.enums.PaymentMethodEnum;
 import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import jakarta.persistence.*;
@@ -29,6 +31,7 @@ public class Payment {
     private PaymentStatusEnum status; 
 
     @OneToOne(mappedBy = "payment")
+    @JsonBackReference
     private Request request;
 
 }

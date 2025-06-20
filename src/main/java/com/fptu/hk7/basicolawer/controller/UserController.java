@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.controller;
 
+import com.fptu.hk7.basicolawer.dto.Request.ChangePasswordDTO;
 import com.fptu.hk7.basicolawer.dto.Request.UpdateUserDTO;
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.service.UserService;
@@ -34,12 +35,18 @@ public class UserController {
         User createdUser = userService.save(user);
         return ResponseEntity.ok(createdUser);
     }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") String id, @RequestBody UpdateUserDTO updateUserDTO) {
-        User updatedUser = userService.updateUser(UUID.fromString(id), updateUserDTO);
-        return ResponseEntity.ok(updatedUser);
+    @PostMapping("/update")
+    public ResponseEntity<User> updateUser(@RequestBody UpdateUserDTO userUpdateDTO) {
+        User updateUser = userService.updateUser(userUpdateDTO);
+        return ResponseEntity.ok(updateUser);
     }
+
+        @PostMapping("/change-password")
+        public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+            userService.changePassword(changePasswordDTO);
+            return ResponseEntity.ok("Password changed successfully");
+        }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") String id) {
