@@ -7,8 +7,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fptu.hk7.basicolawer.dto.Request.FormPaymentDTO;
 import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
+import com.fptu.hk7.basicolawer.dto.Response.UserFormDto;
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.pojo.UserForm;
+import com.fptu.hk7.basicolawer.service.FormTemplateService;
 import com.fptu.hk7.basicolawer.service.UserFormService;
 import com.fptu.hk7.basicolawer.service.UserService;
 import com.fptu.hk7.basicolawer.service.VNPayService;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -34,6 +37,7 @@ public class FormController {
     private final UserFormService formService;
     private final VNPayService vNPayService;
     private final UserService userService;
+    private final FormTemplateService formTemplateService;
 
     @GetMapping
     public ResponseEntity<?> getAllTemplates() {
@@ -43,6 +47,18 @@ public class FormController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getTemplate(@PathVariable UUID id) {
         return ResponseEntity.ok(formService.getTemplateById(id));
+    }
+    @GetMapping("/user")
+    public ResponseEntity<ApiResponse> getTemplatesUser() {
+        List<UserFormDto> userFormDtoList = formTemplateService.findByUser();
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .status(true)
+                        .code(200)
+                        .message("Get all templates successfully")
+                        .result(userFormDtoList)
+                        .build()
+        );
     }
 
     @PostMapping("/payment")
