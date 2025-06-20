@@ -2,12 +2,9 @@ package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.dto.Request.ProfileRequest;
 import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
-<<<<<<< HEAD
 import com.fptu.hk7.basicolawer.exception.AppException;
 import com.fptu.hk7.basicolawer.exception.ErrorCode;
-=======
 import com.fptu.hk7.basicolawer.pojo.Appointment;
->>>>>>> a89e306c6456a55dd6bc137ce26b8f76321a0193
 import com.fptu.hk7.basicolawer.pojo.Request;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 import com.fptu.hk7.basicolawer.repository.AppointmentRepository;
