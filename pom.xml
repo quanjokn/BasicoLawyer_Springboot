@@ -3,10 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
+        <groupId>com.basico</groupId>
+        <artifactId>basico-cqrs</artifactId>
         <version>3.3.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.FPTU.HK7</groupId>
     <artifactId>BasicoLawer</artifactId>
@@ -31,6 +30,11 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>com.FPTU.HK7</groupId>
+            <artifactId>basico-event-data</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
@@ -38,7 +42,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -114,6 +121,7 @@
             <artifactId>modelmapper</artifactId>
             <version>3.1.1</version>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -133,6 +141,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.3.3</version> <!-- hoặc bỏ version để kế thừa từ parent -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal> <!-- QUAN TRỌNG để tạo executable JAR -->
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <excludes>
                         <exclude>
@@ -142,6 +158,7 @@
                     </excludes>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
