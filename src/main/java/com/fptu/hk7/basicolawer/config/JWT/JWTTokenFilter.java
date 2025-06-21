@@ -50,7 +50,8 @@ public class JWTTokenFilter extends OncePerRequestFilter {
             "/uploads/**",
             "/api/assets/**",
             "/api/posts",
-            "/api/categories"
+            "/api/categories",
+            "/test"
     );
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
