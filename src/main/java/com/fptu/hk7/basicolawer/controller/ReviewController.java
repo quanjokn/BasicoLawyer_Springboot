@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.controller;
 
+import com.fptu.hk7.basicolawer.dto.Request.ReviewDTO;
 import com.fptu.hk7.basicolawer.pojo.Review;
 import com.fptu.hk7.basicolawer.service.ReviewService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/reviews")
@@ -33,8 +35,9 @@ public class ReviewController {
     }
 
     @PostMapping
-    public Review create(@RequestBody Review review) {
-        return reviewService.save(review);
+    public ResponseEntity<String> create(@RequestBody ReviewDTO reviewdto) {
+        Review review = reviewService.createReview(reviewdto);
+        return ResponseEntity.ok("Review created successfully with ID: " + review.getId());
     }
 
     @PutMapping("/{id}")
@@ -51,4 +54,13 @@ public class ReviewController {
         reviewService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/booking/{bookingId}")
+    public ResponseEntity<List<ReviewDTO>> getReviewsByBookingId(@PathVariable UUID bookingId) {
+        List<ReviewDTO> result = reviewService.findAll().stream()
+                .filter(r -> r.getBooking().getId().equals(bookingId))
+                .map(r -> new ReviewDTO(r.getId(), r.getRating()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
+    }
+
 }

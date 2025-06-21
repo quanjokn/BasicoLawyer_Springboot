@@ -10,6 +10,6 @@ public interface NotificationService {
     List<Notification> findAll();
     Optional<Notification> findById(UUID id);
     Notification save(Notification notification);
-    Notification update(UUID id, Notification notification);
+    Notification update(UUID id);
     void deleteById(UUID id);
 }
