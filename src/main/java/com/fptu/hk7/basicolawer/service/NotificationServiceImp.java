@@ -33,12 +33,11 @@ public class NotificationServiceImp implements NotificationService {
     }
 
     @Override
-    public Notification update(UUID id) {
-        Notification notification = notificationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Notification not found"));
-
-        notification.setRead(true);
-
+    public Notification update(UUID id, Notification notification) {
+        if (!notificationRepository.existsById(id)) {
+            throw new RuntimeException("Notification not found");
+        }
+        notification.setId(id);
         return notificationRepository.save(notification);
     }
 

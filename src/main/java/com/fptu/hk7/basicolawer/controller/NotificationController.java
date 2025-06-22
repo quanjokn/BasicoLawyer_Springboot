@@ -1,6 +1,5 @@
 package com.fptu.hk7.basicolawer.controller;
 
-import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
 import com.fptu.hk7.basicolawer.pojo.Notification;
 import com.fptu.hk7.basicolawer.service.NotificationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,16 +22,8 @@ public class NotificationController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Notification>>> getAll() {
-        List<Notification> notifications = notificationService.findAll();
-        return ResponseEntity.ok(
-                ApiResponse.<List<Notification>>builder()
-                        .status(true)
-                        .code(200)
-                        .message("Get all notifications successfully")
-                        .result(notifications)
-                        .build()
-        );
+    public List<Notification> getAll() {
+        return notificationService.findAll();
     }
 
     @GetMapping("/{id}")
@@ -46,10 +37,10 @@ public class NotificationController {
         return notificationService.save(notification);
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<Notification> update(@PathVariable UUID id) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Notification> update(@PathVariable UUID id, @RequestBody Notification notification) {
         try {
-            return ResponseEntity.ok(notificationService.update(id));
+            return ResponseEntity.ok(notificationService.update(id, notification));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

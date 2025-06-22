@@ -31,6 +31,5 @@ public class AppointmentLawyerResponse {
     private StaffProfile lawyerProfile;
     private List<String> services;
     private String staffName;
-    private String rating;
 
 }
