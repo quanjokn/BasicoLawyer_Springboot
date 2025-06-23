@@ -128,11 +128,14 @@ public class AppointmentServiceImp implements AppointmentService {
 
     @Override
     public AppointmentLawyerResponse updateStatusAppointment(UUID id, StatusDTO status) {
+        System.out.println("Update status appointment with id: " + id + " to status: " + status.getStatus());
+
         Appointment appointment = appointmentRepository.findById(id).get();
         if (appointment != null) {
             appointment.setStatus(status.getStatus());
             appointmentRepository.save(appointment);
         }
+        System.out.println(appointment);
         AppointmentLawyerResponse appointmentLawyerResponse = AppointmentLawyerResponse.builder()
                 .id(appointment.getId())
                 .bookingId(appointment.getBooking().getId())
@@ -143,7 +146,7 @@ public class AppointmentServiceImp implements AppointmentService {
                 .status(appointment.getStatus())
                 .slot(appointment.getSlot())
                 .build();
-
+        System.out.println(appointmentLawyerResponse);
         Notification notification = Notification.builder()
                 .message("Cuộc hẹn của bạn đã được thay đổi trạng thái: "+status.getStatus())
                 .type("Cập nhật trạng thái dịch vụ")
@@ -152,6 +155,7 @@ public class AppointmentServiceImp implements AppointmentService {
                 .user(appointment.getBooking().getRequest().getUser())
                 .build();
 
+        System.out.println(notification);
         notificationRepository.save(notification);
         return appointmentLawyerResponse;
     }

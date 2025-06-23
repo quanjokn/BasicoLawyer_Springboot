@@ -25,7 +25,7 @@ public class ServiceController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Services> getById(@PathVariable UUID id) {
+    public ResponseEntity<Services> getById(@PathVariable("id") UUID id) {
         Optional<Services> service = serviceService.findById(id);
         return service.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -36,7 +36,7 @@ public class ServiceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Services> update(@PathVariable UUID id, @RequestBody Services services) {
+    public ResponseEntity<Services> update(@PathVariable("id") UUID id, @RequestBody Services services) {
         try {
             return ResponseEntity.ok(serviceService.update(id, services));
         } catch (RuntimeException e) {
@@ -45,7 +45,7 @@ public class ServiceController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         serviceService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

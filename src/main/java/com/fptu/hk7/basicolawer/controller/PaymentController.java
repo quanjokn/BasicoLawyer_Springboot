@@ -28,7 +28,7 @@ public class PaymentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Payment> getById(@PathVariable UUID id) {
+    public ResponseEntity<Payment> getById(@PathVariable("id") UUID id) {
         Optional<Payment> payment = paymentService.findById(id);
         return payment.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,7 +39,7 @@ public class PaymentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Payment> update(@PathVariable UUID id, @RequestBody Payment payment) {
+    public ResponseEntity<Payment> update(@PathVariable("id") UUID id, @RequestBody Payment payment) {
         try {
             return ResponseEntity.ok(paymentService.update(id, payment));
         } catch (RuntimeException e) {
@@ -48,7 +48,7 @@ public class PaymentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         paymentService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

@@ -29,7 +29,7 @@ public class RequestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Request> getById(@PathVariable UUID id) {
+    public ResponseEntity<Request> getById(@PathVariable("id") UUID id) {
         Optional<Request> request = requestService.findById(id);
         return request.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -40,7 +40,7 @@ public class RequestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Request> update(@PathVariable UUID id, @RequestBody Request request) {
+    public ResponseEntity<Request> update(@PathVariable("id") UUID id, @RequestBody Request request) {
         try {
             return ResponseEntity.ok(requestService.update(id, request));
         } catch (RuntimeException e) {
@@ -49,7 +49,7 @@ public class RequestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         requestService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

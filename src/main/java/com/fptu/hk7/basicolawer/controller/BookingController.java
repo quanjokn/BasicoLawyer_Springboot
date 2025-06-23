@@ -38,7 +38,7 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getById(@PathVariable UUID id) {
+    public ResponseEntity<Booking> getById(@PathVariable("id") UUID id) {
         Optional<Booking> booking = bookingService.findById(id);
         return booking.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -49,7 +49,7 @@ public class BookingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> update(@PathVariable UUID id, @RequestBody StatusDTO status) {
+    public ResponseEntity<ApiResponse> update(@PathVariable("id") UUID id, @RequestBody StatusDTO status) {
         bookingService.updateStatusBooking(id, status);
         return ResponseEntity.ok(
                 ApiResponse.builder()
@@ -62,7 +62,7 @@ public class BookingController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         bookingService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

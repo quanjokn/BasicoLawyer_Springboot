@@ -45,7 +45,7 @@ public class FormController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTemplate(@PathVariable UUID id) {
+    public ResponseEntity<?> getTemplate(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(formService.getTemplateById(id));
     }
     @GetMapping("/user")

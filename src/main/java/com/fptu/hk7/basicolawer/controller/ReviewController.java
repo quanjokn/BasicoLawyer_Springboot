@@ -29,7 +29,7 @@ public class ReviewController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Review> getById(@PathVariable UUID id) {
+    public ResponseEntity<Review> getById(@PathVariable("id") UUID id) {
         Optional<Review> review = reviewService.findById(id);
         return review.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -41,7 +41,7 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Review> update(@PathVariable UUID id, @RequestBody Review review) {
+    public ResponseEntity<Review> update(@PathVariable("id") UUID id, @RequestBody Review review) {
         try {
             return ResponseEntity.ok(reviewService.update(id, review));
         } catch (RuntimeException e) {
@@ -50,12 +50,12 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         reviewService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
     @GetMapping("/booking/{bookingId}")
-    public ResponseEntity<List<ReviewDTO>> getReviewsByBookingId(@PathVariable UUID bookingId) {
+    public ResponseEntity<List<ReviewDTO>> getReviewsByBookingId(@PathVariable("bookingId") UUID bookingId) {
         List<ReviewDTO> result = reviewService.findAll().stream()
                 .filter(r -> r.getBooking().getId().equals(bookingId))
                 .map(r -> new ReviewDTO(

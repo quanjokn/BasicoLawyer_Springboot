@@ -27,7 +27,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getById(@PathVariable UUID id) {
+    public ResponseEntity<Category> getById(@PathVariable("id") UUID id) {
         Optional<Category> category = categoryService.findById(id);
         return category.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -38,7 +38,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> update(@PathVariable UUID id, @RequestBody Category category) {
+    public ResponseEntity<Category> update(@PathVariable("id") UUID id, @RequestBody Category category) {
         try {
             return ResponseEntity.ok(categoryService.update(id, category));
         } catch (RuntimeException e) {
@@ -47,7 +47,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         categoryService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

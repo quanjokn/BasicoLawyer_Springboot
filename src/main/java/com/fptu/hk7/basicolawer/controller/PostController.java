@@ -46,7 +46,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getById(@PathVariable UUID id) {
+    public ResponseEntity<Post> getById(@PathVariable("id") UUID id) {
         Optional<Post> post = postService.findById(id);
         return post.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -83,7 +83,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         postService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
