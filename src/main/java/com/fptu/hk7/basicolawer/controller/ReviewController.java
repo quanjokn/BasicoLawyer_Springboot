@@ -58,8 +58,14 @@ public class ReviewController {
     public ResponseEntity<List<ReviewDTO>> getReviewsByBookingId(@PathVariable UUID bookingId) {
         List<ReviewDTO> result = reviewService.findAll().stream()
                 .filter(r -> r.getBooking().getId().equals(bookingId))
-                .map(r -> new ReviewDTO(r.getId(), r.getRating()))
+                .map(r -> new ReviewDTO(
+                        r.getId(),
+                        r.getRating(),
+                        r.getBooking().getId(),
+                        r.getComment() // 👈 lấy comment
+                ))
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(result);
     }
 

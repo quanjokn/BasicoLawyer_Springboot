@@ -7,13 +7,12 @@ import java.util.UUID;
 
 
 @Data
+@AllArgsConstructor
 public class ReviewDTO {
     private UUID id;
     private Float rating;
     private UUID bookingId;
-    public ReviewDTO(UUID id, Float rating) {
-        this.id = id;
-        this.rating = rating;
-    }
+    private String comment;
+
 
 }

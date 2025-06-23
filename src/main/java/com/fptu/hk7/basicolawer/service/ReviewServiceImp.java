@@ -41,6 +41,7 @@ public class ReviewServiceImp implements ReviewService {
         review.setCreatedAt(LocalDateTime.now());
         review.setRating(reviewDTO.getRating());
         review.setUser(user);
+        review.setComment(reviewDTO.getComment());
         review.setBooking(bookingService.findById(reviewDTO.getBookingId()).get());
 
         return reviewRepository.save(review);

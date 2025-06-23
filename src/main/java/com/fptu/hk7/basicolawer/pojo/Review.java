@@ -23,7 +23,8 @@ public class Review {
 
     private LocalDateTime createdAt;
     private Float rating;
-
+    @Column(columnDefinition = "TEXT") // Cho phép comment dài
+    private String comment;
     @ManyToOne
     @JoinColumn(name = "user_id")
 
