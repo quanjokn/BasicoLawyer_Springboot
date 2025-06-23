@@ -27,7 +27,7 @@ public class FormTemplateController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FormTemplate> getById(@PathVariable UUID id) {
+    public ResponseEntity<FormTemplate> getById(@PathVariable("id") UUID id) {
         Optional<FormTemplate> formTemplate = formTemplateService.findById(id);
         return formTemplate.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -38,7 +38,7 @@ public class FormTemplateController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FormTemplate> update(@PathVariable UUID id, @RequestBody FormTemplate formTemplate) {
+    public ResponseEntity<FormTemplate> update(@PathVariable("id") UUID id, @RequestBody FormTemplate formTemplate) {
         try {
             return ResponseEntity.ok(formTemplateService.update(id, formTemplate));
         } catch (RuntimeException e) {
@@ -47,7 +47,7 @@ public class FormTemplateController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         formTemplateService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

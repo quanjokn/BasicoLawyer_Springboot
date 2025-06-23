@@ -32,7 +32,7 @@ public class StaffProfileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StaffProfile> getById(@PathVariable UUID id) {
+    public ResponseEntity<StaffProfile> getById(@PathVariable("id") UUID id) {
         Optional<StaffProfile> staffProfile = staffProfileService.findById(id);
         return staffProfile.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -61,7 +61,7 @@ public class StaffProfileController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         staffProfileService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

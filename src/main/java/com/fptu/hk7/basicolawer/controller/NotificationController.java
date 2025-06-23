@@ -36,7 +36,7 @@ public class NotificationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Notification> getById(@PathVariable UUID id) {
+    public ResponseEntity<Notification> getById(@PathVariable("id") UUID id) {
         Optional<Notification> notification = notificationService.findById(id);
         return notification.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -47,7 +47,7 @@ public class NotificationController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<Notification> update(@PathVariable UUID id) {
+    public ResponseEntity<Notification> update(@PathVariable("id") UUID id) {
         try {
             return ResponseEntity.ok(notificationService.update(id));
         } catch (RuntimeException e) {
@@ -56,7 +56,7 @@ public class NotificationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         notificationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

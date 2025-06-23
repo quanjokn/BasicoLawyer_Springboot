@@ -27,7 +27,7 @@ public class AuditLogController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AuditLog> getById(@PathVariable UUID id) {
+    public ResponseEntity<AuditLog> getById(@PathVariable("id") UUID id) {
         Optional<AuditLog> auditLog = auditLogService.findById(id);
         return auditLog.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -38,7 +38,7 @@ public class AuditLogController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AuditLog> update(@PathVariable UUID id, @RequestBody AuditLog auditLog) {
+    public ResponseEntity<AuditLog> update(@PathVariable("id") UUID id, @RequestBody AuditLog auditLog) {
         try {
             return ResponseEntity.ok(auditLogService.update(id, auditLog));
         } catch (RuntimeException e) {
@@ -47,7 +47,7 @@ public class AuditLogController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         auditLogService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

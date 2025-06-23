@@ -100,7 +100,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> update(@PathVariable UUID id,@RequestBody StatusDTO status) {
+    public ResponseEntity<ApiResponse> update(@PathVariable("id") UUID id,@RequestBody StatusDTO status) {
         AppointmentLawyerResponse appointment = appointmentService.updateStatusAppointment(id, status);
         return ResponseEntity.ok(
                 ApiResponse.builder()
