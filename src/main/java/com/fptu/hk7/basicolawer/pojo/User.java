@@ -2,8 +2,7 @@ package com.fptu.hk7.basicolawer.pojo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fptu.hk7.basicolawer.pojo.Enum.Role;
+import com.fptu.hk7.basicolawer.enums.Role;
 import com.fptu.hk7.basicolawer.validation.ValidPhone;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

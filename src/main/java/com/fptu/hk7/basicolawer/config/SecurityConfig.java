@@ -2,7 +2,7 @@ package com.fptu.hk7.basicolawer.config;
 
 import com.fptu.hk7.basicolawer.config.JWT.JWTTokenFilter;
 import com.fptu.hk7.basicolawer.pojo.*;
-import com.fptu.hk7.basicolawer.pojo.Enum.Role;
+import com.fptu.hk7.basicolawer.enums.Role;
 import com.fptu.hk7.basicolawer.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

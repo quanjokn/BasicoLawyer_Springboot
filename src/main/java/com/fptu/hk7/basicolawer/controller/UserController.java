@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping("getAll")
-    public ResponseEntity <List<User>> getAllUser() {
+    public ResponseEntity<List<User>> getAllUser() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
@@ -35,17 +35,18 @@ public class UserController {
         User createdUser = userService.save(user);
         return ResponseEntity.ok(createdUser);
     }
+
     @PostMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody UpdateUserDTO userUpdateDTO) {
         User updateUser = userService.updateUser(userUpdateDTO);
         return ResponseEntity.ok(updateUser);
     }
 
-        @PostMapping("/change-password")
-        public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
-            userService.changePassword(changePasswordDTO);
-            return ResponseEntity.ok("Password changed successfully");
-        }
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        userService.changePassword(changePasswordDTO);
+        return ResponseEntity.ok("Password changed successfully");
+    }
 
 
     @DeleteMapping("/{id}")

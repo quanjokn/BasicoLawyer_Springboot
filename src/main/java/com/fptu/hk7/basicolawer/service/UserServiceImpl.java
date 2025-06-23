@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicoeventdata.event.UserEvent;
 import com.fptu.hk7.basicolawer.auth.AuthService;
 import com.fptu.hk7.basicolawer.config.JWT.JWTUtil;
 import com.fptu.hk7.basicolawer.dto.Request.ChangePasswordDTO;
@@ -11,7 +12,9 @@ import com.fptu.hk7.basicolawer.dto.Response.jwtResponse;
 import com.fptu.hk7.basicolawer.exception.AppException;
 import com.fptu.hk7.basicolawer.exception.ErrorCode;
 import com.fptu.hk7.basicolawer.pojo.User;
+import com.fptu.hk7.basicolawer.producer.UserProducer;
 import com.fptu.hk7.basicolawer.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,15 +39,19 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
+    private final UserProducer userProducer;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserDetailsService userDetailsService, AuthService authService, AuthenticationManager authenticationManager, JWTUtil jwtUtil, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, UserDetailsService userDetailsService, AuthService authService, AuthenticationManager authenticationManager, JWTUtil jwtUtil, BCryptPasswordEncoder passwordEncoder, ModelMapper modelMapper, UserProducer userProducer) {
         this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
         this.authService = authService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
+        this.modelMapper = modelMapper;
+        this.userProducer = userProducer;
     }
 
     @Override
@@ -70,12 +77,24 @@ public class UserServiceImpl implements UserService {
         user.setPhone(updateUserDTO.getPhone());
         user.setEmail(updateUserDTO.getEmail());
 
-        return userRepository.save(user);
+        user = userRepository.save(user);
+        // sync data
+        UserEvent userEvent = modelMapper.map(user, UserEvent.class);
+        userEvent.setUser_id(user.getId());
+        userEvent.setRole(user.getRole().toString());
+        userProducer.produce(userEvent, "user-update");
+
+        return user;
     }
 
     @Override
     public void deleteUser(UUID id) {
         userRepository.deleteById(id);
+        // sync data
+        UserEvent userEvent = new UserEvent();
+        userEvent.setUser_id(id);
+        userProducer.produce(userEvent, "user-delete");
+        //
     }
 
     @Override
@@ -123,7 +142,16 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
-        authService.activateUser(user);
+        user = authService.activateUser(user);
+
+        // sync data
+        UserEvent userEvent = modelMapper.map(user, UserEvent.class);
+        userEvent.setUser_id(user.getId());
+        userEvent.setRole(registerDTO.getRole().toString());
+        userProducer.produce(userEvent, "user-create");
+        //
+
+
         return new ApiResponse<>(
                 true,
                 "User registered successfully",

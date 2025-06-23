@@ -1,11 +1,14 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicoeventdata.event.FormTemplateEvent;
 import com.fptu.hk7.basicolawer.dto.Response.UserFormDto;
 import com.fptu.hk7.basicolawer.pojo.FormTemplate;
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.pojo.UserForm;
+import com.fptu.hk7.basicolawer.producer.FormTemplateProducer;
 import com.fptu.hk7.basicolawer.repository.FormTemplateRepository;
 import com.fptu.hk7.basicolawer.repository.UserFormRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,10 @@ public class FormTemplateServiceImp implements FormTemplateService {
     private UserService userService;
     @Autowired
     private UserFormRepository userFormRepository;
+    @Autowired
+    private FormTemplateProducer formTemplateProducer;
+    @Autowired
+    private ModelMapper modelMapper;
 
     public FormTemplateServiceImp(FormTemplateRepository formTemplateRepository) {
         this.formTemplateRepository = formTemplateRepository;
@@ -39,7 +46,11 @@ public class FormTemplateServiceImp implements FormTemplateService {
 
     @Override
     public FormTemplate save(FormTemplate formTemplate) {
-        return formTemplateRepository.save(formTemplate);
+        FormTemplate form =  formTemplateRepository.save(formTemplate);
+        //sync
+        FormTemplateEvent event = modelMapper.map(form, FormTemplateEvent.class);
+        formTemplateProducer.produce(event, "form-template-create");
+        return form;
     }
 
     @Override
@@ -48,12 +59,19 @@ public class FormTemplateServiceImp implements FormTemplateService {
             throw new RuntimeException("FormTemplate not found");
         }
         formTemplate.setId(id);
+
+        FormTemplateEvent form = modelMapper.map(formTemplate, FormTemplateEvent.class);
+        formTemplateProducer.produce(form, "form-template-update");
         return formTemplateRepository.save(formTemplate);
     }
 
     @Override
     public void deleteById(UUID id) {
         formTemplateRepository.deleteById(id);
+
+        FormTemplateEvent event = new FormTemplateEvent();
+        event.setId(id);
+        formTemplateProducer.produce(event, "form-template-delete");
     }
 
     @Override

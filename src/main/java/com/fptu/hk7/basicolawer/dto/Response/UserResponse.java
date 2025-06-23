@@ -1,6 +1,6 @@
 package com.fptu.hk7.basicolawer.dto.Response;
 
-import com.fptu.hk7.basicolawer.pojo.Enum.Role;
+import com.fptu.hk7.basicolawer.enums.Role;
 import lombok.Data;
 
 @Data

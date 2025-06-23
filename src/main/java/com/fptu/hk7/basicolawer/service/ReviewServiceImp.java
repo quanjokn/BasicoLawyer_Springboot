@@ -1,7 +1,10 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicoeventdata.event.ReviewEvent;
 import com.fptu.hk7.basicolawer.pojo.Review;
+import com.fptu.hk7.basicolawer.producer.ReviewProducer;
 import com.fptu.hk7.basicolawer.repository.ReviewRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +15,13 @@ import java.util.UUID;
 public class ReviewServiceImp implements ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ModelMapper modelMapper;
+    private final ReviewProducer reviewProducer;
 
-    public ReviewServiceImp(ReviewRepository reviewRepository) {
+    public ReviewServiceImp(ReviewRepository reviewRepository, ModelMapper modelMapper, ReviewProducer reviewProducer) {
         this.reviewRepository = reviewRepository;
+        this.modelMapper = modelMapper;
+        this.reviewProducer = reviewProducer;
     }
 
     @Override
@@ -29,7 +36,11 @@ public class ReviewServiceImp implements ReviewService {
 
     @Override
     public Review save(Review review) {
-        return reviewRepository.save(review);
+        reviewRepository.save(review);
+        // sync data
+        ReviewEvent event = modelMapper.map(review, ReviewEvent.class);
+        reviewProducer.produce(event, "review-create");
+        return review;
     }
 
     @Override
