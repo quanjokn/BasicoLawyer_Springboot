@@ -1,13 +1,16 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicoeventdata.event.BookingEvent;
 import com.fptu.hk7.basicolawer.dto.Request.StatusDTO;
 import com.fptu.hk7.basicolawer.dto.Response.BookingLawyerDto;
 import com.fptu.hk7.basicolawer.dto.Response.ServicesDto;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
 import com.fptu.hk7.basicolawer.pojo.*;
+import com.fptu.hk7.basicolawer.producer.BookingProducer;
 import com.fptu.hk7.basicolawer.repository.BookingRepository;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
 import com.fptu.hk7.basicolawer.repository.ServiceRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,12 @@ public class BookingServiceImp implements BookingService {
     private UserService userService;
     @Autowired
     private ServiceRepository serviceRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private BookingProducer bookingProducer;
+
     public BookingServiceImp(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
     }
@@ -75,7 +84,11 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public Booking save(Booking booking) {
-        return bookingRepository.save(booking);
+        Booking b = bookingRepository.save(booking);
+
+        BookingEvent event = modelMapper.map(b, BookingEvent.class);
+        bookingProducer.produce(event, "booking-create");
+        return b;
     }
 
     @Override
@@ -93,12 +106,18 @@ public class BookingServiceImp implements BookingService {
             }
             request.setStatus(RequestStatusEnum.CLOSED);
             booking.setRequest(request);
-            bookingRepository.save(booking);
+            Booking b = bookingRepository.save(booking);
+
+            BookingEvent event = modelMapper.map(b, BookingEvent.class);
+            bookingProducer.produce(event, "booking-update");
         }
     }
 
     @Override
     public void deleteById(UUID id) {
         bookingRepository.deleteById(id);
+        BookingEvent event = new BookingEvent();
+        event.setId(id);
+        bookingProducer.produce(event, "booking-delete");
     }
 }

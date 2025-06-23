@@ -1,0 +1,33 @@
+package com.fptu.hk7.basicolawer.producer;
+
+import com.fptu.hk7.basicoeventdata.event.FormTemplateEvent;
+import com.fptu.hk7.basicoeventdata.event.PostEvent;
+import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class FormTemplateProducer {
+    private final String CREATE = "form-template-create";
+    private final String UPDATE = "form-template-update";
+    private final String DELETE = "form-template-delete";
+
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    public void produce(FormTemplateEvent event, String topic) {
+        try {
+            System.out.println("Start event " + topic + ": " + event.toString());
+            if (CREATE.equals(topic)) {
+                kafkaTemplate.send(CREATE, event);
+            } else if (UPDATE.equals(topic)) {
+                kafkaTemplate.send(UPDATE, event);
+            } else if (DELETE.equals(topic)) {
+                kafkaTemplate.send(DELETE, event);
+            }
+            System.out.println("End event " + topic);
+        } catch (Exception e) {
+            System.out.println("Error at RequestProducer: " + e.getMessage());
+        }
+    }
+}

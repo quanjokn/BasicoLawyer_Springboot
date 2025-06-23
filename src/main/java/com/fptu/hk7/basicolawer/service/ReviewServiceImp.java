@@ -1,9 +1,12 @@
 package com.fptu.hk7.basicolawer.service;
 
-import com.fptu.hk7.basicolawer.dto.Request.ReviewDTO;
+import com.fptu.hk7.basicoeventdata.event.ReviewEvent;
 import com.fptu.hk7.basicolawer.pojo.Review;
-import com.fptu.hk7.basicolawer.pojo.User;
+import com.fptu.hk7.basicolawer.producer.ReviewProducer;
 import com.fptu.hk7.basicolawer.repository.ReviewRepository;
+import org.modelmapper.ModelMapper;
+import com.fptu.hk7.basicolawer.dto.Request.ReviewDTO;
+import com.fptu.hk7.basicolawer.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +19,17 @@ import java.util.UUID;
 public class ReviewServiceImp implements ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ModelMapper modelMapper;
+    private final ReviewProducer reviewProducer;
     @Autowired
     private BookingService bookingService;
     @Autowired
     private UserService userService;
-    public ReviewServiceImp(ReviewRepository reviewRepository) {
+
+    public ReviewServiceImp(ReviewRepository reviewRepository, ModelMapper modelMapper, ReviewProducer reviewProducer) {
         this.reviewRepository = reviewRepository;
+        this.modelMapper = modelMapper;
+        this.reviewProducer = reviewProducer;
     }
 
     @Override
@@ -35,6 +43,15 @@ public class ReviewServiceImp implements ReviewService {
     }
 
     @Override
+    public Review save(Review review) {
+        reviewRepository.save(review);
+        // sync data
+        ReviewEvent event = modelMapper.map(review, ReviewEvent.class);
+        reviewProducer.produce(event, "review-create");
+        return review;
+    }
+
+    @Override
     public Review createReview(ReviewDTO reviewDTO) {
         Review review = new Review();
         User user = userService.getCurrentUser();
@@ -44,7 +61,7 @@ public class ReviewServiceImp implements ReviewService {
         review.setComment(reviewDTO.getComment());
         review.setBooking(bookingService.findById(reviewDTO.getBookingId()).get());
 
-        return reviewRepository.save(review);
+        return save(review);
     }
 
     @Override

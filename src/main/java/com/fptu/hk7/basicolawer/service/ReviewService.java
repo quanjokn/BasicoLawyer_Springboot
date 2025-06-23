@@ -13,4 +13,5 @@ public interface ReviewService {
     Review update(UUID id, Review review);
     void deleteById(UUID id);
     Review createReview(ReviewDTO reviewDTO);
+    Review save(Review review);
 }

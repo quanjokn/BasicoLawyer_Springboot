@@ -1,6 +1,6 @@
 package com.fptu.hk7.basicolawer.dto.Request;
 
-import com.fptu.hk7.basicolawer.pojo.Enum.Role;
+import com.fptu.hk7.basicolawer.enums.Role;
 import com.fptu.hk7.basicolawer.validation.ValidPhone;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
