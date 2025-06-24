@@ -3,6 +3,7 @@ package com.fptu.hk7.basicolawer.service;
 import com.fptu.hk7.basicoeventdata.event.RequestEvent;
 import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
 import com.fptu.hk7.basicolawer.dto.Request.UserDTO;
+import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
 import com.fptu.hk7.basicolawer.pojo.Request;
 import com.fptu.hk7.basicolawer.pojo.Services;
@@ -87,7 +88,11 @@ public class RequestServiceImp implements RequestService {
         User user = userService.getCurrentUser();
         List<Request> requests = requestRepository.findByUserId(user.getId());
         return requests.stream()
-                .filter(request -> request.getStatus() == RequestStatusEnum.PENDING) // Kiểm tra xem user có khác null không
+                .filter(request ->
+                        request.getStatus() == RequestStatusEnum.PENDING &&
+                                request.getPayment() != null &&
+                                request.getPayment().getStatus() == PaymentStatusEnum.PAID
+                ) // Kiểm tra xem user có khác null không
                 .map(request -> {
                     RequestDTO dto = new RequestDTO();
                     dto.setId(request.getId());

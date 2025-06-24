@@ -244,7 +244,7 @@ public class VNPayService {
         // Lưu Request xuống D
 
         Payment payment = new Payment();
-        payment.setStatus(PaymentStatusEnum.PAID);
+        payment.setStatus(PaymentStatusEnum.UNPAID);
         payment.setAmount(dto.getAmount());
         payment.setMethod(PaymentMethodEnum.VNPAY);
         payment.setRequest(request);
@@ -276,13 +276,12 @@ public class VNPayService {
             return null; // Thanh toán thất bại
         }
 
-        Optional<Request> requestOpt = requestRepository.findByTxnRef(txnRef);
-        System.out.println(requestOpt);
-        Optional<Payment> paymentOpt = paymentRepository.findByRequest(requestOpt.get());
+        Optional<Request> request = requestRepository.findByTxnRef(txnRef);
+        Optional<Payment> paymentOpt = paymentRepository.findByRequest(request.get());
         paymentOpt.get().setStatus(PaymentStatusEnum.PAID);
         paymentRepository.save(paymentOpt.get());
-        if (requestOpt.isPresent()) {
-            return convertToDTO(requestOpt.get(),paymentOpt.get());
+        if (request.isPresent()) {
+            return convertToDTO(request.get(),paymentOpt.get());
         }
 
         return null; // Không tìm thấy Request

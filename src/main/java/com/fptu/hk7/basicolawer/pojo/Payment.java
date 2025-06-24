@@ -28,6 +28,7 @@ public class Payment {
     private PaymentMethodEnum method;
 
     private int amount;
+    @Enumerated(EnumType.STRING)
     private PaymentStatusEnum status; 
 
     @OneToOne(mappedBy = "payment")

@@ -4,6 +4,7 @@ import com.fptu.hk7.basicolawer.dto.Request.ReviewDTO;
 import com.fptu.hk7.basicolawer.pojo.Review;
 import com.fptu.hk7.basicolawer.service.ReviewService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,9 +36,9 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<String> create(@RequestBody ReviewDTO reviewdto) {
+    public ResponseEntity<String> create(@Valid @RequestBody ReviewDTO reviewdto) {
         Review review = reviewService.createReview(reviewdto);
-        return ResponseEntity.ok("Review created successfully with ID: " + review.getId());
+        return ResponseEntity.ok("Review created successfully ");
     }
 
     @PutMapping("/{id}")
