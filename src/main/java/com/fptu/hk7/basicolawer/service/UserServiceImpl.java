@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(updateUserDTO.getUsername());
         user.setPhone(updateUserDTO.getPhone());
         user.setEmail(updateUserDTO.getEmail());
-
+        user.setAddress(updateUserDTO.getAddress());
         user = userRepository.save(user);
         // sync data
         UserEvent userEvent = modelMapper.map(user, UserEvent.class);

@@ -58,7 +58,7 @@ public class RequestController {
     public ResponseEntity<ApiResponse<List<RequestDTO>>> getRequestsByUserId() {
         List<RequestDTO> requestDTO = requestService.findByUserId();
         return ResponseEntity.ok(
-                ApiResponse.<List<RequestDTO>>builder() // 👈 ép rõ kiểu generic
+                ApiResponse.<List<RequestDTO>>builder()
                         .status(true)
                         .code(200)
                         .message("Get all request lawyer successfully")

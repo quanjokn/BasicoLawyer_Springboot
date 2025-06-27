@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -27,10 +28,11 @@ public class Review {
     private String comment;
     @ManyToOne
     @JoinColumn(name = "user_id")
-
+    @JsonIgnore
     private User user;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name ="booking_id")
     private Booking booking;
 }

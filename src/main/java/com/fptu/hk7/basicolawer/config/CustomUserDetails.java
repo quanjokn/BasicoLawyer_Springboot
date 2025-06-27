@@ -3,6 +3,7 @@ package com.fptu.hk7.basicolawer.config;
 import com.fptu.hk7.basicolawer.pojo.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
+@ToString(exclude = "user")
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
@@ -49,5 +51,9 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+    @Override
+    public String toString() {
+        return "CustomUserDetails(username=" + user.getUsername() + ")";
     }
 }

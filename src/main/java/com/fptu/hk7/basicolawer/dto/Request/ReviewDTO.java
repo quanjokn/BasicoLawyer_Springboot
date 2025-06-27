@@ -1,12 +1,14 @@
 package com.fptu.hk7.basicolawer.dto.Request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import java.util.UUID;
 
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class ReviewDTO {
     private UUID id;
