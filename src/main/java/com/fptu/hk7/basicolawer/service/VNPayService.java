@@ -31,6 +31,8 @@ public class VNPayService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private RequestService requestService;
+    @Autowired
     private RequestRepository requestRepository;
     @Autowired
     private PaymentRepository paymentRepository;
@@ -266,7 +268,7 @@ public class VNPayService {
 
 
         // Lưu các entity xuống DB
-        requestRepository.save(request);
+        requestService.save(request);
         paymentRepository.save(payment);
         bookingRepository.save(booking);
     }
