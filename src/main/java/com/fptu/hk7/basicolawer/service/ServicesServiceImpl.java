@@ -42,4 +42,10 @@ public class ServicesServiceImpl implements ServicesService {
     public void deleteById(UUID id) {
         serviceRepository.deleteById(id);
     }
+
+    @Override
+    public Optional<Services> findByName(String name) {
+        Optional<Services> services = serviceRepository.findByName(name);
+        return services;
+    }
 }

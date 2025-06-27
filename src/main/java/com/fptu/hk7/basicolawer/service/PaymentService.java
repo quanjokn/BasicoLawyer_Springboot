@@ -2,6 +2,7 @@ package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.dto.Request.PaymentDTO;
 import com.fptu.hk7.basicolawer.pojo.Payment;
+import com.fptu.hk7.basicolawer.pojo.Request;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +16,5 @@ public interface PaymentService {
     void deleteById(UUID id);
 
     List<PaymentDTO> getPaymentsByCurrentUser();
+    Optional<Payment> findByRequest(Request request);
 }

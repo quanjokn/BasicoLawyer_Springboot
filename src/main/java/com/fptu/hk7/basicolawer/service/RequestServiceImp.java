@@ -133,4 +133,11 @@ public class RequestServiceImp implements RequestService {
                     return dto;
                 }).collect(Collectors.toList());
     }
+
+    @Override
+    public Optional<Request> findByTxnRef(String txnRef) {
+        Optional<Request> request = requestRepository.findByTxnRef(txnRef);
+
+        return request;
+    }
 }

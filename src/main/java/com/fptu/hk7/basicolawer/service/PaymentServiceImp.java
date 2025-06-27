@@ -78,4 +78,10 @@ public class PaymentServiceImp implements PaymentService {
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public Optional<Payment> findByRequest(Request request) {
+        Optional<Payment> payment = paymentRepository.findByRequest(request);
+        return payment;
+    }
+
 }

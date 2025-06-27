@@ -2,6 +2,7 @@ package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.dto.Response.FormTemplateRepsonse;
 import com.fptu.hk7.basicolawer.pojo.FormTemplate;
+import com.fptu.hk7.basicolawer.pojo.UserForm;
 import com.fptu.hk7.basicolawer.repository.FormTemplateRepository;
 import com.fptu.hk7.basicolawer.repository.UserFormRepository;
 import com.fptu.hk7.basicolawer.repository.UserRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 @Service
 @AllArgsConstructor
@@ -19,6 +21,12 @@ public class UserFormServiceImpl implements UserFormService {
     private final UserFormRepository userFormRepo;
     private final FormTemplateRepository formTemplateRepo;
     private final UserRepository userRepo;
+
+    @Override
+    public UserForm save(UserForm userForm) {
+        return userFormRepo.save(userForm);
+    }
+
     @Override
     public FormTemplate getTemplateById(UUID id) {
         return formTemplateRepo.findById(id).orElseThrow();
@@ -33,6 +41,12 @@ public class UserFormServiceImpl implements UserFormService {
             formTemplateRepsonseList.add(formTemplateRepsonse);
         }
         return formTemplateRepsonseList;
+    }
+
+    @Override
+    public Optional<UserForm> findByTxnRef(String txnRef) {
+        Optional<UserForm> userForm = userFormRepo.findByTxnRef(txnRef);
+        return userForm;
     }
 
     public FormTemplateRepsonse convertToResponse(FormTemplate template) {
