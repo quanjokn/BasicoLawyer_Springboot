@@ -17,5 +17,4 @@ public interface StaffProfileService {
     void deleteById(UUID id);
     List<StaffProfileWithSlot> getStaffProfilesWithUnavailableSlots(LocalDate dateBooking);
     StaffProfile updateProfile(UUID id, ProfileRequest profileRequest);
-    List<StaffProfile> findAvailableStaff (LocalDate dateBooking, int slot, List<String> services);
 }

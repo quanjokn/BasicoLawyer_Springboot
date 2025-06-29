@@ -100,12 +100,6 @@ public class StaffProfileServiceImp implements StaffProfileService {
         staffProfile.setHtmlContent(profileRequest.getHtmlContent());
         return staffProfileRepository.save(staffProfile);
     }
-
-    @Override
-    public List<StaffProfile> findAvailableStaff(LocalDate dateBooking, int slot, List<String> services) {
-        List<StaffProfile> staffProfileList = staffProfileRepository.findAvailableStaff(dateBooking, slot, services);
-        return staffProfileList;
-    }
 }
 
 //@Override

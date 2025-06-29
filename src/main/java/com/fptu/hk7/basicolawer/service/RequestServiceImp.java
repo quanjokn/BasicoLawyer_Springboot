@@ -1,16 +1,17 @@
 package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicoeventdata.event.RequestEvent;
+import com.fptu.hk7.basicoeventdata.event.StaffProfileEvent;
 import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
 import com.fptu.hk7.basicolawer.dto.Request.UserDTO;
 import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
-import com.fptu.hk7.basicolawer.pojo.Request;
-import com.fptu.hk7.basicolawer.pojo.Services;
-import com.fptu.hk7.basicolawer.pojo.StaffProfile;
-import com.fptu.hk7.basicolawer.pojo.User;
+import com.fptu.hk7.basicolawer.exception.AppException;
+import com.fptu.hk7.basicolawer.exception.ErrorCode;
+import com.fptu.hk7.basicolawer.pojo.*;
 import com.fptu.hk7.basicolawer.producer.RequestProducer;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
+import org.apache.kafka.common.errors.ApiException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,15 @@ public class RequestServiceImp implements RequestService {
 
         // sync
         RequestEvent requestEvent = modelMapper.map(req, RequestEvent.class);
+
+        Payment pgPayment = req.getPayment();
+        RequestEvent.Payment payment = modelMapper.map(pgPayment, RequestEvent.Payment.class);
+        requestEvent.setPayment(payment);
+
+        StaffProfile pgStaff = staffProfileService.findById(req.getPreferedLawerUUID()).orElseThrow(()-> new AppException(ErrorCode.INVALID_STAFF_PROFILE));
+        StaffProfileEvent staffProfileEvent = modelMapper.map(pgStaff, StaffProfileEvent.class);
+        requestEvent.setPreferredLawyer(staffProfileEvent);
+
         requestProducer.produce(requestEvent, "request-create");
 
         return req;
@@ -132,12 +142,5 @@ public class RequestServiceImp implements RequestService {
 
                     return dto;
                 }).collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<Request> findByTxnRef(String txnRef) {
-        Optional<Request> request = requestRepository.findByTxnRef(txnRef);
-
-        return request;
     }
 }

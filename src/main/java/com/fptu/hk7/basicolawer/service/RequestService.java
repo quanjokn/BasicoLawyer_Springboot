@@ -14,6 +14,4 @@ public interface RequestService {
     Request update(UUID id, Request request);
     void deleteById(UUID id);
     List<RequestDTO> findByUserId();
-    Optional<Request> findByTxnRef(String txnRef);
-
 }

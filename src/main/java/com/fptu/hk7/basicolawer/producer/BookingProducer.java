@@ -11,6 +11,7 @@ public class BookingProducer {
     private final String CREATE = "booking-create";
     private final String UPDATE = "booking-update";
     private final String DELETE = "booking-delete";
+    private final String CREATE_APPOINTMENT = "booking-appointment-create-update";
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -23,6 +24,8 @@ public class BookingProducer {
                 kafkaTemplate.send(UPDATE, event);
             } else if (DELETE.equals(topic)) {
                 kafkaTemplate.send(DELETE, event);
+            } else if (CREATE_APPOINTMENT.equals(topic)) {
+                kafkaTemplate.send(CREATE_APPOINTMENT, event);
             }
             System.out.println("End event " + topic);
         } catch (Exception e) {

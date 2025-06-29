@@ -86,6 +86,7 @@ public class BookingServiceImp implements BookingService {
     public Booking save(Booking booking) {
         Booking b = bookingRepository.save(booking);
 
+        // sync data
         BookingEvent event = modelMapper.map(b, BookingEvent.class);
         bookingProducer.produce(event, "booking-create");
         return b;
@@ -108,6 +109,7 @@ public class BookingServiceImp implements BookingService {
             booking.setRequest(request);
             Booking b = bookingRepository.save(booking);
 
+            // sync data
             BookingEvent event = modelMapper.map(b, BookingEvent.class);
             bookingProducer.produce(event, "booking-update");
         }

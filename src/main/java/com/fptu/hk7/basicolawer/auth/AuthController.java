@@ -9,6 +9,7 @@ import com.fptu.hk7.basicolawer.exception.ErrorCode;
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.service.EmailService;
 import com.fptu.hk7.basicolawer.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@SecurityRequirement(name = "bearerAuth")
 @Slf4j
 @RequiredArgsConstructor
 public class AuthController {

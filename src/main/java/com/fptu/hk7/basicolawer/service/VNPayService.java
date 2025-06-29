@@ -28,23 +28,26 @@ public class VNPayService {
     public VNPayService(VNPayConfig config) {
         this.config = config;
     }
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private RequestService requestService;
     @Autowired
-    private PaymentService paymentService;
+    private RequestRepository requestRepository;
     @Autowired
-    private StaffProfileService staffProfileService;
+    private PaymentRepository paymentRepository;
+    @Autowired
+    private StaffProfileRepository staffProfileRepository;
     @Autowired
     private UserService userService;
     @Autowired
-    private FormTemplateService formTemplateService;
+    private FormTemplateRepository formTemplateRepository;
     @Autowired
-    private UserFormService userFormService;
+    private UserFormRepository userFormRepository;
     @Autowired
-    private ServicesService servicesService;
+    private ServiceRepository serviceRepository;
     @Autowired
-    private BookingService bookingService;
+    private BookingRepository bookingRepository;
     public String createPaymentUrl(RequestDTO dto , HttpServletRequest request) {
         try {
             System.out.println(dto);
@@ -177,10 +180,10 @@ public class VNPayService {
         User user = userService.getCurrentUser();
         userForm.setUser(userService.getCurrentUser());
 
-        FormTemplate formTemplate = formTemplateService.findById(formPaymentDTO.getFormId()).get();
+        FormTemplate formTemplate = formTemplateRepository.findById(formPaymentDTO.getFormId()).get();
         userForm.setTemplate(formTemplate);
 
-        userFormService.save(userForm);
+        userFormRepository.save(userForm);
         // Lấy User từ DB nếu có
 
     }
@@ -204,7 +207,7 @@ public class VNPayService {
         if (serviceNames != null) {
             List<Services> services = new ArrayList<>();
             for (String name : serviceNames) {
-                Optional<Services> serviceOpt = servicesService.findByName(name);
+                Optional<Services> serviceOpt = serviceRepository.findByName(name);
                 serviceOpt.ifPresent(services::add);
             }
             request.setServices(services);
@@ -229,7 +232,7 @@ public class VNPayService {
             UUID userUuid = dto.getUserId() instanceof UUID
                     ? (UUID) dto.getUserId()
                     : UUID.fromString(dto.getUserId().toString());
-            Optional<User> userOpt = userService.getUserById(userUuid);
+            Optional<User> userOpt = userRepository.findById(userUuid);
             if (userOpt.isPresent()) {
                 request.setUser(userOpt.get());
 
@@ -250,7 +253,7 @@ public class VNPayService {
 
         request.setPayment(payment);
 
-        Optional<StaffProfile> staffProfile = staffProfileService.findById(randomLawyerUUID);
+        Optional<StaffProfile> staffProfile = staffProfileRepository.findById(randomLawyerUUID);
         if (!staffProfile.isPresent()) {
             throw new RuntimeException("Staff not found with id: " + randomLawyerUUID);
         }
@@ -266,8 +269,8 @@ public class VNPayService {
 
         // Lưu các entity xuống DB
         requestService.save(request);
-        paymentService.save(payment);
-        bookingService.save(booking);
+        paymentRepository.save(payment);
+        bookingRepository.save(booking);
     }
 
     public RequestDTO handleVNPayReturn(String txnRef, String vnpResponseCode) {
@@ -275,10 +278,10 @@ public class VNPayService {
             return null; // Thanh toán thất bại
         }
 
-        Optional<Request> request = requestService.findByTxnRef(txnRef);
-        Optional<Payment> paymentOpt = paymentService.findByRequest(request.get());
+        Optional<Request> request = requestRepository.findByTxnRef(txnRef);
+        Optional<Payment> paymentOpt = paymentRepository.findByRequest(request.get());
         paymentOpt.get().setStatus(PaymentStatusEnum.PAID);
-        paymentService.save(paymentOpt.get());
+        paymentRepository.save(paymentOpt.get());
         if (request.isPresent()) {
             return convertToDTO(request.get(),paymentOpt.get());
         }
@@ -290,9 +293,9 @@ public class VNPayService {
         if (!"00".equals(vnpResponseCode)) {
             return null; // Thanh toán thất bại
         }
-        Optional<UserForm> userForm = userFormService.findByTxnRef(txnRef);
+        Optional<UserForm> userForm = userFormRepository.findByTxnRef(txnRef);
         userForm.get().setPaid(true);
-        userFormService.save(userForm.get());
+        userFormRepository.save(userForm.get());
         if (userForm.isPresent()) {
             return userForm.get();
         }
@@ -301,10 +304,10 @@ public class VNPayService {
     }
 
     public RequestDTO getRequestDTOByTxnRef(String txnRef) {
-        Optional<Request> requestOpt = requestService.findByTxnRef(txnRef);
+        Optional<Request> requestOpt = requestRepository.findByTxnRef(txnRef);
         if (requestOpt.isPresent()) {
             Request request = requestOpt.get();
-            Optional<Payment> paymentOpt = paymentService.findByRequest(request);
+            Optional<Payment> paymentOpt = paymentRepository.findByRequest(request);
             Payment payment = paymentOpt.get();
             return convertToDTO(request,payment);
         }
@@ -318,7 +321,7 @@ public class VNPayService {
         dto.setNote(request.getNote());
         dto.setSlot(request.getSlot());
         dto.setPreferedLawerUUID(request.getPreferedLawerUUID());
-        Optional<StaffProfile> staffProfile = staffProfileService.findById(request.getPreferedLawerUUID());
+        Optional<StaffProfile> staffProfile = staffProfileRepository.findById(request.getPreferedLawerUUID());
         dto.setStaffName(staffProfile.get().getUser().getFullname());
         dto.setUserId(request.getUser() != null ? request.getUser().getId() : null);
         List<String> serviceNames = null;
@@ -334,7 +337,7 @@ public class VNPayService {
     }
 
     UUID pickRandomAvailableStaff(LocalDate dateBooking, int slot, List<String> services) {
-        List<StaffProfile> availableStaff = staffProfileService.findAvailableStaff(dateBooking, slot, services);
+        List<StaffProfile> availableStaff = staffProfileRepository.findAvailableStaff(dateBooking, slot, services);
         if (availableStaff.isEmpty()) {
             throw new RuntimeException("Không có luật sư nào phù hợp.");
         }

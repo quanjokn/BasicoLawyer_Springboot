@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicoeventdata.event.BookingEvent;
 import com.fptu.hk7.basicolawer.dto.Request.StatusDTO;
 import com.fptu.hk7.basicolawer.dto.Response.AppointmentScheduleReponse;
 import com.fptu.hk7.basicolawer.dto.Response.AppointmentLawyerListResponse;
@@ -7,18 +8,18 @@ import com.fptu.hk7.basicolawer.dto.Response.AppointmentLawyerResponse;
 import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
 import com.fptu.hk7.basicolawer.pojo.*;
+import com.fptu.hk7.basicolawer.producer.BookingProducer;
 import com.fptu.hk7.basicolawer.repository.AppointmentRepository;
 import com.fptu.hk7.basicolawer.repository.BookingRepository;
 import com.fptu.hk7.basicolawer.repository.NotificationRepository;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +35,14 @@ public class AppointmentServiceImp implements AppointmentService {
     @Autowired
     private NotificationRepository notificationRepository;
     @Autowired
+    private NotificationService notificationService;
+    @Autowired
     private StaffProfileService staffProfileService;
+
+    ModelMapper modelMapper = new ModelMapper();
+
+    @Autowired
+    private BookingProducer bookingProducer;
 
     public AppointmentServiceImp(AppointmentRepository appointmentRepository) {
         this.appointmentRepository = appointmentRepository;
@@ -116,8 +124,8 @@ public class AppointmentServiceImp implements AppointmentService {
                 .user(request.getUser())
                 .build();
 
-        notificationRepository.save(notification);
-        appointmentRepository.save(appointment);
+        notificationService.save(notification);
+        this.save(appointment);
     }
 
 //    @Override
@@ -133,7 +141,7 @@ public class AppointmentServiceImp implements AppointmentService {
         Appointment appointment = appointmentRepository.findById(id).get();
         if (appointment != null) {
             appointment.setStatus(status.getStatus());
-            appointmentRepository.save(appointment);
+            this.save(appointment);
         }
         System.out.println(appointment);
         AppointmentLawyerResponse appointmentLawyerResponse = AppointmentLawyerResponse.builder()
@@ -270,5 +278,17 @@ public class AppointmentServiceImp implements AppointmentService {
             appointmentAdminResponses.add(appointmentScheduleReponse);
         }
         return appointmentAdminResponses;
+    }
+
+    @Override
+    public void save(Appointment appointment) {
+        appointmentRepository.save(appointment);
+
+        //sync data
+        BookingEvent event = modelMapper.map(appointment.getBooking(), BookingEvent.class);
+        BookingEvent.Appointment mgAppointment = modelMapper.map(appointment, BookingEvent.Appointment.class);
+        event.setAppointments(List.of(mgAppointment));
+        System.out.println("Booking-appointment event: "+ event);
+        bookingProducer.produce(event, "booking-appointment-create-update");
     }
 }

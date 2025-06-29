@@ -24,4 +24,6 @@ public interface AppointmentService {
     List<AppointmentLawyerListResponse> findAllAppointmentUser();
     List<AppointmentScheduleReponse> findAllAppointmentAdmin();
     List<AppointmentScheduleReponse> findScheduleLawyer();
+
+    void save(Appointment appointment);
 }
