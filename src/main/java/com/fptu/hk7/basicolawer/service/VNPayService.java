@@ -47,7 +47,7 @@ public class VNPayService {
     @Autowired
     private ServiceRepository serviceRepository;
     @Autowired
-    private BookingRepository bookingRepository;
+    private BookingService bookingService;
     public String createPaymentUrl(RequestDTO dto , HttpServletRequest request) {
         try {
             System.out.println(dto);
@@ -270,7 +270,7 @@ public class VNPayService {
         // Lưu các entity xuống DB
         requestService.save(request);
         paymentRepository.save(payment);
-        bookingRepository.save(booking);
+        bookingService.save(booking);
     }
 
     public RequestDTO handleVNPayReturn(String txnRef, String vnpResponseCode) {
