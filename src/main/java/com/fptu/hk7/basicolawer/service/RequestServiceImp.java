@@ -31,6 +31,8 @@ public class RequestServiceImp implements RequestService {
     @Autowired
     private StaffProfileService staffProfileService;
     @Autowired
+    private PaymentService paymentService;
+    @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private RequestProducer requestProducer;
@@ -53,11 +55,13 @@ public class RequestServiceImp implements RequestService {
     public Request save(Request request) {
         Request req = requestRepository.save(request);
 
+        System.out.println(req.toString());
         // sync
         RequestEvent requestEvent = modelMapper.map(req, RequestEvent.class);
 
-        Payment pgPayment = req.getPayment();
+        Payment pgPayment = paymentService.findByRequest(req);
         RequestEvent.Payment payment = modelMapper.map(pgPayment, RequestEvent.Payment.class);
+        payment.setStatus(pgPayment.getStatus().toString());
         requestEvent.setPayment(payment);
 
         StaffProfile pgStaff = staffProfileService.findById(req.getPreferedLawerUUID()).orElseThrow(()-> new AppException(ErrorCode.INVALID_STAFF_PROFILE));
@@ -65,7 +69,7 @@ public class RequestServiceImp implements RequestService {
         requestEvent.setPreferredLawyer(staffProfileEvent);
 
         requestProducer.produce(requestEvent, "request-create");
-
+        System.out.println(requestEvent);
         return req;
     }
 

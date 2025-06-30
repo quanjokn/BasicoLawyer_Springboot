@@ -78,4 +78,9 @@ public class PaymentServiceImp implements PaymentService {
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public Payment findByRequest(Request req) {
+        return paymentRepository.findByRequest(req).orElseThrow(()-> new RuntimeException("Payment not found"));
+    }
+
 }

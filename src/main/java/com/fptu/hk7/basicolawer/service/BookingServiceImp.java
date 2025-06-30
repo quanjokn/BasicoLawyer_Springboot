@@ -87,7 +87,9 @@ public class BookingServiceImp implements BookingService {
         Booking b = bookingRepository.save(booking);
 
         // sync data
+        System.out.println(b);
         BookingEvent event = modelMapper.map(b, BookingEvent.class);
+        System.out.println(event);
         bookingProducer.produce(event, "booking-create");
         return b;
     }

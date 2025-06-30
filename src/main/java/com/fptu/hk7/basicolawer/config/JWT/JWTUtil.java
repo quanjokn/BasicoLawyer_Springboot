@@ -35,7 +35,7 @@ public class JWTUtil {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        claims.put("roles", roles);
+        claims.put("roles", "ROLE_" + roles.get(0));
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
