@@ -496,7 +496,7 @@ public class SecurityConfig {
                 template.setCategory("Hình sự");
                 template.setJsonStructure(jsonStructure);
                 template.setHtmlTemplate(htmlTemplate);
-
+                template.setImgUrl("https://phucminhlaw.vn/wp-content/uploads/2021/03/Soan-don-263x147.jpg");
                 formTemplateRepository.save(template);
             }
 
@@ -575,7 +575,7 @@ public class SecurityConfig {
                 template2.setCategory("Dân sự");
                 template2.setJsonStructure(jsonStructure2);
                 template2.setHtmlTemplate(htmlTemplate2);
-
+                template2.setImgUrl("https://phucminhlaw.vn/wp-content/uploads/2021/03/Soan-don-263x147.jpg");
                 formTemplateRepository.save(template2);
             }
 
@@ -654,7 +654,7 @@ public class SecurityConfig {
                 template3.setCategory("Dân sự");
                 template3.setJsonStructure(jsonStructure3);
                 template3.setHtmlTemplate(htmlTemplate3);
-
+                template3.setImgUrl("https://phucminhlaw.vn/wp-content/uploads/2021/03/Soan-don-263x147.jpg");
                 formTemplateRepository.save(template3);
             }
 

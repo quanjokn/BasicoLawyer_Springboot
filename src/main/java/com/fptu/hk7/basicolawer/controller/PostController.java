@@ -51,7 +51,7 @@ public class PostController {
         return post.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public Post create(@RequestBody PostRequest postRequest) {
         Post post = modelMapper.map(postRequest, Post.class);
