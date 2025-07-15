@@ -22,6 +22,7 @@ public class BookingLawyerDto {
     private String customerEmail;
     private int slot;
     private List<ServicesDto> services;
+    private boolean isCancel;
     private LocalDate dateBooking;
     private RequestStatusEnum status;
 }

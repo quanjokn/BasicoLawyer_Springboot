@@ -61,6 +61,15 @@ public class BookingServiceImp implements BookingService {
                 servicesDtos.add(servicesDto);
             }
 
+            boolean isCancel = false;
+            List<Appointment> appointments = booking.getAppointments();
+            for (Appointment appointment : appointments) {
+                if (!appointment.getStatus().equals("CANCELLED") && !appointment.getStatus().equals("CLOSED")) {
+                    isCancel = true;
+                    break;
+                    }
+            }
+
             BookingLawyerDto bookingLawyerDto = BookingLawyerDto.builder()
                     .id(booking.getId())
                     .customerFullName(customer.getFullname())
@@ -69,8 +78,11 @@ public class BookingServiceImp implements BookingService {
                     .dateBooking(request.getDateBooking())
                     .status(request.getStatus())
                     .services(servicesDtos)
+                    .isCancel(isCancel)
                     .slot(request.getSlot())
                     .build();
+
+
 
             listBookingLawyerDto.add(bookingLawyerDto);
         }

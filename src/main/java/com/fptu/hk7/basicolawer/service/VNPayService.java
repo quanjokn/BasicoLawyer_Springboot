@@ -266,7 +266,6 @@ public class VNPayService {
         request.setBooking(booking);
 
 
-
         // Lưu các entity xuống DB
         requestService.save(request);
         paymentRepository.save(payment);

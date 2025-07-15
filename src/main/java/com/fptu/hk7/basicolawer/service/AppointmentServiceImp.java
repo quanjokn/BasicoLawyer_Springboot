@@ -139,11 +139,16 @@ public class AppointmentServiceImp implements AppointmentService {
         System.out.println("Update status appointment with id: " + id + " to status: " + status.getStatus());
 
         Appointment appointment = appointmentRepository.findById(id).get();
+        System.out.println(appointment);
         if (appointment != null) {
+            if (status.getStatus().equals("CANCELLED")) {
+                appointment.setSlot(0);
+            }
             appointment.setStatus(status.getStatus());
             this.save(appointment);
         }
-        System.out.println(appointment);
+
+
         AppointmentLawyerResponse appointmentLawyerResponse = AppointmentLawyerResponse.builder()
                 .id(appointment.getId())
                 .bookingId(appointment.getBooking().getId())
@@ -152,8 +157,10 @@ public class AppointmentServiceImp implements AppointmentService {
                 .linkCall(appointment.getLinkCall())
                 .note(appointment.getNote())
                 .status(appointment.getStatus())
+
                 .slot(appointment.getSlot())
                 .build();
+
         System.out.println(appointmentLawyerResponse);
         Notification notification = Notification.builder()
                 .message("Cuộc hẹn của bạn đã được thay đổi trạng thái: "+status.getStatus())
