@@ -190,7 +190,7 @@ public class AppointmentServiceImp implements AppointmentService {
                 AppointmentLawyerResponse dto = new AppointmentLawyerResponse();
                 dto.setBookingId(booking.getId());
                 dto.setId(appointment.getId());
-                dto.setDateBooking(request.getDateBooking()); // từ Request
+                dto.setDateBooking(appointment.getAssignedAt()); // từ Request
                 dto.setSlot(request.getSlot());               // từ Request
                 dto.setChannel(appointment.getChannel());
                 dto.setStatus(appointment.getStatus().toString());
