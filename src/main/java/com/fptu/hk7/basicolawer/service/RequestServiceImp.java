@@ -57,19 +57,19 @@ public class RequestServiceImp implements RequestService {
 
         System.out.println(req.toString());
         // sync
-        RequestEvent requestEvent = modelMapper.map(req, RequestEvent.class);
-
-        Payment pgPayment = paymentService.findByRequest(req);
-        RequestEvent.Payment payment = modelMapper.map(pgPayment, RequestEvent.Payment.class);
-        payment.setStatus(pgPayment.getStatus().toString());
-        requestEvent.setPayment(payment);
-
-        StaffProfile pgStaff = staffProfileService.findById(req.getPreferedLawerUUID()).orElseThrow(()-> new AppException(ErrorCode.INVALID_STAFF_PROFILE));
-        StaffProfileEvent staffProfileEvent = modelMapper.map(pgStaff, StaffProfileEvent.class);
-        requestEvent.setPreferredLawyer(staffProfileEvent);
-
-        requestProducer.produce(requestEvent, "request-create");
-        System.out.println(requestEvent);
+//        RequestEvent requestEvent = modelMapper.map(req, RequestEvent.class);
+//
+//        Payment pgPayment = paymentService.findByRequest(req);
+//        RequestEvent.Payment payment = modelMapper.map(pgPayment, RequestEvent.Payment.class);
+//        payment.setStatus(pgPayment.getStatus().toString());
+//        requestEvent.setPayment(payment);
+//
+//        StaffProfile pgStaff = staffProfileService.findById(req.getPreferedLawerUUID()).orElseThrow(()-> new AppException(ErrorCode.INVALID_STAFF_PROFILE));
+//        StaffProfileEvent staffProfileEvent = modelMapper.map(pgStaff, StaffProfileEvent.class);
+//        requestEvent.setPreferredLawyer(staffProfileEvent);
+//
+//        requestProducer.produce(requestEvent, "request-create");
+//        System.out.println(requestEvent);
         return req;
     }
 
@@ -82,8 +82,8 @@ public class RequestServiceImp implements RequestService {
         Request req = requestRepository.save(request);
 
         // sync
-        RequestEvent requestEvent = modelMapper.map(req, RequestEvent.class);
-        requestProducer.produce(requestEvent, "request-update");
+//        RequestEvent requestEvent = modelMapper.map(req, RequestEvent.class);
+//        requestProducer.produce(requestEvent, "request-update");
         return req;
     }
 

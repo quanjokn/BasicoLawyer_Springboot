@@ -48,11 +48,6 @@ public class AppointmentServiceImp implements AppointmentService {
         this.appointmentRepository = appointmentRepository;
     }
 
-//    @Override
-//    public List<Appointment> findAll() {
-//        return appointmentRepository.findAll();
-//    }
-
     @Override
     public List<AppointmentLawyerListResponse> findAllAppointmentLawyer() {
         User currentLawyer = userService.getCurrentUser();
@@ -128,11 +123,6 @@ public class AppointmentServiceImp implements AppointmentService {
         this.save(appointment);
     }
 
-//    @Override
-//    public void save(AppointmentLawyerResponse appointmentLawyer) {
-//        Appointment appointment = new Appointment();
-//
-//    }
 
     @Override
     public AppointmentLawyerResponse updateStatusAppointment(UUID id, StatusDTO status) {
@@ -292,10 +282,10 @@ public class AppointmentServiceImp implements AppointmentService {
         appointmentRepository.save(appointment);
 
         //sync data
-        BookingEvent event = modelMapper.map(appointment.getBooking(), BookingEvent.class);
-        BookingEvent.Appointment mgAppointment = modelMapper.map(appointment, BookingEvent.Appointment.class);
-        event.setAppointments(List.of(mgAppointment));
-        System.out.println("Booking-appointment event: "+ event);
-        bookingProducer.produce(event, "booking-appointment-create-update");
+//        BookingEvent event = modelMapper.map(appointment.getBooking(), BookingEvent.class);
+//        BookingEvent.Appointment mgAppointment = modelMapper.map(appointment, BookingEvent.Appointment.class);
+//        event.setAppointments(List.of(mgAppointment));
+//        System.out.println("Booking-appointment event: "+ event);
+//        bookingProducer.produce(event, "booking-appointment-create-update");
     }
 }

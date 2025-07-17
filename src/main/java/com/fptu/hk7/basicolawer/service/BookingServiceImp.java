@@ -37,11 +37,6 @@ public class BookingServiceImp implements BookingService {
         this.bookingRepository = bookingRepository;
     }
 
-//    @Override
-//    public List<Booking> findAll() {
-//        return bookingRepository.findAll();
-//    }
-
     @Override
     public List<BookingLawyerDto> findAllBookingLawyer() {
         User currentLawyer = userService.getCurrentUser();
@@ -99,10 +94,10 @@ public class BookingServiceImp implements BookingService {
         Booking b = bookingRepository.save(booking);
 
         // sync data
-        System.out.println(b);
-        BookingEvent event = modelMapper.map(b, BookingEvent.class);
-        System.out.println(event);
-        bookingProducer.produce(event, "booking-create");
+//        System.out.println(b);
+//        BookingEvent event = modelMapper.map(b, BookingEvent.class);
+//        System.out.println(event);
+//        bookingProducer.produce(event, "booking-create");
         return b;
     }
 
@@ -124,16 +119,16 @@ public class BookingServiceImp implements BookingService {
             Booking b = bookingRepository.save(booking);
 
             // sync data
-            BookingEvent event = modelMapper.map(b, BookingEvent.class);
-            bookingProducer.produce(event, "booking-update");
+//            BookingEvent event = modelMapper.map(b, BookingEvent.class);
+//            bookingProducer.produce(event, "booking-update");
         }
     }
 
     @Override
     public void deleteById(UUID id) {
         bookingRepository.deleteById(id);
-        BookingEvent event = new BookingEvent();
-        event.setId(id);
-        bookingProducer.produce(event, "booking-delete");
+//        BookingEvent event = new BookingEvent();
+//        event.setId(id);
+//        bookingProducer.produce(event, "booking-delete");
     }
 }

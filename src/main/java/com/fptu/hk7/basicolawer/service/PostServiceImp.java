@@ -39,7 +39,7 @@ public class PostServiceImp implements PostService {
     public Post save(Post post) {
         Post p = postRepository.save(post);
         //sync
-        PostEvent event = modelMapper.map(post, PostEvent.class);
+        PostEvent event = modelMapper.map(p, PostEvent.class);
         postProducer.produce(event, "post-create");
         return p;
     }
