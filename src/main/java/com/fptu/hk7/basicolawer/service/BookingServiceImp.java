@@ -1,14 +1,11 @@
 package com.fptu.hk7.basicolawer.service;
 
-import com.fptu.hk7.basicoeventdata.event.BookingEvent;
 import com.fptu.hk7.basicolawer.dto.Request.StatusDTO;
 import com.fptu.hk7.basicolawer.dto.Response.BookingLawyerDto;
 import com.fptu.hk7.basicolawer.dto.Response.ServicesDto;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
 import com.fptu.hk7.basicolawer.pojo.*;
-import com.fptu.hk7.basicolawer.producer.BookingProducer;
 import com.fptu.hk7.basicolawer.repository.BookingRepository;
-import com.fptu.hk7.basicolawer.repository.RequestRepository;
 import com.fptu.hk7.basicolawer.repository.ServiceRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +26,6 @@ public class BookingServiceImp implements BookingService {
     private ServiceRepository serviceRepository;
     @Autowired
     private ModelMapper modelMapper;
-
-    @Autowired
-    private BookingProducer bookingProducer;
 
     public BookingServiceImp(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;

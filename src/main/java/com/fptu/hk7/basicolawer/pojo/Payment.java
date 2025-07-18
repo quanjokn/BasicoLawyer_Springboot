@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -29,7 +30,9 @@ public class Payment {
 
     private int amount;
     @Enumerated(EnumType.STRING)
-    private PaymentStatusEnum status; 
+    private PaymentStatusEnum status;
+
+    private LocalDate createdAt;
 
     @OneToOne(mappedBy = "payment")
     @JsonBackReference

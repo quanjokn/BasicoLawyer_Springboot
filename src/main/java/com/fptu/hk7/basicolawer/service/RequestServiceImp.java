@@ -1,17 +1,11 @@
 package com.fptu.hk7.basicolawer.service;
 
-import com.fptu.hk7.basicoeventdata.event.RequestEvent;
-import com.fptu.hk7.basicoeventdata.event.StaffProfileEvent;
 import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
 import com.fptu.hk7.basicolawer.dto.Request.UserDTO;
 import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
-import com.fptu.hk7.basicolawer.exception.AppException;
-import com.fptu.hk7.basicolawer.exception.ErrorCode;
 import com.fptu.hk7.basicolawer.pojo.*;
-import com.fptu.hk7.basicolawer.producer.RequestProducer;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
-import org.apache.kafka.common.errors.ApiException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,8 +28,6 @@ public class RequestServiceImp implements RequestService {
     private PaymentService paymentService;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private RequestProducer requestProducer;
 
     public RequestServiceImp(RequestRepository requestRepository) {
         this.requestRepository = requestRepository;
@@ -92,9 +84,9 @@ public class RequestServiceImp implements RequestService {
         requestRepository.deleteById(id);
 
         // sync
-        RequestEvent requestEvent = new RequestEvent();
-        requestEvent.setId(id);
-        requestProducer.produce(requestEvent, "request-delete");
+//        RequestEvent requestEvent = new RequestEvent();
+//        requestEvent.setId(id);
+//        requestProducer.produce(requestEvent, "request-delete");
     }
 
     @Override

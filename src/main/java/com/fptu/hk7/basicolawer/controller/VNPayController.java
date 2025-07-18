@@ -4,14 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
+import com.fptu.hk7.basicolawer.dto.Request.UserDTO;
+import com.fptu.hk7.basicolawer.dto.WSRequest;
+import com.fptu.hk7.basicolawer.exception.NotFoundException;
+import com.fptu.hk7.basicolawer.pojo.Request;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
 import com.fptu.hk7.basicolawer.service.VNPayService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -28,6 +34,11 @@ public class VNPayController {
     private VNPayService vnPayService;
     @Autowired
     private RequestRepository requestRepository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @PostMapping("/vnpay")
     public ResponseEntity<String> createVNPayUrl(@RequestBody RequestDTO dto , HttpServletRequest request) {
@@ -49,6 +60,13 @@ public class VNPayController {
 
                 String json = objectMapper.writeValueAsString(res);
                 String encoded = URLEncoder.encode(json, StandardCharsets.UTF_8.toString());
+
+                // WebSocket
+                Request req = requestRepository.findByTxnRef(txnRef).orElseThrow(()-> new NotFoundException("Request not found for txnRef: " + txnRef));
+                WSRequest wsRequest = modelMapper.map(req, WSRequest.class);
+                wsRequest.setUserInfo(modelMapper.map(req.getUser(), UserDTO.class));
+                System.out.println("WebSocket new-request: " + wsRequest);
+                messagingTemplate.convertAndSend("/topic/new-request/"+ req.getPreferedLawerUUID(), wsRequest);
 
                 response.sendRedirect("http://localhost:5173/payment-success?res=" + encoded);
             } else {
