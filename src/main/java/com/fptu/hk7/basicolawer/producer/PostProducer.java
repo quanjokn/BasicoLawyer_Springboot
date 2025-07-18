@@ -1,7 +1,6 @@
 package com.fptu.hk7.basicolawer.producer;
 
 import com.fptu.hk7.basicoeventdata.event.PostEvent;
-import com.fptu.hk7.basicoeventdata.event.RequestEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

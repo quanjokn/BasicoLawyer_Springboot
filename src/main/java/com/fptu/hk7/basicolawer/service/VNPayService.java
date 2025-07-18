@@ -250,6 +250,7 @@ public class VNPayService {
         payment.setAmount(dto.getAmount());
         payment.setMethod(PaymentMethodEnum.VNPAY);
         payment.setRequest(request);
+        payment.setCreatedAt(LocalDate.now());
 
         request.setPayment(payment);
 

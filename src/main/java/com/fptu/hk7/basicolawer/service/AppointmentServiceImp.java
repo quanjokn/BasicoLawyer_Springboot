@@ -1,6 +1,5 @@
 package com.fptu.hk7.basicolawer.service;
 
-import com.fptu.hk7.basicoeventdata.event.BookingEvent;
 import com.fptu.hk7.basicolawer.dto.Request.StatusDTO;
 import com.fptu.hk7.basicolawer.dto.Response.AppointmentScheduleReponse;
 import com.fptu.hk7.basicolawer.dto.Response.AppointmentLawyerListResponse;
@@ -8,14 +7,12 @@ import com.fptu.hk7.basicolawer.dto.Response.AppointmentLawyerResponse;
 import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
 import com.fptu.hk7.basicolawer.pojo.*;
-import com.fptu.hk7.basicolawer.producer.BookingProducer;
 import com.fptu.hk7.basicolawer.repository.AppointmentRepository;
 import com.fptu.hk7.basicolawer.repository.BookingRepository;
 import com.fptu.hk7.basicolawer.repository.NotificationRepository;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,9 +37,6 @@ public class AppointmentServiceImp implements AppointmentService {
     private StaffProfileService staffProfileService;
 
     ModelMapper modelMapper = new ModelMapper();
-
-    @Autowired
-    private BookingProducer bookingProducer;
 
     public AppointmentServiceImp(AppointmentRepository appointmentRepository) {
         this.appointmentRepository = appointmentRepository;

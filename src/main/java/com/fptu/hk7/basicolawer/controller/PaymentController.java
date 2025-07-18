@@ -1,10 +1,13 @@
 package com.fptu.hk7.basicolawer.controller;
 
 import com.fptu.hk7.basicolawer.dto.Request.PaymentDTO;
+import com.fptu.hk7.basicolawer.dto.Request.ReportRequest;
+import com.fptu.hk7.basicolawer.dto.Response.WeekReportResponse;
 import com.fptu.hk7.basicolawer.pojo.Payment;
 import com.fptu.hk7.basicolawer.service.PaymentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -57,5 +60,16 @@ public class PaymentController {
     public ResponseEntity<List<PaymentDTO>> getPaymentsByUser() {
         List<PaymentDTO> payments = paymentService.getPaymentsByCurrentUser();
         return ResponseEntity.ok(payments);
+    }
+
+//    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/report")
+    public ResponseEntity<?> getReport(@RequestBody ReportRequest reportRequest) {
+        try {
+            return ResponseEntity.ok(paymentService.getReport(reportRequest));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body("Invalid request: " + e.getMessage());
+        }
+
     }
 }
