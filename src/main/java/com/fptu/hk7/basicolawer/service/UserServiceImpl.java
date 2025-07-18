@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
         // sync data
         UserEvent userEvent = new UserEvent();
-        userEvent.setId(id);
+        userEvent.setUser_id(id);
         userProducer.produce(userEvent, "user-delete");
         //
     }
@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService {
 
         // sync data
         UserEvent userEvent = modelMapper.map(user, UserEvent.class);
-        userEvent.setId(user.getId());
+        userEvent.setUser_id(user.getId());
         userEvent.setRole(registerDTO.getRole().toString());
         userProducer.produce(userEvent, "user-create");
         //
