@@ -1,10 +1,7 @@
 package com.fptu.hk7.basicolawer.service;
 
-import com.fptu.hk7.basicolawer.dto.Request.ChangePasswordDTO;
-import com.fptu.hk7.basicolawer.dto.Request.RegisterDTO;
-import com.fptu.hk7.basicolawer.dto.Request.UpdateUserDTO;
+import com.fptu.hk7.basicolawer.dto.Request.*;
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
-import com.fptu.hk7.basicolawer.dto.Request.LoginDTO;
 import com.fptu.hk7.basicolawer.dto.Response.jwtResponse;
 import com.fptu.hk7.basicolawer.exception.AppException;
 import com.fptu.hk7.basicolawer.pojo.User;
@@ -22,9 +19,11 @@ public interface UserService {
     boolean existsByUsername(String username);
     Optional<User> findByUsername(String username);
 
-//     Authenticate user and return JWT response
     ApiResponse<jwtResponse> login(LoginDTO loginDTO) throws AppException;
-    ApiResponse<Void> register(RegisterDTO registerDTO);
+
+    User register(RegisterDTO registerDTO);
+
+    ApiResponse<Void> registerlawyer(LawyerRegisterDTO lawyerRegisterDTO);
 
     User   getCurrentUser();
 

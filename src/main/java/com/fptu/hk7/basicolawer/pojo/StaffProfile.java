@@ -34,13 +34,11 @@ public class StaffProfile {
     private Float rating;
     private Integer cases;
 
-    // Profile information
     @Column(name = "html_content", columnDefinition = "TEXT")
     private String htmlContent;
 
     @Column(name = "delta_content", columnDefinition = "TEXT")
     private String deltaContent;
-    //
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)

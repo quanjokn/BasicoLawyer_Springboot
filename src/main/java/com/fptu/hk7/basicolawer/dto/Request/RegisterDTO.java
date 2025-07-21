@@ -33,5 +33,5 @@ public class RegisterDTO {
 
     private String status = "active";
 
-    private Role role = Role.CUSTOMER;
+    private String role;
 }

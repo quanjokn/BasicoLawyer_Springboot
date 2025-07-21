@@ -1,7 +1,7 @@
 package com.fptu.hk7.basicolawer.controller;
 
 import com.fptu.hk7.basicolawer.dto.Request.ProfileRequest;
-import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
+import com.fptu.hk7.basicolawer.dto.Request.StaffProfileWithSlot;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 import com.fptu.hk7.basicolawer.service.StaffProfileService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

@@ -1,10 +1,5 @@
-package com.fptu.hk7.basicolawer.dto;
+package com.fptu.hk7.basicolawer.dto.Request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fptu.hk7.basicolawer.dto.Request.UserDTO;
-import com.fptu.hk7.basicolawer.enums.RequestStatusEnum;
-import com.fptu.hk7.basicolawer.pojo.User;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

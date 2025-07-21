@@ -325,73 +325,73 @@ public class SecurityConfig {
                         .build();
                 staffProfileRepository.save(profileNga);
 
-                // 6. Nguyễn Đức Anh
-                User ducanh = new User(
-                        "anhconsultant",
-                        passwordEncoder().encode("123456"),
-                        "Nguyễn Đức Anh",
-                        "0912345683",
-                        "ducanh@basico.com.vn",
-                        "ACTIVE",
-                        Role.CONSULTANT
-                );
-                userRepository.save(ducanh);
-
-                StaffProfile profileDucAnh = StaffProfile.builder()
-                        .yearExperience("4+ năm")
-                        .licenseNumber("LS006")
-                        .bio("Cố vấn pháp lý BASICO.")
-                        .verified(true)
-                        .avatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/NguyenDucAnh.jpg")
-                        .specialties("Dịch vụ Luật sư nội bộ, Pháp lý doanh nghiệp, Công nghệ thông tin và Truyền thông, Ngân hàng và tài chính, Tư vấn bất động sản")
-                        .user(ducanh)
-                        .services(List.of(
-                                serviceMap.get("Dịch vụ luật sư nội bộ"),
-                                serviceMap.get("Doanh nghiệp"),
-                                serviceMap.get("CNTT & truyền thông"),
-                                serviceMap.get("Ngân hàng và tài chính"),
-                                serviceMap.get("Tư vấn bất động sản")
-                        ))
-                        .htmlContent("<p>Trước khi gia nhập&nbsp;<strong>BA</strong><strong style=\"color: rgb(255, 0, 0);\">S</strong><strong>I</strong><strong style=\"color: rgb(255, 0, 0);\">CO</strong>, Cố vấn pháp lý Nguyễn Đức Anh đã có nhiều năm kinh nghiệm làm việc đa dạng trong các tổ chức công chứng, pháp chế nội bộ doanh nghiệp.</p><p>Bằng kinh nghiệm và hệ thống kiến thức chuyên sâu trong các lĩnh vực và hoạt động của doanh nghiệp, Cố vấn pháp lý Nguyễn Đức Anh đã tham gia tích cực vào việc tư vấn các giao dịch và dự án của doanh nghiệp như: Tham gia thẩm tra pháp lý doanh nghiệp (Legal Due Diligence) trong giao dịch M&amp;A; Tư vấn đàm phán hợp đồng mua bán hàng hoá, cung cấp dịch vụ của doanh nghiệp; Xây dựng và hoàn thiện nội dung điều lệ và các quy chế nội bộ doanh nghiệp; Tư vấn các tác động về quản trị, điều hành trong công ty trách nhiệm hữu hạn, công ty cổ phần,…</p><p>Với sự nhiệt tình cùng khả năng nghiên cứu, phân tích và đưa ra phương án giải quyết vấn đề hiệu quả, Cố vấn pháp lý Nguyễn Đức Anh đã và đang nhận được sự tín nhiệm từ Khách hàng trong quá trình cộng tác, thực hiện tư vấn.</p><p><strong>Lĩnh vực đảm nhiệm</strong></p><ul><li><strong><em>Dịch vụ Luật sư nội bộ</em></strong></li><li><strong><em>Pháp lý doanh nghiệp</em></strong></li><li><strong><em>Công nghệ thông tin và Truyền thông</em></strong></li><li><strong><em>Ngân hàng và tài chính</em></strong></li><li><strong><em>Tư vấn bất động sản</em></strong></li></ul><h3>Các dự án đã thực hiện</h3><ul><li>Tư vấn đàm phán hợp đồng quản lý khách sạn và cấp quyền sử dụng nhãn hiệu cho Dự án khu du lịch nghỉ dưỡng Amari Phú Quốc giữa Công ty Cổ phần Đầu tư – Thương mại – Dịch vụ Nhiệt Đới và Tập đoàn nghỉ dưỡng Onyx (thuộc Tập đoàn Italthai);</li><li>Tư vấn giao dịch M&amp;A cho Bên Mua là Công ty TNHH TT Investment nhằm mua lại Công ty mục tiêu từ GUOCOLAND VIETNAM (S) PTE LTD – một công ty thuộc Gouco Group Limited, một trong những tập đoàn bất động sản hàng đầu Singapore;</li><li>Tư vấn xây dựng cấu trúc kinh doanh và hệ thống mẫu biểu, quy trình cho Công ty TNHH Viaconto, Công ty TNHH Microtech DFS Việt Nam trong lĩnh vực Fintech;</li><li>Tư vấn giao dịch chuyển nhượng nhãn hiệu; chuyển quyền sử dụng nhãn hiệu;</li><li>Tư vấn xây dựng, hoàn thiện Điều lệ của nhiều doanh nghiệp;</li><li>Tư vấn pháp lý liên quan đến nghĩa vụ thuế thu nhập cá nhân của các cá nhân phát sinh thu nhập từ Google, Facebook, thương mại điện tử;</li><li>Các dự án tư vấn xây dựng, chuẩn hóa hệ thống quy chế, quy định, quy trình, chính sách quan trọng, mẫu biểu nghiệp vụ, lao động của nhiều tập đoàn, doanh nghiệp.</li><li><br></li></ul><h3>Ngôn ngữ</h3><ul><li>Tiếng<strong><em> Việt</em></strong></li></ul><p><br></p><ul><li>Tiến<strong><em>g Anh</em></strong></li></ul><p><br></p>")
-                        .rating(0f)
-                        .cases(87)
-                        .description("Chuyên gia về hợp đồng thương mại và xuất nhập khẩu quốc tế.")
-                        .build();
-                staffProfileRepository.save(profileDucAnh);
-
-                // 7. Nguyễn Thanh Đăng Khoa
-                User khoa = new User(
-                        "khoaconsultant",
-                        passwordEncoder().encode("123456"),
-                        "Nguyễn Thanh Đăng Khoa",
-                        "0912345684",
-                        "khoa@basico.com.vn",
-                        "ACTIVE",
-                        Role.CONSULTANT
-                );
-                userRepository.save(khoa);
-
-                StaffProfile profileKhoa = StaffProfile.builder()
-                        .yearExperience("3+ năm")
-                        .licenseNumber("LS007")
-                        .bio("Cố vấn pháp lý BASICO.")
-                        .verified(true)
-                        .avatarUrl("https://basico.com.vn/wp-content/uploads/2020/12/NguyenThanhDangKhoa.jpg")
-                        .specialties("Dịch vụ Luật sư nội bộ, M&A, Ngân hàng, Chứng khoán, Pháp lý doanh nghiệp")
-                        .user(khoa)
-                        .services(List.of(
-                                serviceMap.get("Dịch vụ luật sư nội bộ"),
-                                serviceMap.get("Tư vấn M&A"),
-                                serviceMap.get("Ngân hàng và tài chính"),
-                                serviceMap.get("Thị trường vốn"),
-                                serviceMap.get("Doanh nghiệp")
-                        ))
-                        .htmlContent("<p>Trước khi gia nhập&nbsp;<strong>BA</strong><strong style=\"color: rgb(255, 0, 0);\">S</strong><strong>I</strong><strong style=\"color: rgb(255, 0, 0);\">CO</strong>, Cố vấn pháp lý Nguyễn Thanh Đăng Khoa đã có kinh nghiệm tư vấn cho các doanh nghiệp hoạt động trong nhiều lĩnh vực khác nhau như bảo hiểm, bất động sản, công ty quản lý quỹ đầu tư, v.v…</p><p>Với nền tảng kiến thức pháp lý vững chắc, cùng khả năng giao tiếp, sử dụng ngoại ngữ tốt, Cố vấn pháp lý Nguyễn Thanh Đăng Khoa đã phụ trách tư vấn các lĩnh vực về pháp lý doanh nghiệp, M&amp;A, đầu tư, với khách hàng là các doanh nghiệp trong nước và doanh nghiệp có vốn đầu tư nước ngoài hoạt động ở nhiều lĩnh vực như chứng khoán, bất động sản, đầu tư, bao gồm cả các tổ chức tín dụng.</p><p>Có thể nói, thông qua quá trình học tập, rèn luyện, nghiên cứu khoa học tại Trường Đại học Luật Thành phố Hồ Chí Minh, cũng như quá trình tham gia tư vấn cho các khách hàng, Cố vấn pháp lý Nguyễn Thanh Đăng Khoa đã tích lũy được nhiều kiến thức pháp lý quan trọng, từ đó có thể hỗ trợ các khách hàng một cách hiệu quả trong các vấn đề pháp lý của mình.</p><p><strong>Lĩnh vực đảm nhiệm</strong></p><ul><li>Dịch vụ Luật sư nội bộ</li><li>M&amp;A</li><li>Ngân hàng</li><li>Chứng khoán</li><li>Pháp lý doanh nghiệp</li><li>Pháp lý doanh nghiệp</li></ul><h3>Ngôn ngữ</h3><ul><li>Tiếng Việt</li><li>Tiếng Anh</li></ul><p><strong>Các dự án đã thực hiện</strong></p><ul><li>Tư vấn, soạn thảo và rà soát các văn bản, biểu mẫu liên quan đến việc tổ chức các cuộc họp Hội đồng thành viên, Hội đồng quản trị, Đại hội đồng cổ đông của các doanh nghiệp.</li><li>Tư vấn các vấn đề pháp lý liên quan đến công bố thông tin của công ty chứng khoán.</li><li>Tham gia tư vấn giao dịch M&amp;A cho Bên Mua là Công ty TNHH TT Investment nhằm mua lại Công ty mục tiêu từ GUOCOLAND VIETNAM (S) PTE LTD- một công ty thuộc Gouco Group Limited, một trong những tập đoàn bất động sản hàng đầu Singapore;</li><li>Tư vấn pháp lý về các phương án cho vay, thu hồi nợ, xử lý tài sản bảo đảm cho các tổ chức tín dụng.</li><li>Hỗ trợ các doanh nghiệp trong việc rà soát, cũng như hoàn thiện các hợp đồng, giao dịch trong quá trình hoạt động của mình, như Hợp đồng mua bán hàng hóa, Hợp đồng cho thuê nhà xưởng sản xuất, Hợp đồng hợp tác đầu tư, v.v</li></ul><p><br></p>")
-                        .rating(0f)
-                        .cases(39)
-                        .description("Chuyên gia về thuế và tuân thủ pháp lý cho doanh nghiệp.")
-                        .build();
-                staffProfileRepository.save(profileKhoa);
+//                // 6. Nguyễn Đức Anh
+//                User ducanh = new User(
+//                        "anhconsultant",
+//                        passwordEncoder().encode("123456"),
+//                        "Nguyễn Đức Anh",
+//                        "0912345683",
+//                        "ducanh@basico.com.vn",
+//                        "ACTIVE",
+//                        Role.CONSULTANT
+//                );
+//                userRepository.save(ducanh);
+//
+//                StaffProfile profileDucAnh = StaffProfile.builder()
+//                        .yearExperience("4+ năm")
+//                        .licenseNumber("LS006")
+//                        .bio("Cố vấn pháp lý BASICO.")
+//                        .verified(true)
+//                        .avatarUrl("https://basico.com.vn/wp-content/uploads/2016/02/NguyenDucAnh.jpg")
+//                        .specialties("Dịch vụ Luật sư nội bộ, Pháp lý doanh nghiệp, Công nghệ thông tin và Truyền thông, Ngân hàng và tài chính, Tư vấn bất động sản")
+//                        .user(ducanh)
+//                        .services(List.of(
+//                                serviceMap.get("Dịch vụ luật sư nội bộ"),
+//                                serviceMap.get("Doanh nghiệp"),
+//                                serviceMap.get("CNTT & truyền thông"),
+//                                serviceMap.get("Ngân hàng và tài chính"),
+//                                serviceMap.get("Tư vấn bất động sản")
+//                        ))
+//                        .htmlContent("<p>Trước khi gia nhập&nbsp;<strong>BA</strong><strong style=\"color: rgb(255, 0, 0);\">S</strong><strong>I</strong><strong style=\"color: rgb(255, 0, 0);\">CO</strong>, Cố vấn pháp lý Nguyễn Đức Anh đã có nhiều năm kinh nghiệm làm việc đa dạng trong các tổ chức công chứng, pháp chế nội bộ doanh nghiệp.</p><p>Bằng kinh nghiệm và hệ thống kiến thức chuyên sâu trong các lĩnh vực và hoạt động của doanh nghiệp, Cố vấn pháp lý Nguyễn Đức Anh đã tham gia tích cực vào việc tư vấn các giao dịch và dự án của doanh nghiệp như: Tham gia thẩm tra pháp lý doanh nghiệp (Legal Due Diligence) trong giao dịch M&amp;A; Tư vấn đàm phán hợp đồng mua bán hàng hoá, cung cấp dịch vụ của doanh nghiệp; Xây dựng và hoàn thiện nội dung điều lệ và các quy chế nội bộ doanh nghiệp; Tư vấn các tác động về quản trị, điều hành trong công ty trách nhiệm hữu hạn, công ty cổ phần,…</p><p>Với sự nhiệt tình cùng khả năng nghiên cứu, phân tích và đưa ra phương án giải quyết vấn đề hiệu quả, Cố vấn pháp lý Nguyễn Đức Anh đã và đang nhận được sự tín nhiệm từ Khách hàng trong quá trình cộng tác, thực hiện tư vấn.</p><p><strong>Lĩnh vực đảm nhiệm</strong></p><ul><li><strong><em>Dịch vụ Luật sư nội bộ</em></strong></li><li><strong><em>Pháp lý doanh nghiệp</em></strong></li><li><strong><em>Công nghệ thông tin và Truyền thông</em></strong></li><li><strong><em>Ngân hàng và tài chính</em></strong></li><li><strong><em>Tư vấn bất động sản</em></strong></li></ul><h3>Các dự án đã thực hiện</h3><ul><li>Tư vấn đàm phán hợp đồng quản lý khách sạn và cấp quyền sử dụng nhãn hiệu cho Dự án khu du lịch nghỉ dưỡng Amari Phú Quốc giữa Công ty Cổ phần Đầu tư – Thương mại – Dịch vụ Nhiệt Đới và Tập đoàn nghỉ dưỡng Onyx (thuộc Tập đoàn Italthai);</li><li>Tư vấn giao dịch M&amp;A cho Bên Mua là Công ty TNHH TT Investment nhằm mua lại Công ty mục tiêu từ GUOCOLAND VIETNAM (S) PTE LTD – một công ty thuộc Gouco Group Limited, một trong những tập đoàn bất động sản hàng đầu Singapore;</li><li>Tư vấn xây dựng cấu trúc kinh doanh và hệ thống mẫu biểu, quy trình cho Công ty TNHH Viaconto, Công ty TNHH Microtech DFS Việt Nam trong lĩnh vực Fintech;</li><li>Tư vấn giao dịch chuyển nhượng nhãn hiệu; chuyển quyền sử dụng nhãn hiệu;</li><li>Tư vấn xây dựng, hoàn thiện Điều lệ của nhiều doanh nghiệp;</li><li>Tư vấn pháp lý liên quan đến nghĩa vụ thuế thu nhập cá nhân của các cá nhân phát sinh thu nhập từ Google, Facebook, thương mại điện tử;</li><li>Các dự án tư vấn xây dựng, chuẩn hóa hệ thống quy chế, quy định, quy trình, chính sách quan trọng, mẫu biểu nghiệp vụ, lao động của nhiều tập đoàn, doanh nghiệp.</li><li><br></li></ul><h3>Ngôn ngữ</h3><ul><li>Tiếng<strong><em> Việt</em></strong></li></ul><p><br></p><ul><li>Tiến<strong><em>g Anh</em></strong></li></ul><p><br></p>")
+//                        .rating(0f)
+//                        .cases(87)
+//                        .description("Chuyên gia về hợp đồng thương mại và xuất nhập khẩu quốc tế.")
+//                        .build();
+//                staffProfileRepository.save(profileDucAnh);
+//
+//                // 7. Nguyễn Thanh Đăng Khoa
+//                User khoa = new User(
+//                        "khoaconsultant",
+//                        passwordEncoder().encode("123456"),
+//                        "Nguyễn Thanh Đăng Khoa",
+//                        "0912345684",
+//                        "khoa@basico.com.vn",
+//                        "ACTIVE",
+//                        Role.CONSULTANT
+//                );
+//                userRepository.save(khoa);
+//
+//                StaffProfile profileKhoa = StaffProfile.builder()
+//                        .yearExperience("3+ năm")
+//                        .licenseNumber("LS007")
+//                        .bio("Cố vấn pháp lý BASICO.")
+//                        .verified(true)
+//                        .avatarUrl("https://basico.com.vn/wp-content/uploads/2020/12/NguyenThanhDangKhoa.jpg")
+//                        .specialties("Dịch vụ Luật sư nội bộ, M&A, Ngân hàng, Chứng khoán, Pháp lý doanh nghiệp")
+//                        .user(khoa)
+//                        .services(List.of(
+//                                serviceMap.get("Dịch vụ luật sư nội bộ"),
+//                                serviceMap.get("Tư vấn M&A"),
+//                                serviceMap.get("Ngân hàng và tài chính"),
+//                                serviceMap.get("Thị trường vốn"),
+//                                serviceMap.get("Doanh nghiệp")
+//                        ))
+//                        .htmlContent("<p>Trước khi gia nhập&nbsp;<strong>BA</strong><strong style=\"color: rgb(255, 0, 0);\">S</strong><strong>I</strong><strong style=\"color: rgb(255, 0, 0);\">CO</strong>, Cố vấn pháp lý Nguyễn Thanh Đăng Khoa đã có kinh nghiệm tư vấn cho các doanh nghiệp hoạt động trong nhiều lĩnh vực khác nhau như bảo hiểm, bất động sản, công ty quản lý quỹ đầu tư, v.v…</p><p>Với nền tảng kiến thức pháp lý vững chắc, cùng khả năng giao tiếp, sử dụng ngoại ngữ tốt, Cố vấn pháp lý Nguyễn Thanh Đăng Khoa đã phụ trách tư vấn các lĩnh vực về pháp lý doanh nghiệp, M&amp;A, đầu tư, với khách hàng là các doanh nghiệp trong nước và doanh nghiệp có vốn đầu tư nước ngoài hoạt động ở nhiều lĩnh vực như chứng khoán, bất động sản, đầu tư, bao gồm cả các tổ chức tín dụng.</p><p>Có thể nói, thông qua quá trình học tập, rèn luyện, nghiên cứu khoa học tại Trường Đại học Luật Thành phố Hồ Chí Minh, cũng như quá trình tham gia tư vấn cho các khách hàng, Cố vấn pháp lý Nguyễn Thanh Đăng Khoa đã tích lũy được nhiều kiến thức pháp lý quan trọng, từ đó có thể hỗ trợ các khách hàng một cách hiệu quả trong các vấn đề pháp lý của mình.</p><p><strong>Lĩnh vực đảm nhiệm</strong></p><ul><li>Dịch vụ Luật sư nội bộ</li><li>M&amp;A</li><li>Ngân hàng</li><li>Chứng khoán</li><li>Pháp lý doanh nghiệp</li><li>Pháp lý doanh nghiệp</li></ul><h3>Ngôn ngữ</h3><ul><li>Tiếng Việt</li><li>Tiếng Anh</li></ul><p><strong>Các dự án đã thực hiện</strong></p><ul><li>Tư vấn, soạn thảo và rà soát các văn bản, biểu mẫu liên quan đến việc tổ chức các cuộc họp Hội đồng thành viên, Hội đồng quản trị, Đại hội đồng cổ đông của các doanh nghiệp.</li><li>Tư vấn các vấn đề pháp lý liên quan đến công bố thông tin của công ty chứng khoán.</li><li>Tham gia tư vấn giao dịch M&amp;A cho Bên Mua là Công ty TNHH TT Investment nhằm mua lại Công ty mục tiêu từ GUOCOLAND VIETNAM (S) PTE LTD- một công ty thuộc Gouco Group Limited, một trong những tập đoàn bất động sản hàng đầu Singapore;</li><li>Tư vấn pháp lý về các phương án cho vay, thu hồi nợ, xử lý tài sản bảo đảm cho các tổ chức tín dụng.</li><li>Hỗ trợ các doanh nghiệp trong việc rà soát, cũng như hoàn thiện các hợp đồng, giao dịch trong quá trình hoạt động của mình, như Hợp đồng mua bán hàng hóa, Hợp đồng cho thuê nhà xưởng sản xuất, Hợp đồng hợp tác đầu tư, v.v</li></ul><p><br></p>")
+//                        .rating(0f)
+//                        .cases(39)
+//                        .description("Chuyên gia về thuế và tuân thủ pháp lý cho doanh nghiệp.")
+//                        .build();
+//                staffProfileRepository.save(profileKhoa);
             }
 
 

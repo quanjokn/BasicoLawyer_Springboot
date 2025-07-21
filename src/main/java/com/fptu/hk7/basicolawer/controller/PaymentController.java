@@ -62,8 +62,8 @@ public class PaymentController {
         return ResponseEntity.ok(payments);
     }
 
-//    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/report")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/report")
     public ResponseEntity<?> getReport(@RequestBody ReportRequest reportRequest) {
         try {
             return ResponseEntity.ok(paymentService.getReport(reportRequest));

@@ -1,5 +1,6 @@
 package com.fptu.hk7.basicolawer.auth;
 
+import com.fptu.hk7.basicolawer.dto.Request.LawyerRegisterDTO;
 import com.fptu.hk7.basicolawer.dto.Request.RegisterDTO;
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
 import com.fptu.hk7.basicolawer.dto.Request.LoginDTO;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +40,18 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody RegisterDTO registerDTO) throws RuntimeException{
-        return ResponseEntity.ok(userService.register(registerDTO));
+        userService.register(registerDTO);
+        return ResponseEntity.ok(new ApiResponse<>(
+                true,
+                "User registered successfully",
+                200,
+                null));
+    }
+
+//    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/lawyer/register")
+    public ResponseEntity<ApiResponse<Void>> law(@Valid @RequestBody LawyerRegisterDTO lawyerRegisterDTO) throws RuntimeException{
+        return ResponseEntity.ok(userService.registerlawyer(lawyerRegisterDTO));
     }
 
     @GetMapping("/profile")

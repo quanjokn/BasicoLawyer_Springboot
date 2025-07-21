@@ -1,7 +1,7 @@
 package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.dto.Request.ProfileRequest;
-import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
+import com.fptu.hk7.basicolawer.dto.Request.StaffProfileWithSlot;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 
 import java.time.LocalDate;

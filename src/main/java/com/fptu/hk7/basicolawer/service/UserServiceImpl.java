@@ -3,17 +3,17 @@ package com.fptu.hk7.basicolawer.service;
 import com.fptu.hk7.basicoeventdata.event.UserEvent;
 import com.fptu.hk7.basicolawer.auth.AuthService;
 import com.fptu.hk7.basicolawer.config.JWT.JWTUtil;
-import com.fptu.hk7.basicolawer.dto.Request.ChangePasswordDTO;
-import com.fptu.hk7.basicolawer.dto.Request.RegisterDTO;
-import com.fptu.hk7.basicolawer.dto.Request.UpdateUserDTO;
+import com.fptu.hk7.basicolawer.dto.Request.*;
 import com.fptu.hk7.basicolawer.dto.Response.ApiResponse;
-import com.fptu.hk7.basicolawer.dto.Request.LoginDTO;
 import com.fptu.hk7.basicolawer.dto.Response.jwtResponse;
+import com.fptu.hk7.basicolawer.enums.Role;
 import com.fptu.hk7.basicolawer.exception.AppException;
 import com.fptu.hk7.basicolawer.exception.ErrorCode;
+import com.fptu.hk7.basicolawer.pojo.StaffProfile;
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.producer.UserProducer;
 import com.fptu.hk7.basicolawer.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,9 +41,10 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private final UserProducer userProducer;
+    private final StaffProfileService staffProfileService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserDetailsService userDetailsService, AuthService authService, AuthenticationManager authenticationManager, JWTUtil jwtUtil, BCryptPasswordEncoder passwordEncoder, ModelMapper modelMapper, UserProducer userProducer) {
+    public UserServiceImpl(UserRepository userRepository, UserDetailsService userDetailsService, AuthService authService, AuthenticationManager authenticationManager, JWTUtil jwtUtil, BCryptPasswordEncoder passwordEncoder, ModelMapper modelMapper, UserProducer userProducer, StaffProfileService staffProfileService) {
         this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
         this.authService = authService;
@@ -52,6 +53,7 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
         this.userProducer = userProducer;
+        this.staffProfileService = staffProfileService;
     }
 
     @Override
@@ -129,7 +131,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<Void> register(RegisterDTO registerDTO) {
+    public User register(RegisterDTO registerDTO) {
         User user = new User(
                 registerDTO.getUsername(),
                 registerDTO.getPassword(),
@@ -137,26 +139,42 @@ public class UserServiceImpl implements UserService {
                 registerDTO.getPhone(),
                 registerDTO.getEmail(),
                 registerDTO.getStatus(),
-                registerDTO.getRole());
+                Role.valueOf(registerDTO.getRole()));
         if (userRepository.existsByUsername(user.getUsername())) {
-            throw new AppException(ErrorCode.USER_EXISTED);
+            throw new AppException(ErrorCode.USER_NAME_EXISTED);
         }
+//        if(userRepository.existsByEmail(user.getEmail())){
+//            throw new AppException(ErrorCode.EMAIL_EXISTED);
+//        }
         user = authService.activateUser(user);
-
-        // sync data
-        UserEvent userEvent = modelMapper.map(user, UserEvent.class);
-        userEvent.setId(user.getId());
-        userEvent.setRole(registerDTO.getRole().toString());
-        userProducer.produce(userEvent, "user-create");
-        //
-
-
-        return new ApiResponse<>(
-                true,
-                "User registered successfully",
-                200,
-                null);
+        return user;
     }
+
+    @Override
+    public ApiResponse<Void> registerlawyer(LawyerRegisterDTO lawyerRegisterDTO) {
+        try {
+            User user = this.register(lawyerRegisterDTO.getRegisterDTO());
+            StaffProfile staffProfile = modelMapper.map(lawyerRegisterDTO, StaffProfile.class);
+            staffProfile.setUser(user);
+
+            staffProfileService.save(staffProfile);
+
+            return new ApiResponse<>(
+                    true,
+                    "Register new lawyer successfully",
+                    200,
+                    null
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+//    @Override
+//    public ApiResponse<Void> registerlawyer(LawyerRegisterDTO lawyerRegisterDTO) {
+//        return null;
+//    }
 
     @Override
     public User getCurrentUser() {

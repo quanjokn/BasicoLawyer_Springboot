@@ -1,4 +1,4 @@
-package com.fptu.hk7.basicolawer.dto;
+package com.fptu.hk7.basicolawer.dto.Request;
 
 import lombok.Data;
 

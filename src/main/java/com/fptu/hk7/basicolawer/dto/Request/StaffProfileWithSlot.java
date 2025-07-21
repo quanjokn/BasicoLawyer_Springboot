@@ -1,6 +1,5 @@
-package com.fptu.hk7.basicolawer.dto;
+package com.fptu.hk7.basicolawer.dto.Request;
 
-import com.fptu.hk7.basicolawer.pojo.Services;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

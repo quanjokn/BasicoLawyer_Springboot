@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
 import com.fptu.hk7.basicolawer.dto.Request.UserDTO;
-import com.fptu.hk7.basicolawer.dto.WSRequest;
+import com.fptu.hk7.basicolawer.dto.Request.WSRequest;
 import com.fptu.hk7.basicolawer.exception.NotFoundException;
 import com.fptu.hk7.basicolawer.pojo.Request;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;

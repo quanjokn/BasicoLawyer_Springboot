@@ -1,15 +1,18 @@
 package com.fptu.hk7.basicolawer.service;
 
+import com.fptu.hk7.basicoeventdata.event.StaffProfileEvent;
+import com.fptu.hk7.basicoeventdata.event.UserEvent;
 import com.fptu.hk7.basicolawer.dto.Request.ProfileRequest;
-import com.fptu.hk7.basicolawer.dto.StaffProfileWithSlot;
+import com.fptu.hk7.basicolawer.dto.Request.StaffProfileWithSlot;
 import com.fptu.hk7.basicolawer.exception.AppException;
 import com.fptu.hk7.basicolawer.exception.ErrorCode;
 import com.fptu.hk7.basicolawer.pojo.Appointment;
-import com.fptu.hk7.basicolawer.pojo.Request;
 import com.fptu.hk7.basicolawer.pojo.StaffProfile;
+import com.fptu.hk7.basicolawer.producer.StaffProfileProducer;
 import com.fptu.hk7.basicolawer.repository.AppointmentRepository;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
 import com.fptu.hk7.basicolawer.repository.StaffProfileRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,12 @@ public class StaffProfileServiceImp implements StaffProfileService {
 
     @Autowired
     private RequestRepository requestRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private StaffProfileProducer staffProfileProducer;
+
     public StaffProfileServiceImp(StaffProfileRepository staffProfileRepository) {
         this.staffProfileRepository = staffProfileRepository;
     }
@@ -43,7 +52,19 @@ public class StaffProfileServiceImp implements StaffProfileService {
 
     @Override
     public StaffProfile save(StaffProfile staffProfile) {
-        return staffProfileRepository.save(staffProfile);
+        try {
+            StaffProfile profile = staffProfileRepository.save(staffProfile);
+            // sync data
+            StaffProfileEvent staffProfileEvent = modelMapper.map(profile, StaffProfileEvent.class);
+            UserEvent userEvent = modelMapper.map(profile.getUser(), UserEvent.class);
+            staffProfileEvent.setUser(userEvent);
+
+            staffProfileProducer.produce(staffProfileEvent, "staff-profile-create");
+            return profile;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+
     }
 
     @Override
@@ -98,7 +119,7 @@ public class StaffProfileServiceImp implements StaffProfileService {
     public StaffProfile updateProfile(UUID id, ProfileRequest profileRequest) {
         StaffProfile staffProfile = staffProfileRepository.findById(id).orElseThrow(()-> new AppException(ErrorCode.INVALID_STAFF_PROFILE));
         staffProfile.setHtmlContent(profileRequest.getHtmlContent());
-        return staffProfileRepository.save(staffProfile);
+        return this.save(staffProfile);
     }
 }
 

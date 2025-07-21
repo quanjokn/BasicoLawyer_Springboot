@@ -20,8 +20,8 @@ public class AppointmentSchedulerService {
     public void schedulerReminder(Appointment appointment) {
         LocalDateTime startTime = getLocalDateTime(appointment);
 
-//        LocalDateTime reminderCustomerEmailTime = startTime.minusMinutes(30);
-        LocalDateTime reminderCustomerEmailTime = LocalDateTime.of(2025, 7, 19, 0,5);
+        LocalDateTime reminderCustomerEmailTime = startTime.minusMinutes(30);
+//        LocalDateTime reminderCustomerEmailTime = LocalDateTime.of(2025, 7, 19, 0,5);
         LocalDateTime reminderLawyerEmailTime = startTime.minusMinutes(5);
 
         try{
@@ -38,7 +38,6 @@ public class AppointmentSchedulerService {
                     .usingJobData("lawyerName", appointment.getLawyerFullName())
                     .usingJobData("dateTime", startTime.toString())
                     .usingJobData("slot", appointment.getSlot().toString())
-//                    .usingJobData("serviceName", appointment.getBooking().getRequest().getServices().get(0).getName())
                     .build();
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity("reminder_trigger_appointment_" + appointment.getId(), "reminder_trigger_group")
@@ -47,10 +46,8 @@ public class AppointmentSchedulerService {
                     .build();
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (Exception e) {
-            // In đầy đủ stack trace vào log (nếu có logback/slf4j)
             log.error("Failed to schedule appointment reminders", e);
 
-            // Ném lỗi có cả full stack trace
             throw new RuntimeException("Failed to schedule appointment reminders", e);
         }
     }
@@ -67,7 +64,6 @@ public class AppointmentSchedulerService {
         LocalTime selectedTime = slotTimeMap.get(slot);
         if (selectedTime == null) throw new IllegalArgumentException("Invalid slot: " + slot);
 
-        LocalDateTime startTime = LocalDateTime.of(appointment.getAssignedAt(), selectedTime);
-        return startTime;
+        return LocalDateTime.of(appointment.getAssignedAt(), selectedTime);
     }
 }
