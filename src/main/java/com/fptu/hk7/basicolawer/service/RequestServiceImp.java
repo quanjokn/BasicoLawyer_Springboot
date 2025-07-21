@@ -24,8 +24,7 @@ public class RequestServiceImp implements RequestService {
     private UserService userService;
     @Autowired
     private StaffProfileService staffProfileService;
-    @Autowired
-    private PaymentService paymentService;
+
     @Autowired
     private ModelMapper modelMapper;
 

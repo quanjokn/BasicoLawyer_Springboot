@@ -23,5 +23,4 @@ public interface PaymentService {
     Payment findByRequest(Request req);
 
     WeekReportResponse getReport(ReportRequest reportRequest);
-    List<RevenueDTO> getAllServiceRevenues();
 }

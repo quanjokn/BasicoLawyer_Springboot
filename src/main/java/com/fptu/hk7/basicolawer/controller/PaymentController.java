@@ -76,9 +76,4 @@ public class PaymentController {
 
     }
 
-    @GetMapping("/services")
-    public ResponseEntity<List<RevenueDTO>> getAllServiceRevenue() {
-        List<RevenueDTO> revenueList = paymentService.getAllServiceRevenues();
-        return ResponseEntity.ok(revenueList);
-    }
 }

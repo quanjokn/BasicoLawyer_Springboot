@@ -28,14 +28,7 @@ public class PaymentServiceImp implements PaymentService {
     private final PaymentRepository paymentRepository;
 
 
-    @Autowired
-    private UserService userService;
 
-    @Autowired
-    private ServicesService serviceService;
-
-    @Autowired
-    private RequestService requestService;
     public PaymentServiceImp(PaymentRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
     }
@@ -144,44 +137,6 @@ public class PaymentServiceImp implements PaymentService {
         weekReportResponse.setDailyReports(dayReports);
 
         return weekReportResponse;
-    }
-
-    @Override
-    public List<RevenueDTO> getAllServiceRevenues() {
-        List<Services> services = serviceService.findAll();
-        List<RevenueDTO> result = new ArrayList<>();
-
-        for (Services service : services) {
-            List<Request> requests = requestService.findByServices(service);
-
-            List<Payment> allPayments = new ArrayList<>();
-            for (Request req : requests) {
-                if (req.getPayment() != null) {
-                    allPayments.add(req.getPayment()); // ✅ dùng add chứ không addAll
-                }
-            }
-
-            long totalAmount = allPayments.stream().mapToLong(Payment::getAmount).sum();
-            int totalTransactions = allPayments.size();
-
-            List<PaymentRevenueDTO> paymentDTOs = allPayments.stream()
-                    .map(p -> new PaymentRevenueDTO(
-                            p.getId(),
-                            p.getAmount(),
-                            p.getCreatedAt().toString(), // hoặc format
-                            "Request#" + p.getRequest().getId()
-                    ))
-                    .collect(Collectors.toList());
-
-            result.add(new RevenueDTO(
-                    service.getName(),
-                    totalTransactions,
-                    totalAmount, // changePercent nếu có logic
-                    paymentDTOs
-            ));
-        }
-
-        return result;
     }
 
 }
