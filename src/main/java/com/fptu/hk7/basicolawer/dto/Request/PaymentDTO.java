@@ -17,5 +17,4 @@ public class PaymentDTO {
     private UUID id; // UUID of the payment
     private UUID requestId;
     private LocalDate createdAt;
-    private long totalAmount;
 }

@@ -2,6 +2,7 @@ package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.dto.Response.FormTemplateRepsonse;
 import com.fptu.hk7.basicolawer.pojo.FormTemplate;
+import com.fptu.hk7.basicolawer.pojo.UserForm;
 import com.fptu.hk7.basicolawer.repository.FormTemplateRepository;
 import com.fptu.hk7.basicolawer.repository.UserFormRepository;
 import com.fptu.hk7.basicolawer.repository.UserRepository;
@@ -33,6 +34,11 @@ public class UserFormServiceImpl implements UserFormService {
             formTemplateRepsonseList.add(formTemplateRepsonse);
         }
         return formTemplateRepsonseList;
+    }
+
+    @Override
+    public List<UserForm> getAllUserForms() {
+        return userFormRepo.findAll();
     }
 
     public FormTemplateRepsonse convertToResponse(FormTemplate template) {

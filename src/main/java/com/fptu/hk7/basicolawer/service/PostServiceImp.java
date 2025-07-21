@@ -8,6 +8,7 @@ import com.fptu.hk7.basicolawer.pojo.Post;
 import com.fptu.hk7.basicolawer.producer.PostProducer;
 import com.fptu.hk7.basicolawer.repository.CategoryRepository;
 import com.fptu.hk7.basicolawer.repository.PostRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class PostServiceImp implements PostService {
         return postRepository.findById(id);
     }
 
+    @Transactional
     @Override
     public Post save(Post post) {
         Post p = postRepository.save(post);

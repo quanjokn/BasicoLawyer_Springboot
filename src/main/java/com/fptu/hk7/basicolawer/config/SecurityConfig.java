@@ -4,6 +4,7 @@ import com.fptu.hk7.basicolawer.config.JWT.JWTTokenFilter;
 import com.fptu.hk7.basicolawer.pojo.*;
 import com.fptu.hk7.basicolawer.enums.Role;
 import com.fptu.hk7.basicolawer.repository.*;
+import com.fptu.hk7.basicolawer.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -77,9 +78,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CommandLineRunner initData(FormTemplateRepository formTemplateRepository, UserRepository userRepository,
-                                      StaffProfileRepository staffProfileRepository, ServiceRepository serviceRepository,
-                                      CategoryRepository categoryRepository, PostRepository postRepository) {
+    public CommandLineRunner initData(FormTemplateService formTemplateRepository, UserService userRepository,
+                                      StaffProfileService staffProfileRepository, ServicesService serviceRepository,
+                                      CategoryRepository categoryRepository, PostService postRepository) {
         return args -> {
             // Initialize your data here if needed
             if (!userRepository.existsByUsername("admin")) {
@@ -121,7 +122,7 @@ public class SecurityConfig {
                         .build();
                 userRepository.save(user);
             }
-            if (serviceRepository.count() == 0 && !userRepository.existsByRole(Role.CONSULTANT) && !userRepository.existsByRole(Role.LAWYER)) {
+            if (serviceRepository.count() == 0) {
                 String[] services = {
                         "Dịch vụ luật sư nội bộ",
                         "Ngân hàng và tài chính",
@@ -506,7 +507,7 @@ public class SecurityConfig {
                         "    { \"key\": \"namSinh\", \"label\": \"Năm sinh\", \"type\": \"text\" },\n" +
                         "    { \"key\": \"cmnd\", \"label\": \"CMND/CCCD\", \"type\": \"text\" },\n" +
                         "    { \"key\": \"noiCap\", \"label\": \"Nơi cấp CMND\", \"type\": \"text\" },\n" +
-                        "    { \"key\": \"thuongTru\", \"label\": \"Thường trú\", \"type\": \"textarea\" },\n" +
+                        "    { \"key\": \"thuongTru\", \"label\": \"Thường trú\", \"type\": \"text\" },\n" +
                         "    { \"key\": \"vaiTro\", \"label\": \"Vai trò trong vụ án\", \"type\": \"text\" },\n" +
                         "    { \"key\": \"vuAn\", \"label\": \"Tên vụ án\", \"type\": \"text\" },\n" +
                         "    { \"key\": \"doiTuong\", \"label\": \"Đối tượng/với ai\", \"type\": \"text\" },\n" +
@@ -585,7 +586,7 @@ public class SecurityConfig {
                         "    { \"key\": \"namSinh\", \"label\": \"Năm sinh\", \"type\": \"text\" },\n" +
                         "    { \"key\": \"cmnd\", \"label\": \"CMND/CCCD\", \"type\": \"text\" },\n" +
                         "    { \"key\": \"noiCap\", \"label\": \"Nơi cấp CMND\", \"type\": \"text\" },\n" +
-                        "    { \"key\": \"thuongTru\", \"label\": \"Thường trú\", \"type\": \"textarea\" },\n" +
+                        "    { \"key\": \"thuongTru\", \"label\": \"Thường trú\", \"type\": \"text\" },\n" +
                         "    { \"key\": \"vaiTro\", \"label\": \"Vai trò trong vụ\", \"type\": \"text\" },\n" +
                         "    { \"key\": \"vuAn\", \"label\": \"Tên vụ\", \"type\": \"text\" },\n" +
                         "    { \"key\": \"doiTuong\", \"label\": \"Người liên quan\", \"type\": \"text\" },\n" +
@@ -671,7 +672,7 @@ public class SecurityConfig {
                         .stamp("2025-06-29 15:37:29.347013")
                         .htmlContent("\"<p>Đánh giá xây dựng bảng giá đất là việc khó, Chủ tịch UBND TP.HCM Phan Văn Mãi nhìn nhận, phải làm khẩn trương nhưng cần chặt chẽ để khi ban hành đạt kết quả cao nhất.</p><p>Thông tin trên được ông Phan Văn Mãi, Chủ tịch UBND TP.HCM trao đổi với PV Báo&nbsp;<em>Thanh Niên</em>&nbsp;sáng 2.8 trước sự quan tâm của người dân và cộng đồng doanh nghiệp về bảng giá đất điều chỉnh dự kiến áp dụng từ ngày 1.8.</p><p>Chiều qua (1.8), Ban Cán sự Đảng UBND TP.HCM đã tổ chức cuộc họp để nghe Sở TN-MT báo cáo tiến độ xây dựng bảng giá đất điều chỉnh. Về các bước tiếp theo, ông Mãi cho biết, sẽ báo cáo, xin chủ trương của Ban Thường vụ Thành ủy TP.HCM, đề nghị Ủy ban MTTQ Việt Nam TP.HCM phản biện, lấy ý kiến nhân dân từng nhóm bị tác động, lấy ý kiến đại biểu HĐND TP.HCM.</p><p><a href=\\\"https://images2.thanhnien.vn/528068263637045248/2024/8/2/chu-tich-ubnd-tphcm-phan-van-mai-2-8-1722566068026978898380.jpg\\\" rel=\\\"noopener noreferrer\\\" target=\\\"_blank\\\" style=\\\"color: rgb(27, 176, 206); background-color: transparent;\\\"><img src=\\\"https://images2.thanhnien.vn/thumb_w/640/528068263637045248/2024/8/2/chu-tich-ubnd-tphcm-phan-van-mai-2-8-1722566068026978898380.jpg\\\"></a></p><p>Chủ tịch UBND TP.HCM Phan Văn Mãi khẳng định bảng giá đất mới sẽ đề cao lợi ích của người dân</p><p>Luật Đất đai có hiệu lực từ ngày 1.8 quy định bảng giá đất không còn áp dụng hệ số điều chỉnh cũng như phải có giá đất tái định cư. Đây là lý do chính khiến UBND TP.HCM phải điều chỉnh bảng giá đất cho sát giá thị trường, làm cơ sở giải quyết hồ sơ nhà đất của người dân cũng như phê duyệt đơn giá bồi thường, tái định các dự án có thu hồi đất.”Luật Đất đai quy định như vậy nhưng đến giờ chưa có địa phương nào ban hành. Đây là việc khó, phải làm khẩn trương nhưng chặt chẽ để khi ban hành đạt kết quả cao nhất”, ông Mãi chia sẻ thêm.</p><p>Chủ tịch UBND TP.HCM nhìn nhận, bảng giá đất liên quan đến nhiều bên nên không thể hài lòng tất cả mọi người. Dù vậy, TP.HCM sẽ cố gắng xây dựng bảng giá đất hài hòa nhất lợi ích giữa Nhà nước, doanh nghiệp và người dân, trong đó lợi ích của người dân phải được đề cao.</p><p>Về thời điểm ban hành, ông Mãi cho hay, UBND TP.HCM cố gắng ban hành bảng giá đất trong tháng 8.2024. Trong thời gian này, UBND TP.HCM cũng sẽ nghiên cứu việc xử lý chuyển tiếp khoảng thời gian từ ngày 1.8 đến khi bảng giá đất được ban hành để thực hiện thống nhất trên toàn thành phố.</p><p>Hơn 4.500 tuyến đường có bảng giá đất</p><p>Tại phiên họp kinh tế – xã hội thường kỳ tháng 7.2024 diễn ra chiều 1.8, Giám đốc Sở TN-MT Nguyễn Toàn Thắng cho biết, trình tự điều chỉnh bảng giá đất có 7 bước và TP.HCM đang thực hiện tới bước 6.”Bảng giá đất lần này là bảng giá điều chỉnh, chúng ta chưa xây dựng bảng giá mới theo luật Đất đai năm 2024. Bảng giá mới sẽ được xây dựng và áp dụng từ ngày 1.1.2026. Còn bảng giá này là bảng giá điều chỉnh bảng giá cũ, cập nhật những giá đất hiện hành, giá bồi thường được phê duyệt, một số giá chuyển biến trên thị trường cho đúng, cho đủ vào bảng giá, đảm bảo bảng giá không quá thấp”, ông Thắng nói thêm.Giám đốc Sở TN-MT dẫn chứng có những tuyến đường trong bảng giá hiện hành chỉ 1 – 2 triệu đồng/m2&nbsp;đất ở mà giá giao dịch đã 100 – 200 triệu đồng/m2. Do vậy cần cập nhật, cân chỉnh lại để có bảng giá đất phù hợp nhất trong giai đoạn hiện nay.</p><p><a href=\\\"https://images2.thanhnien.vn/528068263637045248/2024/8/2/bang-gia-dat-tphcm-2-8-172256631793330792479.jpg\\\" rel=\\\"noopener noreferrer\\\" target=\\\"_blank\\\" style=\\\"color: rgb(27, 176, 206); background-color: transparent;\\\"><img src=\\\"https://images2.thanhnien.vn/thumb_w/640/528068263637045248/2024/8/2/bang-gia-dat-tphcm-2-8-172256631793330792479.jpg\\\"></a></p><p>Dự kiến UBND TP.HCM ban hành bảng giá đất điều chỉnh trong tháng 8.2024</p><p>Theo dự thảo bảng giá đất do Sở TN-MT trình UBND TP.HCM, bảng giá đất mới sẽ áp dụng cho 4.565 tuyến đường, tăng 557 tuyến so với Quyết định 02/2020. Mức giá cao nhất là 810 triệu đồng/m2, thấp nhất là 3 triệu đồng/m2&nbsp;, còn mức bình quân khoảng 111 triệu đồng/m2, gấp hơn 7 lần so với 4 năm trước.</p><p>Sở TN-MT giải thích bảng giá đất theo Quyết định 02/2020 khi sử dụng phải nhân với hệ số điều chỉnh giá đất là 3,5 lần, nên thực tế bảng giá đất điều chỉnh lần này chỉ tăng khoảng 2,5 lần và chỉ tương ứng 70% mặt bằng giá thị trường.</p><p>Cũng theo đánh giá sơ bộ của Sở TN-MT, nhóm có ảnh hưởng nhiều là đối tượng chuyển mục đích sử dụng đất và công nhận quyền sử dụng đất của hộ gia đình, cá nhân. Tuy nhiên, đối chiếu luật Đất đai năm 2013 với luật Đất đai năm 2024, các trường hợp sử dụng đất ổn định trước ngày 15.10.1993 không phải nộp tiền sử dụng đất, trường hợp diện tích vượt hạn mức thì thu theo bảng giá đất năm 2005.</p><p><em>Nguồn: Thanhnien.vn</em></p>\"")
                         .view(0)
-                        .thumbnail("http://localhost:8080/uploads/67b28348-d7c1-449b-8dae-2e0aaffdfebc_anh1.jpg")
+                        .thumbnail("https://phucminhlaw.vn/wp-content/uploads/2024/05/2-truong-hop-mua-ban-nha-dat-giay-viet-tay-duoc-cap-so-do-0921-1700x956.jpg")
                         .category(categoryRepository.findByName("Luật Đất Đai"))
                         .build();
 
@@ -681,7 +682,7 @@ public class SecurityConfig {
                         .stamp("2025-06-29 15:39:38.017738")
                         .htmlContent("<p>Luật Kinh doanh bất động sản 2023 có hiệu lực từ 1/8, chủ đầu tư chỉ được thu tiền cọc mua nhà hình thành trong tương lai (nhà ở trên giấy) tối đa 5% giá bán, cho thuê mua và dự án đủ điều kiện mới được mở bán.</p><p>Cụ thể, theo khoản 5 Điều 23 Luật Kinh doanh bất động sản 2023, chủ đầu tư dự án bất động sản chỉ được thu tiền đặt cọc không quá 5% giá bán, cho thuê mua nhà ở, công trình xây dựng, phần diện tích sàn xây dựng trong công trình xây dựng khi đã có đủ các điều kiện đưa vào kinh doanh theo quy định,&nbsp;như có giấy phép xây dựng, thông báo khởi công xây dựng, giấy tờ về quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất…</p><p>Thỏa thuận đặt cọc phải ghi rõ giá bán, cho thuê mua nhà ở, công trình xây dựng, phần diện tích sàn xây dựng trong công trình xây dựng.</p><p>Cùng với quy định về tiền đặt cọc không quá 5% giá bán, Điều 25 Luật Kinh doanh bất động sản năm 2023 cũng có quy định về thanh toán tiền mua bán, thuê mua nhà trên giấy.</p><p><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\"></p><p><em>Quá trình thanh toán trong mua bán nhà ở, công trình xây dựng, phần diện tích sàn xây dựng trong công trình xây dựng hình thành trong tương lai theo Luật Kinh doanh bất động sản 2023. Đồ họa: Hồng Khanh&nbsp;</em></p><p>Theo đó, các bên thực hiện thanh toán nhiều lần, lần đầu không quá 30% hợp đồng gồm cả tiền cọc (quy định cũ không bao gồm tiền cọc).</p><p>Những lần tiếp theo phải phù hợp tiến độ xây dựng nhưng không quá 70% giá trị hợp đồng khi chưa bàn giao nhà ở, công trình xây dựng, phần diện tích sàn xây dựng trong công trình xây dựng.</p><p>Như vậy so với quy định cũ, Luật Kinh doanh bất động sản 2023 đã bổ sung căn cứ là phần diện tích sàn xây dựng trong công trình cho bên mua.</p><p>Nếu bên bán là tổ chức có vốn đầu tư nước ngoài thì không quá 50% giá trị hợp đồng.</p><p>Nếu bên mua, thuê mua chưa được cấp sổ đỏ/ sổ hồng thì không được thu quá 95% giá trị hợp đồng. Giá trị còn lại sẽ được thanh toán khi người mua được cấp sổ hồng.</p><p>Đồng thời, luật mới bổ sung thêm quy định về việc thanh toán trong thuê mua nhà ở, phần diện tích sàn xây dựng trong công trình hình thành trong tương lai so với Luật Kinh doanh bất động sản năm 2014.</p><p>Với trường hợp này, cũng thanh toán nhiều lần và các lần được quy định lần đầu không quá 30% giá trị hợp đồng gồm cả tiền cọc.</p><p>Các lần tiếp theo phải phù hợp tiến độ xây dựng cho đến khi bàn giao nhà ở, phần diện tích sản xây dựng nhưng tổng số tiền thanh toán trước không quá 50% giá trị hợp đồng thuê mua nhà ở hình thành trong tương lai.</p><p>Số tiền còn lại được tính thành tiền thuê để trả cho bên cho thuê mua trong thời hạn nhất định theo thỏa thuận.</p><p>Đặt cọc là bước đầu tiên trong tiến trình mua bán, được thực hiện trước khi giao kết hợp đồng. Luật hiện hành không đưa ra các quy định cụ thể về tiền cọc với mua bán, thuê bất động sản hình thành trong tương lai. Theo quy định mới, việc đặt cọc mua bán nhà trên giấy được siết lại tránh thu tiền cọc quá lớn, có thể phát sinh hành vi lừa đảo gây thiệt hại cho người mua.</p><p><em>Nguồn: https://vietnamnet.vn/tu-1-8-tien-coc-mua-nha-tren-giay-toi-da-5-gia-ban-2299946.html, tham khảo ngày 10/7/2024</em></p>")
                         .view(0)
-                        .thumbnail("http://localhost:8080/uploads/69fe4648-4c1f-4157-bcdb-04f808cceaca_anh2.jpg")
+                        .thumbnail("https://phucminhlaw.vn/wp-content/uploads/2024/07/765247ae-63ec-4dcd-af7c-56615b692bff-1700x956.jpg")
                         .category(categoryRepository.findByName("Luật Đất Đai"))
                         .build();
                 Post post3 = Post.builder()
@@ -690,11 +691,15 @@ public class SecurityConfig {
                         .htmlContent("<p>Luật Kinh doanh bất động sản 2023 có hiệu lực từ ngày 1/8, không cho phân lô, bán nền tại 105 thành phố, thị xã, tăng 81 địa phương so với quy định hiện hành.</p><p>Cụ thể, Luật Kinh doanh bất động sản 2023 quy định không được chuyển nhượng quyền sử dụng đất cho cá nhân tự xây dựng nhà ở, tự phân lô bán nền trong khu vực các phường, quận, thành phố của đô thị loại đặc biệt, loại I, II, III và thuộc trường hợp đấu giá quyền sử dụng đất để đầu tư dự án xây dựng nhà ở theo quy định của Luật Đất đai.</p><p>Với những khu vực còn lại, UBND cấp tỉnh sẽ quyết định khu vực chủ đầu tư có thể phân lô tách thửa và chuyển nhượng cho cá nhân tự xây nhà ở.</p><p>Trong khi đó, luật hiện hành chỉ ngăn chặn phân lô, bán nền&nbsp;tại các phường của các đô thị loại đặc biệt và đô thị loại I trực thuộc Trung ương; khu vực có yêu cầu cao về kiến trúc cảnh quan, khu vực trung tâm và xung quanh các công trình là điểm nhấn kiến trúc trong đô thị; mặt tiền các tuyến đường cấp khu vực trở lên và các tuyến đường cảnh quan chính trong đô thị.</p><p>Theo thống kê của Bộ Xây dựng, đến tháng 12/2023, toàn quốc có 902 đô thị; trong đó, có 2 đô thị loại đặc biệt, 22 đô thị loại I, 36 đô thị loại II, 45 đô thị loại III, 95 đô thị loại IV và 702 đô thị loại V.</p><p>Như vậy, quy định mới sẽ cấm phân lô bán nền tại 105 thành phố, thị xã, tăng thêm 81 địa phương so với quy định hiện hành.</p><p><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\"></p><p><em style=\"color: rgb(0, 0, 0);\">Danh sách 105 thành phố, thị xã không được phân lô, bán nền từ 1/8&nbsp;</em></p><p>Ngoài 2 đô thị loại đặc biệt gồm Hà Nội và TP.HCM sẽ bị siết phân lô bán nền còn có 22 đô thị loại I.</p><p>Trong đó, có 3 thành phố trực thuộc Trung ương là Hải Phòng, Đà Nẵng, Cần Thơ và 19 thành phố thuộc tỉnh gồm Huế, Vinh, Đà Lạt, Nha Trang, Quy Nhơn, Buôn Ma Thuột, Thái Nguyên, Nam Định, Việt Trì, Vũng Tàu, Hạ Long, Thanh Hóa, Biên Hòa, Mỹ Tho, Thủ Dầu Một, Bắc Ninh, Hải Dương, Pleiku, Long Xuyên.</p><p>36 đô thị loại II bao gồm các thành phố thuộc tỉnh: Phan Thiết, Cà Mau, Tuy Hòa, Uông Bí, Thái Bình, Rạch Giá, Bạc Liêu, Ninh Bình, Đồng Hới, Phú Quốc, Vĩnh Yên, Lào Cai, Bà Rịa, Bắc Giang, Phan Rang – Tháp Chàm, Châu Đốc, Cẩm Phả, Quảng Ngãi, Tam Kỳ, Trà Vinh, Sa Đéc, Móng Cái, Phủ Lý, Bến Tre, Hà Tĩnh, Lạng Sơn, Sơn La, Tân An, Vị Thanh, Cao Lãnh, Vĩnh Long, Tuyên Quang, Sóc Trăng, Kon Tum, Dĩ An, Yên Bái.</p><p>45 đô thị loại III với 29 thành phố và 16 thị xã.</p><p>Cụ thể, 29 thành phố là Điện Biên Phủ, Hòa Bình, Hội An, Hưng Yên, Đông Hà, Bảo Lộc, Hà Giang, Cam Ranh, Cao Bằng, Lai Châu, Tây Ninh, Bắc Kạn, Tam Điệp, Sông Công, Sầm Sơn, Phúc Yên, Hà Tiên, Đồng Xoài, Chí Linh, Long Khánh, Gia Nghĩa, Ngã Bảy, Thuận An, Hồng Ngự, Từ Sơn, Phổ Yên, Tân Uyên, Bến Cát, Gò Công.</p><p>16 thị xã gồm: Sơn Tây, Cửa Lò, Phú Thọ, Bỉm Sơn, La Gi, Sông Cầu, Long Mỹ, Tân Châu, Cai Lậy, Quảng Yên, Kỳ Anh, Bình Minh, Đông Triều, Phú Mỹ, An Nhơn, Kiến Tường.</p><h5><strong><em>Nguồn: Vietnam.net</em></strong></h5><p><br></p>")
                         .stamp("2025-06-29 15:40:37.833965")
                         .view(0)
-                        .thumbnail("http://localhost:8080/uploads/ed15be17-e4af-4cab-a22c-1e45ed8ac342_anh3.jpg")
+                        .thumbnail("https://phucminhlaw.vn/wp-content/uploads/2024/05/20-2000x1125.jpg")
                         .category(categoryRepository.findByName("Luật Đất Đai"))
                         .build();
 
-                postRepository.saveAll(Arrays.asList(post1, post2, post3));
+                postRepository.save(post1);
+                postRepository.save(post2);
+                postRepository.save(post3);
+
+
             }
 
         };

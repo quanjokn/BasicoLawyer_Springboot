@@ -45,4 +45,9 @@ public class CategoryServiceImp implements CategoryService {
     public void deleteById(UUID id) {
         categoryRepository.deleteById(id);
     }
+
+    @Override
+    public int count() {
+        return Math.toIntExact(categoryRepository.count());
+    }
 }

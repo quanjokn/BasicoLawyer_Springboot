@@ -12,4 +12,6 @@ public interface CategoryService {
     Category save(Category category);
     Category update(UUID id, Category category);
     void deleteById(UUID id);
+
+    int count();
 }

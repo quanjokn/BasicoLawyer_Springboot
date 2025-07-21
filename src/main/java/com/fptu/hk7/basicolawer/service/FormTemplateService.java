@@ -15,4 +15,6 @@ public interface FormTemplateService {
     FormTemplate update(UUID id, FormTemplate formTemplate);
     void deleteById(UUID id);
     List<UserFormDto> findByUser();
+
+    Optional<FormTemplate> findByName(String templateName);
 }

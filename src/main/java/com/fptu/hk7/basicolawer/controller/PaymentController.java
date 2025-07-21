@@ -3,6 +3,7 @@ package com.fptu.hk7.basicolawer.controller;
 import com.fptu.hk7.basicolawer.dto.Request.PaymentDTO;
 import com.fptu.hk7.basicolawer.dto.Request.ReportRequest;
 import com.fptu.hk7.basicolawer.dto.Request.RevenueDTO;
+import com.fptu.hk7.basicolawer.dto.Request.TotalRevenue;
 import com.fptu.hk7.basicolawer.dto.Response.WeekReportResponse;
 import com.fptu.hk7.basicolawer.pojo.Payment;
 import com.fptu.hk7.basicolawer.service.PaymentService;
@@ -27,8 +28,8 @@ public class PaymentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PaymentDTO>> getAll() {
-        List<PaymentDTO> payments = paymentService.findAll();
+    public ResponseEntity<TotalRevenue> getAll() {
+        TotalRevenue payments = paymentService.findAll();
         System.out.println("Payments: " + payments);
         return ResponseEntity.ok(payments);
     }

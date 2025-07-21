@@ -80,18 +80,25 @@ public class FormTemplateServiceImp implements FormTemplateService {
         List<UserForm> userFormInfo = userFormRepository.findByUser(user);
         List<UserFormDto> userFormDtoList = new ArrayList<>();
         for (UserForm userForm : userFormInfo) {
-            UserFormDto userFormDto = UserFormDto.builder()
-                    .id(userForm.getId())
-                    .templateUUID(userForm.getTemplate().getId())
-                    .templateName(userForm.getTemplate().getName())
-                    .createdAt(userForm.getCreatedAt())
-                    .isPaid(userForm.isPaid())
-                    .amount(userForm.getAmount())
-                    .paymentMethod(userForm.getPaymentMethod())
-                    .txnRef(userForm.getTxnRef())
-                    .build();
-            userFormDtoList.add(userFormDto);
+            if (userForm.isPaid()) {
+                UserFormDto userFormDto = UserFormDto.builder()
+                        .id(userForm.getId())
+                        .templateUUID(userForm.getTemplate().getId())
+                        .templateName(userForm.getTemplate().getName())
+                        .createdAt(userForm.getCreatedAt())
+                        .isPaid(userForm.isPaid())
+                        .amount(userForm.getAmount())
+                        .paymentMethod(userForm.getPaymentMethod())
+                        .txnRef(userForm.getTxnRef())
+                        .build();
+                userFormDtoList.add(userFormDto);
+            }
         }
         return userFormDtoList;
+    }
+
+    @Override
+    public Optional<FormTemplate> findByName(String templateName) {
+        return formTemplateRepository.findByName(templateName);
     }
 }

@@ -45,7 +45,7 @@ public class Post {
 //    private User user; // Người đăng bài viết
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 }

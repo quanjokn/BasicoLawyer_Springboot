@@ -42,4 +42,9 @@ public class ServicesServiceImpl implements ServicesService {
     public void deleteById(UUID id) {
         serviceRepository.deleteById(id);
     }
+
+    @Override
+    public int count() {
+        return Math.toIntExact(serviceRepository.count());
+    }
 }

@@ -12,4 +12,6 @@ public interface ServicesService {
     Services save(Services services);
     Services update(UUID id, Services services);
     void deleteById(UUID id);
+
+    int count();
 }
