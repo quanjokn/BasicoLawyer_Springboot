@@ -11,6 +11,7 @@ import com.fptu.hk7.basicolawer.repository.AppointmentRepository;
 import com.fptu.hk7.basicolawer.repository.BookingRepository;
 import com.fptu.hk7.basicolawer.repository.NotificationRepository;
 import com.fptu.hk7.basicolawer.repository.RequestRepository;
+import com.fptu.hk7.basicolawer.service.Quartz.AppointmentSchedulerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,8 @@ public class AppointmentServiceImp implements AppointmentService {
     private NotificationService notificationService;
     @Autowired
     private StaffProfileService staffProfileService;
+    @Autowired
+    private AppointmentSchedulerService appointmentScheduleService;
 
     ModelMapper modelMapper = new ModelMapper();
 
@@ -104,6 +107,9 @@ public class AppointmentServiceImp implements AppointmentService {
                 .build();
 
         request.setStatus(RequestStatusEnum.ASSIGNED);
+
+        System.out.println("REMINDER SCHEDULER: " + appointment.getAssignedAt());
+        appointmentScheduleService.schedulerReminder(appointment);
 
         Notification notification = Notification.builder()
                 .message("Cuộc hẹn của bạn đã được tạo thành công vào ngày: "+appointment.getAssignedAt() + " với luật sư: " + lawyer.getFullname())

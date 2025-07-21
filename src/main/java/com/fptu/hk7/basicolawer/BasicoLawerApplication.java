@@ -10,6 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.util.TimeZone;
+
 @SpringBootApplication
 @OpenAPIDefinition(info = @Info(title = "Basico Lawyer API", version = "1.0.0"))
 @EnableWebMvc // for upload files
@@ -23,6 +25,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class BasicoLawerApplication {
 
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
         SpringApplication.run(BasicoLawerApplication.class, args);
     }
 

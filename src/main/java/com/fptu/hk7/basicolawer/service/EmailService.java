@@ -33,6 +33,7 @@ public class EmailService {
 
     // Method to send OTP for password reset
     public String subject_forgotPasswordEmail = "Password Reset OTP";
+    public String subject_reminderEmail = "BASICO LAWYER - Reminder for Upcoming Appointment";
 
     public String generateOTP() {
         int otp = (int) (Math.random() * 900000) + 100000;
@@ -44,6 +45,33 @@ public class EmailService {
                       "<p>Use the following OTP to reset your password:</p>" +
                       "<h2>" + otp + "</h2>" +
                       "<p>This OTP is valid for 5 minutes.</p>";
+    }
+
+
+    public String bodyAppointmentReminderEmail(String customerName,
+                                               String lawyerName,
+
+                                               String dateTime,
+                                               String slot,
+                                               String appointmentId) {
+
+        return "<div style='font-family: Arial, sans-serif; padding: 20px;'>" +
+                "<h2 style='color: #2e7d32;'>[Basico] Nhắc nhở lịch hẹn</h2>" +
+                "<p>Xin chào <strong>" + customerName + "</strong>,</p>" +
+                "<p>Đây là thư nhắc nhở về lịch hẹn của bạn với luật sư.</p>" +
+
+                "<table style='width: 100%; border-collapse: collapse; margin-top: 15px;'>" +
+                "  <tr><td style='padding: 6px; font-weight: bold;'>Dịch vụ:</td><td style='padding: 6px;'>Tư vấn pháp luật và biện hộ</td></tr>" +
+                "  <tr style='background-color: #f9f9f9;'><td style='padding: 6px; font-weight: bold;'>Luật sư:</td><td style='padding: 6px;'>" + lawyerName + "</td></tr>" +
+                "  <tr><td style='padding: 6px; font-weight: bold;'>Thời gian:</td><td style='padding: 6px;'>" + dateTime + " (" + slot + ")</td></tr>" +
+                "  <tr style='background-color: #f9f9f9;'><td style='padding: 6px; font-weight: bold;'>Mã lịch hẹn:</td><td style='padding: 6px;'>" + appointmentId + "</td></tr>" +
+                "</table>" +
+
+                "<p style='margin-top: 20px;'>Vui lòng chuẩn bị và tham gia đúng giờ.</p>" +
+                "<p>Trân trọng,<br><strong>Đội ngũ Basico</strong></p>" +
+                "<hr style='margin-top: 30px;'>" +
+                "<p style='font-size: 12px; color: #888;'>© 2025 Basico. Mọi quyền được bảo lưu.</p>" +
+                "</div>";
     }
 
 }
