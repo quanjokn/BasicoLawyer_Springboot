@@ -2,6 +2,7 @@ package com.fptu.hk7.basicolawer.controller;
 
 import com.fptu.hk7.basicolawer.dto.Request.PaymentDTO;
 import com.fptu.hk7.basicolawer.dto.Request.ReportRequest;
+import com.fptu.hk7.basicolawer.dto.Request.RevenueDTO;
 import com.fptu.hk7.basicolawer.dto.Response.WeekReportResponse;
 import com.fptu.hk7.basicolawer.pojo.Payment;
 import com.fptu.hk7.basicolawer.service.PaymentService;
@@ -26,8 +27,10 @@ public class PaymentController {
     }
 
     @GetMapping
-    public List<Payment> getAll() {
-        return paymentService.findAll();
+    public ResponseEntity<List<PaymentDTO>> getAll() {
+        List<PaymentDTO> payments = paymentService.findAll();
+        System.out.println("Payments: " + payments);
+        return ResponseEntity.ok(payments);
     }
 
     @GetMapping("/{id}")
@@ -56,13 +59,13 @@ public class PaymentController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<List<PaymentDTO>> getPaymentsByUser() {
-        List<PaymentDTO> payments = paymentService.getPaymentsByCurrentUser();
-        return ResponseEntity.ok(payments);
-    }
+//    @GetMapping("/user")
+//    public ResponseEntity<List<PaymentDTO>> getPaymentsByUser() {
+//        List<PaymentDTO> payments = paymentService.getPaymentsByCurrentUser();
+//        return ResponseEntity.ok(payments);
+//    }
 
-//    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/report")
     public ResponseEntity<?> getReport(@RequestBody ReportRequest reportRequest) {
         try {
@@ -72,4 +75,5 @@ public class PaymentController {
         }
 
     }
+
 }

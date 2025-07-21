@@ -24,8 +24,7 @@ public class RequestServiceImp implements RequestService {
     private UserService userService;
     @Autowired
     private StaffProfileService staffProfileService;
-    @Autowired
-    private PaymentService paymentService;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -138,5 +137,10 @@ public class RequestServiceImp implements RequestService {
 
                     return dto;
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Request> findByServices(Services service) {
+        return requestRepository.findByServices(service);
     }
 }

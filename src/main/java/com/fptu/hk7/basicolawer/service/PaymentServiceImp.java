@@ -1,14 +1,18 @@
 package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.dto.Request.PaymentDTO;
+import com.fptu.hk7.basicolawer.dto.Request.PaymentRevenueDTO;
 import com.fptu.hk7.basicolawer.dto.Request.ReportRequest;
+import com.fptu.hk7.basicolawer.dto.Request.RevenueDTO;
 import com.fptu.hk7.basicolawer.dto.Response.DayReportResponse;
 import com.fptu.hk7.basicolawer.dto.Response.WeekReportResponse;
 import com.fptu.hk7.basicolawer.enums.PaymentStatusEnum;
 import com.fptu.hk7.basicolawer.pojo.Payment;
 import com.fptu.hk7.basicolawer.pojo.Request;
+import com.fptu.hk7.basicolawer.pojo.Services;
 import com.fptu.hk7.basicolawer.pojo.User;
 import com.fptu.hk7.basicolawer.repository.PaymentRepository;
+import com.fptu.hk7.basicolawer.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,17 +27,36 @@ public class PaymentServiceImp implements PaymentService {
 
     private final PaymentRepository paymentRepository;
 
-    @Autowired
-    private UserService userService;
+
 
     public PaymentServiceImp(PaymentRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
     }
 
     @Override
-    public List<Payment> findAll() {
-        return paymentRepository.findAll();
+    public List<PaymentDTO> findAll() {
+        List<Payment> payments = paymentRepository.findAll();
+        long totalAmount = payments.stream().mapToLong(Payment::getAmount).sum();
+
+        return payments.stream()
+                .map(payment -> {
+                    Request request = payment.getRequest();
+
+                    return PaymentDTO.builder()
+                            .method(payment.getMethod().name())
+                            .amount(payment.getAmount())
+                            .status(payment.getStatus().name())
+                            .id(payment.getId())
+                            .createdAt(payment.getCreatedAt())
+                            .totalAmount(totalAmount)
+                            .requestId(request != null ? request.getId() : null)
+                            .dateBooking(request != null ? request.getDateBooking() : null)
+                            .dateRequest(request != null ? request.getDateRequest() : null)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public Optional<Payment> findById(UUID id) {
@@ -59,29 +82,29 @@ public class PaymentServiceImp implements PaymentService {
         paymentRepository.deleteById(id);
     }
 
-    @Override
-    public List<PaymentDTO> getPaymentsByCurrentUser() {
-        User user = userService.getCurrentUser();
-        List<Payment> payments = paymentRepository.findByRequest_User(user);
-
-        return payments.stream().map(payment -> {
-            Request request = payment.getRequest(); // đảm bảo request != null
-
-            PaymentDTO dto = new PaymentDTO();
-            dto.setMethod(payment.getMethod().name()); // Enum to String
-            dto.setAmount(payment.getAmount());
-            dto.setStatus(payment.getStatus().name()); // Enum to String
-            dto.setPaymentId(payment.getId());
-
-            if (request != null) {
-                dto.setRequestId(request.getId());
-                dto.setDateBooking(request.getDateBooking());
-                dto.setDateRequest(request.getDateRequest());
-            }
-
-            return dto;
-        }).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<PaymentDTO> getPaymentByCurrentser() {
+//        List<Payment> payments = paymentRepository.findAll();
+//        long totalAmount = payments.stream().mapToLong(Payment::getAmount).sum();
+//
+//        return payments.stream()
+//                .map(payment -> {
+//                    Request request = payment.getRequest();
+//
+//                    return PaymentDTO.builder()
+//                            .method(payment.getMethod().name())
+//                            .amount(payment.getAmount())
+//                            .status(payment.getStatus().name())
+//                            .id(payment.getId())
+//                            .createdAt(payment.getCreatedAt())
+//                            .totalAmount(totalAmount)
+//                            .requestId(request != null ? request.getId() : null)
+//                            .dateBooking(request != null ? request.getDateBooking() : null)
+//                            .dateRequest(request != null ? request.getDateRequest() : null)
+//                            .build();
+//                })
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public Payment findByRequest(Request req) {
