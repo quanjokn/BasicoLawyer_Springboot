@@ -139,4 +139,9 @@ public class RequestServiceImp implements RequestService {
                     return dto;
                 }).collect(Collectors.toList());
     }
+
+    @Override
+    public List<Request> findByServices(Services service) {
+        return requestRepository.findByServices(service);
+    }
 }

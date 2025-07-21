@@ -2,6 +2,7 @@ package com.fptu.hk7.basicolawer.service;
 
 import com.fptu.hk7.basicolawer.dto.Request.RequestDTO;
 import com.fptu.hk7.basicolawer.pojo.Request;
+import com.fptu.hk7.basicolawer.pojo.Services;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,4 +15,5 @@ public interface RequestService {
     Request update(UUID id, Request request);
     void deleteById(UUID id);
     List<RequestDTO> findByUserId();
+    List<Request> findByServices(Services service);
 }

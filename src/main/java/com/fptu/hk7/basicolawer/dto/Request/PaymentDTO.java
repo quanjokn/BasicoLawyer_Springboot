@@ -1,18 +1,21 @@
 package com.fptu.hk7.basicolawer.dto.Request;
 
-import com.fptu.hk7.basicolawer.pojo.StaffProfile;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
+@Builder
 public class PaymentDTO {
     private String method; // PaymentMethodEnum
     private int amount;
     private String status; // PaymentStatusEnum
     private LocalDate dateBooking;
     private LocalDate dateRequest;
-    private UUID paymentId; // UUID of the payment
-    private UUID requestId;// UUID of the request associated with the payment
+    private UUID id; // UUID of the payment
+    private UUID requestId;
+    private LocalDate createdAt;
+    private long totalAmount;
 }

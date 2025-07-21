@@ -15,6 +15,5 @@ public class RevenueDTO {
     private String serviceName;
     private int totalTransactions;
     private long totalAmount;
-    private double changePercent;
-    private List<PaymentDTO> payments;
+    private List<PaymentRevenueDTO> payments;
 }
