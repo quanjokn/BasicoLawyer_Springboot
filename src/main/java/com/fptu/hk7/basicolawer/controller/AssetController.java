@@ -22,7 +22,7 @@ import java.util.UUID;
 @SecurityRequirement(name = "bearerAuth")
 public class AssetController {
 
-//    @PreAuthorize("hasRole(ADMIN)")
+    @PreAuthorize("hasRole(ADMIN)")
     @PostMapping("/upload")
     public ResponseEntity<ApiResponse<?>> upload(@RequestParam("file") MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();

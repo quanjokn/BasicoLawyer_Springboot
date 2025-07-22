@@ -7,6 +7,7 @@ import com.fptu.hk7.basicolawer.service.StaffProfileService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +43,7 @@ public class StaffProfileController {
         return staffProfileService.save(staffProfile);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<StaffProfile> update(@PathVariable("id") String id, @RequestBody StaffProfile staffProfile) {
         try {

@@ -35,12 +35,12 @@ public class JWTUtil {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        claims.put("roles", "ROLE_" + roles.get(0));
+        claims.put("roles", "ROLE_" + roles.get(0).toUpperCase());
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration_time)) // 10 hours
+                .setExpiration(new Date(System.currentTimeMillis() + expiration_time))
                 .signWith(getSigningKey())
                 .compact();
     }

@@ -7,6 +7,7 @@ import com.fptu.hk7.basicolawer.pojo.Booking;
 import com.fptu.hk7.basicolawer.service.BookingService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class BookingController {
         return bookingService.save(booking);
     }
 
+    @PreAuthorize("hasRole('CONSULTANT')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> update(@PathVariable("id") UUID id, @RequestBody StatusDTO status) {
         bookingService.updateStatusBooking(id, status);
